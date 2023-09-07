@@ -56,10 +56,10 @@
 
 // Azure IoT Central
 #define DPS_ID_SCOPE "0ne00A56BD4"
-#define IOT_CONFIG_DEVICE_GATEWAY_ID "1ygq9zppy8t"                                   //gateway
+#define IOT_CONFIG_DEVICE_GATEWAY_ID "1ygq9zppy8t"                                   //Gateway Modulas-Transelevadores (2)
 // Use device key if not using certificates
 #ifndef IOT_CONFIG_USE_X509_CERT
-#define IOT_CONFIG_DEVICE_GATEWAY_KEY "YOLuq1gO0TPfARthf3w3lK0cLnC1X7lm/1qqbdxjjKc="    //gateway
+#define IOT_CONFIG_DEVICE_GATEWAY_KEY "YOLuq1gO0TPfARthf3w3lK0cLnC1X7lm/1qqbdxjjKc="    //Gateway Modulas-Transelevadores (2)
 #endif // IOT_CONFIG_USE_X509_CERT
 
 
