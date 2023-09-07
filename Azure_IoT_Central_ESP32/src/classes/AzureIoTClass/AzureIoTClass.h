@@ -12,10 +12,9 @@ enum securityType_t{
     X509_CERTIFICATE
 };
 
-#define AZ_IOT_DATA_BUFFER_SIZE 4500
-#define DATA_BUFFER_SIZE 2000
-//static const uint8_t SCOPE_ID_SIZE = 20;
-//static const uint8_t DEVICE_ID_SIZE = 20;
+#define AZ_IOT_DATA_BUFFER_SIZE 4096
+#define DATA_BUFFER_SIZE 4096
+
 
 class AzureIoTDevice{
     public:
