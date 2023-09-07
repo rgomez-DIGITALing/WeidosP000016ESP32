@@ -43,12 +43,15 @@ EnergyMeterUpdateState EnergyMeterManager::loop(){
         //state = ENERGY_METER_UPDATED;
         if(!em750.begin()){
           state = ENERGY_METER_UPDATE_FAILED;
+          em750.stop();
           LogError("Modbus Client for device ID %i could not begin.", deviceId);  
           break;
         }
-        
+
         if(em750.update()) state = ENERGY_METER_UPDATED;
         else state = ENERGY_METER_UPDATE_FAILED;
+        
+        em750.stop();
         break;
       
       case ENERGY_METER_UPDATE_FAILED:
@@ -80,7 +83,7 @@ EnergyMeterUpdateState EnergyMeterManager::loop(){
         break;
       case END_TASK:
         state = ENERGY_METER_IDLE;
-        em750.stop();
+        //em750.stop();
         break;
     }
 
