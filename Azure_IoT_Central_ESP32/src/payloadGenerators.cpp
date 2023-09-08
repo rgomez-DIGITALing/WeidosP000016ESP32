@@ -453,6 +453,26 @@ int weidosESP32_generete_payload(uint8_t* payload_buffer,
   rc = az_json_writer_append_double(&jw, weidosData.payload.minFreeHeap, TRIPLE_DECIMAL_PLACE_DIGITS);
   EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding minFreeHeap property value to telemetry payload. ");
 
+  rc = az_json_writer_append_property_name(&jw, AZ_SPAN_FROM_STR(TELEMETRY_PROP_NAME_FREE_PSRAM));
+  EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding freePsram property name to telemetry payload.");
+  rc = az_json_writer_append_double(&jw, weidosData.payload.freePsram, TRIPLE_DECIMAL_PLACE_DIGITS);
+  EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding freePsram property value to telemetry payload. ");
+  
+  rc = az_json_writer_append_property_name(&jw, AZ_SPAN_FROM_STR(TELEMETRY_PROP_NAME_PSRAM_SIZE));
+  EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding psramSize property name to telemetry payload.");
+  rc = az_json_writer_append_double(&jw, weidosData.payload.psramSize, TRIPLE_DECIMAL_PLACE_DIGITS);
+  EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding psramSize property value to telemetry payload. ");
+
+  rc = az_json_writer_append_property_name(&jw, AZ_SPAN_FROM_STR(TELEMETRY_PROP_NAME_MAX_ALLOC_PSRAM));
+  EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding maxAllocPsram property name to telemetry payload.");
+  rc = az_json_writer_append_double(&jw, weidosData.payload.maxAllocPsram, TRIPLE_DECIMAL_PLACE_DIGITS);
+  EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding maxAllocPsram property value to telemetry payload. ");
+
+  rc = az_json_writer_append_property_name(&jw, AZ_SPAN_FROM_STR(TELEMETRY_PROP_NAME_MIN_FREE_PSRAM));
+  EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding minFreePsram property name to telemetry payload.");
+  rc = az_json_writer_append_double(&jw, weidosData.payload.minFreePsram, TRIPLE_DECIMAL_PLACE_DIGITS);
+  EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding minFreePsram property value to telemetry payload. ");
+
   rc = az_json_writer_append_property_name(&jw, AZ_SPAN_FROM_STR(TELEMETRY_PROP_NAME_SKETCH_SIZE));
   EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding sketchSize property name to telemetry payload.");
   rc = az_json_writer_append_double(&jw, weidosData.payload.sketchSize, TRIPLE_DECIMAL_PLACE_DIGITS);

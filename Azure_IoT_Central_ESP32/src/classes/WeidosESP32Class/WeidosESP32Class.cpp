@@ -7,6 +7,10 @@ weidosMetadata_t WeidosESP32Class::getMetadata(){
     metadata.heapSize = getHeapSize();
     metadata.maxAllocHeap = getMaxAllocHeap();
     metadata.minFreeHeap = getMinFreeHeap();
+    metadata.freePsram = getFreePsram();
+    metadata.psramSize = getPsramSize();
+    metadata.maxAllocPsram = getMaxAllocPsram();
+    metadata.minFreePsram = getMinFreePsram();
     metadata.sketchSize = getSketchSize();
     metadata.internalTemperature = getTemperature();
     metadata.runningTime = millis();
