@@ -1,5 +1,5 @@
 #pragma once
-#include "classes/WeidosESP32Class/WeidosESP32Class.h"
+#include "../WeidosESP32Class/WeidosESP32Class.h"
 //#include "DataHub.h"
 
 

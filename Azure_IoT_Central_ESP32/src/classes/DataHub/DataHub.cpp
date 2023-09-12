@@ -1,8 +1,8 @@
 #include "DataHub.h"
-#include "globals.h"
-#include "payloadGenerators.h"
+//#include "globals.h"
+
 #include <LogModule.h>
-#include "AzureDevices.h"
+
 //enum DataHubState{
 //    GET_DATA_FROM_FIFO,
 //    MOVE_MESSAGE,

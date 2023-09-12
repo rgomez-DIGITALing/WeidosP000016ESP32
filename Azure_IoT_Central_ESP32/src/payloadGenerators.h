@@ -3,8 +3,9 @@
 //#include "DataHub.h"
 //#include "EM750.h"
 //#include "classes/WeidosESP32Class/WeidosESP32Class.h"
-#include "energyMeterManager.h"
-#include "WeidosManager.h"
+
+#include "classes/EnergyMeterManager/energyMeterManager.h"
+#include "classes/WeidosManager/WeidosManager.h"
 
 
 int em750_generete_payload(uint8_t* payload_buffer,

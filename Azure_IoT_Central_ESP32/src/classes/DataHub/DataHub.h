@@ -1,15 +1,16 @@
 #pragma once
 
-#include "energyMeterManager.h"
-#include "WeidosManager.h"
-#include "./classes/WeidosESP32Class/WeidosESP32Class.h"
+#include "../EnergyMeterManager/energyMeterManager.h"
+#include "../WeidosManager/WeidosManager.h"
+
+//#include "./classes/WeidosESP32Class/WeidosESP32Class.h"
 #include <RingBuf.h>
 
 
 
-#include "payloadGenerators.h"
+#include "../../payloadGenerators.h"
 #include <LogModule.h>
-#include "AzureDevices.h"
+#include "../../AzureDevices.h"
 
 #define NUM_TOTAL_DATA 60
 #define RING_BUFFER_SIZE 20

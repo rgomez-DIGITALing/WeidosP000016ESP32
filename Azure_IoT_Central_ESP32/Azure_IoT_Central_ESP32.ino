@@ -68,9 +68,11 @@
 #include "src/classes/AzureIoTClass/AzureIoTClass.h"
 //#include "./tasks/energyMeterTask.h"
 #include "src/AzureDevices.h"
-#include "src/energyMeterManager.h"
-#include "src/WeidosManager.h"
-#include "src/DataHub.h"
+
+#include "src/classes/EnergyMeterManager/energyMeterManager.h"
+
+#include "src/classes/WeidosManager/WeidosManager.h"
+#include "src/classes/DataHub/DataHub.h"
 #include "src/classes/PersistentData/PersistentDataClass.h"
 #include "src/classes/WebServer/WebServer.h"
 #include "src/classes/WeidosESP32Class/WeidosESP32Class.h"
@@ -78,7 +80,8 @@
 //#include "Azure_IoT_PnP_Template.h"
 
 #include "src/iot_configs.h"
-#include "src/DataHub.h"
+
+#include "src/classes/DataHub/DataHub.h"
 
 #include <ArduinoBearSSL.h>
 #include "src/classes/PersistentData/PersistentDataClass.h"
