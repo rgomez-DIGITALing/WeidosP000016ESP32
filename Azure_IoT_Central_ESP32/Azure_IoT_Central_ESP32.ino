@@ -65,6 +65,7 @@
 #include <clockModule.h>
 #include <LogModule.h>
 #include <EthernetModule.h>
+#include <SDLogger.h>
 #include "src/classes/AzureIoTClass/AzureIoTClass.h"
 //#include "./tasks/energyMeterTask.h"
 #include "src/AzureDevices.h"
@@ -87,6 +88,7 @@
 #include "src/classes/PersistentData/PersistentDataClass.h"
 #include "src/payloadGenerators.h"
 
+SDLoggerClass mainSDLogger("sysLog/main", "main.txt");
 
 void loopEnergyMeters();
 void setEnergyMeterProperties();
@@ -112,6 +114,7 @@ void setup()
   Serial.begin(SERIAL_LOGGER_BAUD_RATE);
   set_logging_function(logging_function);
   Serial.println("Welcome!");
+  mainSDLogger.logInfo("Welcome!");
   
   EthernetModule.init();
   //connect_to_wifi();
@@ -120,8 +123,10 @@ void setup()
 
   //azure_pnp_init();
   Serial.println("Let's persist: ");
+  mainSDLogger.logInfo("Let's persist:");
   PersistentDataModule.begin();
   Serial.println("Persisten Module has begun!");
+  mainSDLogger.logInfo("Persisten Module has begun!");
   Serial.println(PersistentDataModule.getWiFiSSID());
   Serial.println(PersistentDataModule.getScopeId());
 
@@ -142,6 +147,7 @@ void setup()
   emDataHub.setPayloadGenerator(em750_generete_payload);
   weidosDataHub.setPayloadGenerator(weidosESP32_generete_payload);
   LogInfo("Let's go to the looP function");
+  mainSDLogger.logInfo("Let's go to the looP function");
 }
 
 unsigned long prevTime = 0;
@@ -228,11 +234,18 @@ void loop()
     LogInfo("Azure3 state: %i", Azure3->getStatus());
     LogInfo("Azure4 state: %i", Azure4->getStatus());
     LogInfo("Azure5 state: %i", Azure5->getStatus());
+    mainSDLogger.logInfo("Azure0 state: %i", Azure0->getStatus());
+    mainSDLogger.logInfo("Azure1 state: %i", Azure1->getStatus());
+    mainSDLogger.logInfo("Azure2 state: %i", Azure2->getStatus());
+    mainSDLogger.logInfo("Azure3 state: %i", Azure3->getStatus());
+    mainSDLogger.logInfo("Azure4 state: %i", Azure4->getStatus());
+    mainSDLogger.logInfo("Azure5 state: %i", Azure5->getStatus());
   }
 
   if(millis()-prevTime2>DELTA_TIME2){
     prevTime2 = millis();
-    LogInfo("Link status: %i", Ethernet.linkStatus());  
+    LogInfo("Link status: %i", Ethernet.linkStatus());
+    mainSDLogger.logInfo("Link status: %i", Ethernet.linkStatus());
   }
 }
 
