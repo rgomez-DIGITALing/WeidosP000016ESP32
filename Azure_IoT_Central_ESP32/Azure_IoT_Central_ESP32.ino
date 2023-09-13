@@ -87,55 +87,11 @@
 #include "src/classes/PersistentData/PersistentDataClass.h"
 #include "src/payloadGenerators.h"
 
-/* --- Sample-specific Settings --- */
-
-
-
-/* --- Time and NTP Settings --- */
-/*
-#define NTP_SERVERS "pool.ntp.org", "time.nist.gov"
-
-#define PST_TIME_ZONE -8
-#define PST_TIME_ZONE_DAYLIGHT_SAVINGS_DIFF 1
-
-#define GMT_OFFSET_SECS (PST_TIME_ZONE * 3600)
-#define GMT_OFFSET_SECS_DST ((PST_TIME_ZONE + PST_TIME_ZONE_DAYLIGHT_SAVINGS_DIFF) * 3600)
-
-#define UNIX_TIME_NOV_13_2017 1510592825
-#define UNIX_EPOCH_START_YEAR 1900
-*/
-
-
-/* --- Handling iot_config.h Settings --- */
-//static const char* wifi_ssid = IOT_CONFIG_WIFI_SSID;
-//static const char* wifi_password = IOT_CONFIG_WIFI_PASSWORD;
-
-/* --- Function Declarations --- */
-//static void sync_device_clock_with_ntp_server();
-//static void connect_to_wifi();
-//static void on_message_received(int message_size);
-//static esp_err_t esp_mqtt_event_handler(esp_mqtt_event_handle_t event);
-
-
-
-/* --- Sample variables --- */
-//static azure_iot_config_t azure_iot_config;
-//static azure_iot_t azure_iot;
-//static WiFiClient wifi_client;
-//static BearSSLClient bear_ssl_client(wifi_client);
-
-//static MQTTClient& arduino_mqtt_client = mqttClient;
-
-//static char mqtt_broker_uri[128];
-
-
-
-//#define MQTT_PROTOCOL_PREFIX "mqtts://"
-
-
-
 
 void loopEnergyMeters();
+void setEnergyMeterProperties();
+void triggerEnergyMeters();
+void sendEnergyMeterProperties();
 
 
 /*
@@ -146,12 +102,10 @@ static unsigned long get_time()
     return systemClock.getEpochTime();
 }
 
-//byte mac[] = {0xDE, 0xAD, 0xBE, 0xEF, 0x7A, 0x5B};      //User defined MAC
+
 WeidosESP32Class WeidosESP32;
 
-char emModelId[60] = "dtmi:conexiones:EnergyMeter_6bm;1";
-char gwModelId[60] = "dtmi:conexionesSmartFactory:gateway_62;1";
-char gatewayId[50] = IOT_CONFIG_DEVICE_GATEWAY_ID;
+
 /* --- Arduino setup and loop Functions --- */
 void setup()
 {
@@ -160,16 +114,6 @@ void setup()
   Serial.println("Welcome!");
   
   EthernetModule.init();
-
-  //Ethernet.init(ETHERNET_CS);
-  //while(!Ethernet.begin(mac)){
-  //  Serial.print("e");
-  //  delay(1000);
-  //}
-  //Serial.println();
-  //Serial.print("Local IP: ");
-  //Serial.println(Ethernet.localIP());
-
   //connect_to_wifi();
   systemClock.begin();
   ArduinoBearSSL.onGetTime(get_time); // Required for server trusted root validation.
@@ -186,54 +130,12 @@ void setup()
   //while(1){}
   
   //char* scopeId = PersistentDataModule.getScopeId();
-  char* scopeId = DPS_ID_SCOPE;
-  createObjects();
-
-  Azure0->usingSasToken(IOT_CONFIG_DEVICE_GATEWAY_KEY);
-  Azure0->setDeviceId(IOT_CONFIG_DEVICE_GATEWAY_ID);
-  Azure0->setDpsScopeId(scopeId);
-  Azure0->setModelId(gwModelId);
-  Azure0->init();
   
-  Azure1->usingSasToken(IOT_CONFIG_DEVICE_1_KEY);
-  Azure1->setDeviceId(IOT_CONFIG_DEVICE_1_ID);
-  Azure1->setDpsScopeId(scopeId);
-  Azure1->setGatewayId(gatewayId);
-  Azure1->setModelId(emModelId);
-  Azure1->init();
-
-  Azure2->usingSasToken(IOT_CONFIG_DEVICE_2_KEY);
-  Azure2->setDeviceId(IOT_CONFIG_DEVICE_2_ID);
-  Azure2->setDpsScopeId(scopeId);
-  Azure2->setGatewayId(gatewayId);
-  Azure2->setModelId(emModelId);
-  Azure2->init();
-
-  Azure3->usingSasToken(IOT_CONFIG_DEVICE_3_KEY);
-  Azure3->setDeviceId(IOT_CONFIG_DEVICE_3_ID);
-  Azure3->setDpsScopeId(scopeId);
-  Azure3->setGatewayId(gatewayId);
-  Azure3->setModelId(emModelId);
-  Azure3->init();
-
-
-  Azure4->usingSasToken(IOT_CONFIG_DEVICE_4_KEY);
-  Azure4->setDeviceId(IOT_CONFIG_DEVICE_4_ID);
-  Azure4->setDpsScopeId(scopeId);
-  Azure4->setGatewayId(gatewayId);
-  Azure4->setModelId(emModelId);
-  Azure4->init();
-
-
-  Azure5->usingSasToken(IOT_CONFIG_DEVICE_5_KEY);
-  Azure5->setDeviceId(IOT_CONFIG_DEVICE_5_ID);
-  Azure5->setDpsScopeId(scopeId);
-  Azure5->setGatewayId(gatewayId);
-  Azure5->setModelId(emModelId);
-  Azure5->init();
-
-
+  createObjects();
   fillArray();
+  configureAzureDevices();
+  setEnergyMeterProperties();
+
 
   weidosMetadata_t metadata = WeidosESP32.getMetadata();
   metadata.printMetadata();
@@ -278,11 +180,7 @@ void loop()
 
   if(networkUp && clockRunning){
     if(millis()-prevTime>DELTA_TIME){
-      transelevador1.triggerUpdate();
-      transelevador2.triggerUpdate();
-      transelevador3.triggerUpdate();
-      modula4.triggerUpdate();
-      modula11.triggerUpdate();
+      triggerEnergyMeters();
       weidosESP32Manager.triggerUpdate();
       prevTime = millis();
     }
@@ -299,6 +197,10 @@ void loop()
   if(networkUp){
     emDataHub.loop();
     weidosDataHub.loop();
+  }
+
+  if(networkUp){
+    sendEnergyMeterProperties();
   }
 
 
@@ -338,10 +240,134 @@ void loop()
 //This function is needed so there is only one energy meter looping when not in idle state.
 //Since they all share the same Modbus TCP Client, they can not work at the same time.
 void loopEnergyMeters(){
+  #ifdef USING_MODULAS_TRANSELEVADORES
   if(transelevador1.loop() != ENERGY_METER_IDLE) return;
   if(transelevador2.loop() != ENERGY_METER_IDLE) return;
   if(transelevador3.loop() != ENERGY_METER_IDLE) return;
   if(modula4.loop() != ENERGY_METER_IDLE) return;
   if(modula11.loop() != ENERGY_METER_IDLE) return;
+  #endif
+
+  #ifdef BATCH_GENERAL_LINEA_EMPAQUETADO
+  if(general.loop() != ENERGY_METER_IDLE) return;
+  if(robot.loop() != ENERGY_METER_IDLE) return;
+  if(lineaEmpaquetado.loop() != ENERGY_METER_IDLE) return;
+  if(aireCondicionado.loop() != ENERGY_METER_IDLE) return;
+  if(aireComprimido.loop() != ENERGY_METER_IDLE) return;
+  #endif
+
   return;
+}
+
+
+void setEnergyMeterProperties(){
+  EM750* energyMeter = nullptr;
+
+  #ifdef USING_MODULAS_TRANSELEVADORES
+  energyMeter = modula4.getEnergyMeter();
+  energyMeter->setAsset(ASSET_MODULA_4);
+  energyMeter->setIdentifier(IDENTIFIER_MODULA_4);
+  energyMeter->setLocation1(LOCATION_NAVE_400);
+  energyMeter->setLocation2(LOCATION_CUADRO_ALMACEN);
+
+  energyMeter = modula11.getEnergyMeter();
+  energyMeter->setAsset(ASSET_MODULA_11);
+  energyMeter->setIdentifier(IDENTIFIER_MODULA_11);
+  energyMeter->setLocation1(LOCATION_NAVE_400);
+  energyMeter->setLocation2(LOCATION_CUADRO_ALMACEN);
+
+  energyMeter = transelevador1.getEnergyMeter();
+  energyMeter->setAsset(ASSET_TRANSELEVADOR_1);
+  energyMeter->setIdentifier(IDENTIFIER_TRANSELEVADOR_1);
+  energyMeter->setLocation1(LOCATION_NAVE_400);
+  energyMeter->setLocation2(LOCATION_CUADRO_ALMACEN);
+
+
+  energyMeter = transelevador2.getEnergyMeter();
+  energyMeter->setAsset(ASSET_TRANSELEVADOR_2);
+  energyMeter->setIdentifier(IDENTIFIER_TRANSELEVADOR_2);
+  energyMeter->setLocation1(LOCATION_NAVE_400);
+  energyMeter->setLocation2(LOCATION_CUADRO_ALMACEN);
+
+
+  energyMeter = transelevador3.getEnergyMeter();
+  energyMeter->setAsset(ASSET_TRANSELEVADOR_3);
+  energyMeter->setIdentifier(IDENTIFIER_TRANSELEVADOR_3);
+  energyMeter->setLocation1(LOCATION_NAVE_400);
+  energyMeter->setLocation2(LOCATION_CUADRO_ALMACEN);
+  #endif
+
+  #ifdef BATCH_GENERAL_LINEA_EMPAQUETADO
+  energyMeter = general.getEnergyMeter();
+  energyMeter->setAsEA750();
+  energyMeter->setAsset(ASSET_GENERAL);
+  energyMeter->setIdentifier(IDENTIFIER_GENERAL);
+  energyMeter->setLocation1(LOCATION_NAVE_400);
+  energyMeter->setLocation2(LOCATION_CUADRO_ALMACEN);
+
+  energyMeter = robot.getEnergyMeter();
+  energyMeter->setAsset(ASSET_ROBOT);
+  energyMeter->setIdentifier(IDENTIFIER_ROBOT);
+  energyMeter->setLocation1(LOCATION_NAVE_400);
+  energyMeter->setLocation2(LOCATION_CUADRO_ALMACEN);
+
+  energyMeter = aireCondicionado.getEnergyMeter();
+  energyMeter->setAsset(ASSET_AIRE_ACONDICIONADO);
+  energyMeter->setIdentifier(IDENTIFIER_AIRE_ACONDICIONADO);
+  energyMeter->setLocation1(LOCATION_NAVE_400);
+  energyMeter->setLocation2(LOCATION_CUADRO_ALMACEN);
+
+
+  energyMeter = aireComprimido.getEnergyMeter();
+  energyMeter->setAsset(ASSET_AIRE_COMPRIMIDO);
+  energyMeter->setIdentifier(IDENTIFIER_AIRE_COMPRIMIDO);
+  energyMeter->setLocation1(LOCATION_NAVE_400);
+  energyMeter->setLocation2(LOCATION_CUADRO_ALMACEN);
+
+
+  energyMeter = lineaEmpaquetado.getEnergyMeter();
+  energyMeter->setAsset(ASSET_LINEA_EMPAQUETADO);
+  energyMeter->setIdentifier(IDENTIFIER_LINEA_EMPAQUETADO);
+  energyMeter->setLocation1(LOCATION_NAVE_400);
+  energyMeter->setLocation2(LOCATION_CUADRO_ALMACEN);
+  #endif
+}
+
+
+void triggerEnergyMeters(){
+  #ifdef USING_MODULAS_TRANSELEVADORES
+  transelevador1.triggerUpdate(); 
+  transelevador2.triggerUpdate();
+  transelevador3.triggerUpdate();
+  modula4.triggerUpdate();
+  modula11.triggerUpdate();
+  #endif
+
+  #ifdef BATCH_GENERAL_LINEA_EMPAQUETADO
+  general.triggerUpdate();
+  robot.triggerUpdate();
+  lineaEmpaquetado.triggerUpdate();
+  aireCondicionado.triggerUpdate();
+  aireComprimido.triggerUpdate();
+  #endif
+
+}
+
+
+void sendEnergyMeterProperties(){
+  #ifdef USING_MODULAS_TRANSELEVADORES
+  transelevador1.sendProperties(); 
+  transelevador2.sendProperties();
+  transelevador3.sendProperties();
+  modula4.sendProperties();
+  modula11.sendProperties();
+  #endif
+
+  #ifdef BATCH_GENERAL_LINEA_EMPAQUETADO
+  general.sendProperties();
+  robot.sendProperties();
+  lineaEmpaquetado.sendProperties();
+  aireCondicionado.sendProperties();
+  aireComprimido.sendProperties();
+  #endif
 }

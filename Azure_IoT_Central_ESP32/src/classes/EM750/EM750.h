@@ -1,6 +1,7 @@
 #pragma once
 #include <ArduinoModbus.h>
 #include "EM750_telemetryDefinition.h"
+#include "EM750_propertiesDefinition.h"
 
 #define LOG(x) Serial.println(x)
 #define LOG2(x) Serial.print(x)
@@ -103,6 +104,23 @@ class EM750{
     void copyData(float* buffer, int bufferSize);
     void getData(em750Data_t& payload);
     float* getData();
+
+    void setAsEA750(){ isEA750Type = true; }
+    bool isEA750(){ return isEA750Type; }
+
+    void setIdentifier(char* identifier){ this->identifier = identifier; }
+    void setAsset(char* asset){ this->asset = asset; }
+    void setLocation1(char* location1){ this->location1 = location1; }
+    void setLocation2(char* location2){ this->location2 = location2; }
+
+    char* getIdentifier(){ return identifier; }
+    char* getAsset(){ return asset; };
+    char* getLocation1(){ return location1; }
+    char* getLocation2(){ return location2; }
+    IPAddress getIpAddress(){
+      //Serial.println(ipAddress.toString().c_str()); 
+      return ipAddress; }
+
   private:
     /**
      * Read from the Modbus Client buffer and assign all bytes to its corresponding variable for the
@@ -134,6 +152,11 @@ class EM750{
     ModbusTCPClient& _client;
     IPAddress ipAddress;
     uint8_t id;
+    char* identifier;
+    char* asset;
+    char* location1;
+    char* location2;
+    bool isEA750Type = false;
 
     uint8_t comState;
     

@@ -2,6 +2,7 @@
 
 
 void createObjects();
+void configureAzureDevices();
 void fillArray();
 
 extern AzureIoTDevice* Azure0;

@@ -35,6 +35,8 @@ class AzureIoTDevice{
         void usingCertificate(char* certificate, char* privateKey);
         void usingSasToken(char* key);
         int sendMessage(az_span message);
+        int sendProperties(az_span message);
+        azure_iot_t* getAzureIoT(){ return &azure_iot; }
         uint8_t* getDataBuffer(){ return az_iot_data_buffer; }
         uint8_t* getDataBuffer2(){ return data_buffer; }
         void setClients(MQTTClient& mqttClient, Client& client){ this->mqttClient = &mqttClient; this->client = &client;}
@@ -53,6 +55,7 @@ class AzureIoTDevice{
         bool deviceInfoSent = false;
         securityType_t securityType;
         char* gatewayId = nullptr;
+        uint32_t properties_request_id = 0;
         unsigned long mqttLastLoopTime = 0;
 
         int mqtt_client_init(mqtt_client_config_t* mqtt_client_config);

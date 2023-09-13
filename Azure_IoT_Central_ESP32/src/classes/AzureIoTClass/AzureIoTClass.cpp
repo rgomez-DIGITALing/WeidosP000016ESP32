@@ -202,6 +202,11 @@ void AzureIoTDevice::statusChange(){
   }
   prevState = getStatus();
 }
+
+int AzureIoTDevice::sendProperties(az_span message){
+  return azure_iot_send_properties_update(&azure_iot, properties_request_id++, message);
+}
+
 /*
 void on_message_received(String &topic, String &payload) 
 {

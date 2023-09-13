@@ -71,14 +71,14 @@ String wifiProcessor(const String& var){
 //Simulated values for the current values of Azure configuration. 
 //In the final application, those will be variables that are linked to the actual state.
  String gatewayDeviceId = "sd8qf79asd";
- String scopeId = "qw9742asd";
+ String scopeIdTest = "qw9742asd";
  String groupPrimaryKey = "QW=as7891gasd41312qasG";
  String weidosModelId = "fs874sdasd";
  String em3BasicLineId = "4k71561bnm";
  String em1BasicLineId = "cl471asd3";
 String azureProcessor(const String& var){
   if(var == "deviceId"){} return gatewayDeviceId;
-  if(var == "scopeId") return scopeId;
+  if(var == "scopeId") return scopeIdTest;
   if(var == "groupPrimaryKey") return groupPrimaryKey;
   if(var == "weidosModelId") return weidosModelId;
   if(var == "em3BasicLineId") return em3BasicLineId;
