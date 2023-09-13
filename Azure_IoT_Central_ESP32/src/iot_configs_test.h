@@ -54,50 +54,53 @@
 
 #endif // IOT_CONFIG_USE_X509_CERT
 
-// Azure IoT Central
+//GATEWAY_TEST_JORDI
 #define DPS_ID_SCOPE "0ne00A56BD4"
-#define IOT_CONFIG_DEVICE_GATEWAY_ID "1ygq9zppy8t"                                   //Gateway Modulas-Transelevadores (2)
+#define IOT_CONFIG_DEVICE_GATEWAY_ID "123_Esp32"
 // Use device key if not using certificates
 #ifndef IOT_CONFIG_USE_X509_CERT
-#define IOT_CONFIG_DEVICE_GATEWAY_KEY "YOLuq1gO0TPfARthf3w3lK0cLnC1X7lm/1qqbdxjjKc="    //Gateway Modulas-Transelevadores (2)
+#define IOT_CONFIG_DEVICE_GATEWAY_KEY "HJbtprhebM3tQQNF4cdwPnRQhCyutJQHlkCMkEX6o2Y="
 #endif // IOT_CONFIG_USE_X509_CERT
 
+//TEST1_JORDI
 #define DPS_ID_SCOPE "0ne00A56BD4"
-#define IOT_CONFIG_DEVICE_1_ID "zh427e2mil"                                       //Modula 4 (2)
+#define IOT_CONFIG_DEVICE_1_ID "energyMeter_1"
 // Use device key if not using certificates
 #ifndef IOT_CONFIG_USE_X509_CERT
-#define IOT_CONFIG_DEVICE_1_KEY "5mSYxLkAR4ga7TmYVCYa+X/KKrVWynfgExIKsa9NvDU="      //Modula 4 (2)
+#define IOT_CONFIG_DEVICE_1_KEY "k5q1VSkChAJHJd6SLhiihKPZR4vVnpspEiAbHDoj3oQ="
 #endif // IOT_CONFIG_USE_X509_CERT
 
+//TEST2_JORDI
 #define DPS_ID_SCOPE "0ne00A56BD4"
-#define IOT_CONFIG_DEVICE_2_ID "1xx08bigre7"                                           //Modula 11 (2)
+#define IOT_CONFIG_DEVICE_2_ID "energyMeter_2"
 // Use device key if not using certificates
 #ifndef IOT_CONFIG_USE_X509_CERT
-#define IOT_CONFIG_DEVICE_2_KEY "p5PyvhiXNYhVtuvRNoxvaCm/AZxCkLxzWZJLQUEa+Jw="        //Modula 11 (2)
+#define IOT_CONFIG_DEVICE_2_KEY "iKH0cyREUxOdkysZSGloHwl5r4M39X9MYtJ3yq3omig="
 #endif // IOT_CONFIG_USE_X509_CERT
 
+//TEST3_JORDI
 #define DPS_ID_SCOPE "0ne00A56BD4"
-#define IOT_CONFIG_DEVICE_3_ID "1cssf7o7o2v"                                         //Translevador 1 (2)
+#define IOT_CONFIG_DEVICE_3_ID "energyMeter_3"
 // Use device key if not using certificates
 #ifndef IOT_CONFIG_USE_X509_CERT
-#define IOT_CONFIG_DEVICE_3_KEY "ATbf/P+ND0O0NXFn0MlVj3k7vGlOrl2BxXKBlkv2nTo="      //Translevador 1 (2)
+#define IOT_CONFIG_DEVICE_3_KEY "OERFMDIljaB1y7GON/LrjXgE3bvZ9Xm3gTNLxWsjQh4="
 #endif // IOT_CONFIG_USE_X509_CERT
 
+//TEST4_JORDI
 #define DPS_ID_SCOPE "0ne00A56BD4"
-#define IOT_CONFIG_DEVICE_4_ID "12to0bk8bdm"                                         //Translevador 2 (2)
+#define IOT_CONFIG_DEVICE_4_ID "energyMeter_4"
 // Use device key if not using certificates
 #ifndef IOT_CONFIG_USE_X509_CERT
-#define IOT_CONFIG_DEVICE_4_KEY "TCBoEK1ufBgj3KrGjS1+VIbZd4TgjkImeJ9tFL/ucrM="      //Translevador 2 (2)
+#define IOT_CONFIG_DEVICE_4_KEY "Dj/qy5bfQ3BvTjd2vnmzUi/mFnda4ykXMMyL/3ZLx5g="
 #endif // IOT_CONFIG_USE_X509_CERT
 
+//TEST5_JORDI
 #define DPS_ID_SCOPE "0ne00A56BD4"
-#define IOT_CONFIG_DEVICE_5_ID "17r0wq1qv4h"                                         //Translevador 3 (2)
+#define IOT_CONFIG_DEVICE_5_ID "energyMeter_5"
 // Use device key if not using certificates
 #ifndef IOT_CONFIG_USE_X509_CERT
-#define IOT_CONFIG_DEVICE_5_KEY "g9u2jumpLcKZ2vYzNRbBs4ePpsUeCUIacSNiVAD8mlc="      //Translevador 3 (2)
+#define IOT_CONFIG_DEVICE_5_KEY "PgkH37MakkXxhiAYbm/Jv+ECukHFaKUv2K5b+eml67A="
 #endif // IOT_CONFIG_USE_X509_CERT
-
-
 
 // User-agent (url-encoded) provided by the MQTT client to Azure IoT Services.
 // When developing for your own Arduino-based platform,
