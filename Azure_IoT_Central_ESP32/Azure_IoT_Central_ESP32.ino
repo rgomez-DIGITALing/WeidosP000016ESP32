@@ -80,7 +80,7 @@
 // IDs for real production devices
 #include "src/iot_configs.h"
 // IDs for test devices - Jordi
-#include "src/iot_configs_test.h"
+// #include "src/iot_configs_test.h"
 #include "src/DataHub.h"
 
 #include <ArduinoBearSSL.h>
