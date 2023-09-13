@@ -557,17 +557,9 @@ int em750_generete_properties(az_iot_hub_client const* hub_client,
     partNumber = EA750_PART_NUMBER;
   }
 
-  Serial.println(identifier);
-  Serial.println(asset);
-  Serial.println(location1);
-  Serial.println(location2);
-  Serial.println(model);
-  Serial.println(partNumber);
-  //Serial.println(ipAddress.toString());
-
   char ipAddressArray[16];
   ipAddress.toString().toCharArray(ipAddressArray, 16);
-  Serial.println(ipAddressArray);
+
 
   rc = az_json_writer_append_property_name(&jw, az_span_create_from_str(EM_IDENTIFIER_PROPERTY_NAME));
   EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding EM_BRAND_PROPERTY_NAME to payload.");

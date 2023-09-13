@@ -115,7 +115,6 @@ bool EnergyMeterManager::sendProperties(){
 
   if(propertiesSent) return propertiesSent;
   if(azureDevice->getStatus() == azure_iot_connected){
-    Serial.println("On the EnergyMeterManager::sendProperties---------------------------------------------------------------------------------------------------------");
     size_t payload_buffer_length = 0;
     uint8_t* payload_buffer = azureDevice->getDataBuffer2();
     azure_iot_t* azureIoT = azureDevice->getAzureIoT();
