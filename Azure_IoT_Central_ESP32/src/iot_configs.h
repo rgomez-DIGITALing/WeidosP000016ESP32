@@ -62,8 +62,6 @@
 #define IOT_CONFIG_DEVICE_GATEWAY_KEY "YOLuq1gO0TPfARthf3w3lK0cLnC1X7lm/1qqbdxjjKc="    //Gateway Modulas-Transelevadores (2)
 #endif // IOT_CONFIG_USE_X509_CERT
 
-
-
 #define DPS_ID_SCOPE "0ne00A56BD4"
 #define IOT_CONFIG_DEVICE_1_ID "zh427e2mil"                                       //Modula 4 (2)
 // Use device key if not using certificates
@@ -71,17 +69,12 @@
 #define IOT_CONFIG_DEVICE_1_KEY "5mSYxLkAR4ga7TmYVCYa+X/KKrVWynfgExIKsa9NvDU="      //Modula 4 (2)
 #endif // IOT_CONFIG_USE_X509_CERT
 
-
 #define DPS_ID_SCOPE "0ne00A56BD4"
 #define IOT_CONFIG_DEVICE_2_ID "1xx08bigre7"                                           //Modula 11 (2)
-
 // Use device key if not using certificates
 #ifndef IOT_CONFIG_USE_X509_CERT
 #define IOT_CONFIG_DEVICE_2_KEY "p5PyvhiXNYhVtuvRNoxvaCm/AZxCkLxzWZJLQUEa+Jw="        //Modula 11 (2)
 #endif // IOT_CONFIG_USE_X509_CERT
-
-
-
 
 #define DPS_ID_SCOPE "0ne00A56BD4"
 #define IOT_CONFIG_DEVICE_3_ID "1cssf7o7o2v"                                         //Translevador 1 (2)
