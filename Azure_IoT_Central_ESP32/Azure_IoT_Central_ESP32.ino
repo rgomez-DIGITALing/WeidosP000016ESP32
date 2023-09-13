@@ -228,12 +228,12 @@ void loop()
 
   if(millis()-prevTime3>DELTA_TIME3){
     prevTime3 = millis();
-    LogInfo("Azure0 state: %i", Azure0->getStatus());
-    LogInfo("Azure1 state: %i", Azure1->getStatus());
-    LogInfo("Azure2 state: %i", Azure2->getStatus());
-    LogInfo("Azure3 state: %i", Azure3->getStatus());
-    LogInfo("Azure4 state: %i", Azure4->getStatus());
-    LogInfo("Azure5 state: %i", Azure5->getStatus());
+    // LogInfo("Azure0 state: %i", Azure0->getStatus());
+    // LogInfo("Azure1 state: %i", Azure1->getStatus());
+    // LogInfo("Azure2 state: %i", Azure2->getStatus());
+    // LogInfo("Azure3 state: %i", Azure3->getStatus());
+    // LogInfo("Azure4 state: %i", Azure4->getStatus());
+    // LogInfo("Azure5 state: %i", Azure5->getStatus());
     mainSDLogger.logInfo("Azure0 state: %i", Azure0->getStatus());
     mainSDLogger.logInfo("Azure1 state: %i", Azure1->getStatus());
     mainSDLogger.logInfo("Azure2 state: %i", Azure2->getStatus());
