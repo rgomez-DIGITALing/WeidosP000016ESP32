@@ -15,10 +15,11 @@
 // char* partNumber = "2540910000";
 
 //#define BATCH_TESTS
-#define BATCH_TESTS_2
+//#define BATCH_TESTS_2
+#define BATCH_JORDI_TESTS
 //#define BATCH_MODULAS_TRANSELEVADORES
 //#define BATCH_GENERAL_LINEA_EMPAQUETADO
-#if defined BATCH_MODULAS_TRANSELEVADORES || defined BATCH_TESTS || defined BATCH_TESTS_2
+#if defined BATCH_MODULAS_TRANSELEVADORES || defined BATCH_TESTS || defined BATCH_TESTS_2 || defined BATCH_JORDI_TESTS
     #define USING_MODULAS_TRANSELEVADORES
 #endif
 
@@ -88,6 +89,21 @@
 #define IOT_CONFIG_DEVICE_5_KEY "Qol1J6PVK5S0wHZUo55L+a/PxaenBD1ODs9EJod8fo0="      //test5 (2)
 #endif
 
+#ifdef BATCH_JORDI_TESTS
+#define IOT_CONFIG_DEVICE_GATEWAY_ID "123_Esp32"                                     //Gateway Test Jordi
+#define IOT_CONFIG_DEVICE_1_ID "energyMeter_1"                                       //Test1 Jordi
+#define IOT_CONFIG_DEVICE_2_ID "energyMeter_2"                                       //Test2 Jordi
+#define IOT_CONFIG_DEVICE_3_ID "energyMeter_3"                                       //Test3 Jordi
+#define IOT_CONFIG_DEVICE_4_ID "energyMeter_4"                                       //Test4 Jordi
+#define IOT_CONFIG_DEVICE_5_ID "energyMeter_5"                                       //Test5 Jordi
+
+#define IOT_CONFIG_DEVICE_GATEWAY_KEY "HJbtprhebM3tQQNF4cdwPnRQhCyutJQHlkCMkEX6o2Y="    //Gateway Test Jordi
+#define IOT_CONFIG_DEVICE_1_KEY "k5q1VSkChAJHJd6SLhiihKPZR4vVnpspEiAbHDoj3oQ="          //Test1 Jordi
+#define IOT_CONFIG_DEVICE_2_KEY "iKH0cyREUxOdkysZSGloHwl5r4M39X9MYtJ3yq3omig="          //Test2 Jordi
+#define IOT_CONFIG_DEVICE_3_KEY "OERFMDIljaB1y7GON/LrjXgE3bvZ9Xm3gTNLxWsjQh4="          //Test3 Jordi
+#define IOT_CONFIG_DEVICE_4_KEY "Dj/qy5bfQ3BvTjd2vnmzUi/mFnda4ykXMMyL/3ZLx5g="          //Test4 Jordi
+#define IOT_CONFIG_DEVICE_5_KEY "PgkH37MakkXxhiAYbm/Jv+ECukHFaKUv2K5b+eml67A="          //Test5 Jordi
+#endif
 
 #ifdef BATCH_MODULAS_TRANSELEVADORES
 #define IOT_CONFIG_DEVICE_GATEWAY_ID "1ygq9zppy8t"                                      //Gateway Modulas-Transelevadores (2)
@@ -104,7 +120,6 @@
 #define IOT_CONFIG_DEVICE_4_KEY "TCBoEK1ufBgj3KrGjS1+VIbZd4TgjkImeJ9tFL/ucrM="          //Translevador 2 (2)
 #define IOT_CONFIG_DEVICE_5_KEY "g9u2jumpLcKZ2vYzNRbBs4ePpsUeCUIacSNiVAD8mlc="          //Translevador 3 (2)
 #endif
-
 
 // Azure IoT Central
 #ifdef BATCH_GENERAL_LINEA_EMPAQUETADO
