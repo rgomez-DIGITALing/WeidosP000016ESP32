@@ -3,6 +3,7 @@
 #include <Arduino.h>
 #include <az_iot.h>
 #include "AzureIoT_definitions.h"
+//#include "../AzureIoTClass/AzureIoTClass.h"
 /* --- Other Interface functions required by Azure IoT --- */
 
 
@@ -43,9 +44,24 @@ void on_properties_update_completed(uint32_t request_id, az_iot_status status_co
  */
 void on_properties_received(az_span properties);
 
+
+//int azure_iot_send_command_response(azure_iot_t* azure_iot, az_span request_id, uint16_t response_status, az_span payload);
+
+
 /*
  * See the documentation of `command_request_received_t` in AzureIoT.h for details.
  */
-void on_command_request_received(command_request_t command);
+//void default_on_command_request_received(azure_iot_t* azure_iot, command_request_t command);
+void default_on_command_request_received(AzureIoTDevice* azure_iot, command_request_t command);
 
 
+
+//int default_handle_command_request(azure_iot_t* azure_iot, command_request_t command_request);
+int default_handle_command_request(AzureIoTDevice* azureIoTDevice, command_request_t command_request);
+
+
+/*
+ * See the documentation of `command_request_received_t` in AzureIoT.h for details.
+ */
+void gateway_on_command_request_received(AzureIoTDevice* azure_iot, command_request_t command);
+int gateway_handle_command_request(AzureIoTDevice* azureIoTDevice, command_request_t command);

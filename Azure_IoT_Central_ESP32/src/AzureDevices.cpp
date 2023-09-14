@@ -59,6 +59,7 @@ void configureAzureDevices(){
     Azure0->setDpsScopeId(scopeId);
     Azure0->setModelId(gwModelId);
     Azure0->init();
+    Azure0->setOnCommandReceived(gateway_on_command_request_received);
   
     Azure1->usingSasToken(IOT_CONFIG_DEVICE_1_KEY);
     Azure1->setDeviceId(IOT_CONFIG_DEVICE_1_ID);
