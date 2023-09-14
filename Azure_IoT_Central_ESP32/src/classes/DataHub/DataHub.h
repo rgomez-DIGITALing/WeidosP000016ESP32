@@ -39,8 +39,6 @@ enum DataHubState{
 //typedef void (*payloadGenerator_function)(uint8_t* payload_buffer, size_t payload_buffer_size, size_t* payload_buffer_length, T data)
 //        payloadGenerator;
 
-SDLoggerClass dataSDLogger("sysLog/modules/datahub", "datahub.txt");
-
 template <class T>
 class DataHub{
 
@@ -61,7 +59,6 @@ class DataHub{
       //RingBuf<weidosMetadata_t ,RING_BUFFER_SIZE> weidosData;
       int state = GET_DATA_FROM_FIFO;
       //payloadGenerator generatePayload;
-      
       payloadGenerator generatePayload;
       T currentPayload;
 };
@@ -77,14 +74,12 @@ void DataHub<T>::loop(){
                 state = MOVE_MESSAGE;
                 deviceId = currentPayload.deviceId;
                 LogInfo("Info for device ID: %i poped", deviceId);
-                dataSDLogger.logInfo("Info for device ID: %i poped", deviceId);
             }
             break;
 
         case MOVE_MESSAGE:
             deviceId = currentPayload.deviceId;
             LogInfo("Moving Info for device ID: %i", deviceId);
-            dataSDLogger.logInfo("Moving Info for device ID: %i", deviceId);
             if(azureDevices[deviceId]->getStatus() == azure_iot_connected){
                 size_t payload_buffer_length = 0;
                 uint8_t* payload_buffer = azureDevices[deviceId]->getDataBuffer2();
@@ -100,13 +95,11 @@ void DataHub<T>::loop(){
 
         case TELEMETRY_SENT:
             LogInfo("Message successfully sent.");
-            dataSDLogger.logInfo("Message successfully sent.");
             state = GET_DATA_FROM_FIFO;
             break;
 
         case TELEMETRY_SEND_FAILURE:
             LogError("Failed sending telemetry");
-            dataSDLogger.logError("Failed sending telemetry");
             state = GET_DATA_FROM_FIFO;
             break;
 
