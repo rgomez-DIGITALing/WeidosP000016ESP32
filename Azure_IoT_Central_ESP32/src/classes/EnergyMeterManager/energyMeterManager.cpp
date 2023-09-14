@@ -3,6 +3,7 @@
 #include <Ethernet.h>
 #include <LogModule.h>
 #include <clockModule.h>
+#include <SDLogger.h>
 
 #include "../DataHub/DataHub.h"
 #include "../../AzureDevices.h"
@@ -10,6 +11,7 @@
 static EthernetClient ethernetClientModbus(7);
 static ModbusTCPClient modbusTCPClient(ethernetClientModbus);
 
+SDLoggerClass meterSDLogger("sysLog/modules/meter", "meter.txt");
 
 //Weidos 1
 #ifdef USING_MODULAS_TRANSELEVADORES
@@ -64,7 +66,8 @@ EnergyMeterUpdateState EnergyMeterManager::loop(){
         if(!em750.begin()){
           state = ENERGY_METER_UPDATE_FAILED;
           em750.stop();
-          LogError("Modbus Client for device ID %i could not begin.", deviceId);  
+          LogError("Modbus Client for device ID %i could not begin.", deviceId);
+          meterSDLogger.logError("Modbus Client for device ID %i could not begin.", deviceId);
           break;
         }
 
@@ -80,9 +83,11 @@ EnergyMeterUpdateState EnergyMeterManager::loop(){
           numTries = 0;
           state = END_TASK;
           LogError("Energy meter update failed.");
+          meterSDLogger.logError("Energy meter update failed.");
         }else{
           state = UPDATE_ENERGY_METER;
           LogError("Retrying (%i/%i)", numTries, maxTries);
+          meterSDLogger.logError("Retrying (%i/%i)", numTries, maxTries);
         }
         break;
       case ENERGY_METER_UPDATED:
@@ -90,6 +95,7 @@ EnergyMeterUpdateState EnergyMeterManager::loop(){
         //em750.printData();
         //Serial.println();
         LogInfo("Energy Meter updated: %i", deviceId);
+        meterSDLogger.logInfo("Energy Meter updated: %i", deviceId);
         state = PASS_MESSAGE;
         break;
       case PASS_MESSAGE:
@@ -98,6 +104,7 @@ EnergyMeterUpdateState EnergyMeterManager::loop(){
         payload.timestamp = systemClock.getEpochTime();
         em750.getData(payload.data);
         LogInfo("Pushing data for device ID: %i", deviceId);
+        meterSDLogger.logInfo("Pushing data for device ID: %i", deviceId);
         emDataHub.push(payload);
         state = END_TASK;
         break;

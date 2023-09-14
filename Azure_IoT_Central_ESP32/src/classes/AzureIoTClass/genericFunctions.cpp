@@ -1,6 +1,7 @@
 #include "genericFunctions.h"
 #include "AzureIoTClass.h"
 #include <LogModule.h>
+#include <SDLogger.h>
 
 // For hmac SHA256 encryption
 #include <ECCX08.h>
@@ -9,6 +10,7 @@
 #include <mbedtls/sha256.h>
 
 
+SDLoggerClass functionsSDLogger("sysLog/modules/functions", "functions.txt");
 
 /* --- Other Interface functions required by Azure IoT --- */
 
@@ -61,6 +63,7 @@ int base64_encode(
 void on_properties_update_completed(uint32_t request_id, az_iot_status status_code)
 {
   LogInfo("Properties update request completed (id=%d, status=%d)", request_id, status_code);
+  functionsSDLogger.logInfo("Properties update request completed (id=%d, status=%d)", request_id, status_code);
 }
 
 
@@ -73,6 +76,7 @@ void on_properties_update_completed(uint32_t request_id, az_iot_status status_co
 void on_properties_received(az_span properties)
 {
   LogInfo("Properties update received: %.*s", az_span_size(properties), az_span_ptr(properties));
+  functionsSDLogger.logInfo("Properties update received: %.*s", az_span_size(properties), az_span_ptr(properties));
 
   // It is recommended not to perform work within callbacks.
   // The properties are being handled here to simplify the sample.
@@ -91,6 +95,14 @@ void on_command_request_received(command_request_t command)
       = az_span_size(command.component_name) == 0 ? AZ_SPAN_FROM_STR("") : command.component_name;
 
   LogInfo(
+      "Command request received (id=%.*s, component=%.*s, name=%.*s)",
+      az_span_size(command.request_id),
+      az_span_ptr(command.request_id),
+      az_span_size(component_name),
+      az_span_ptr(component_name),
+      az_span_size(command.command_name),
+      az_span_ptr(command.command_name));
+  functionsSDLogger.logInfo(
       "Command request received (id=%.*s, component=%.*s, name=%.*s)",
       az_span_size(command.request_id),
       az_span_ptr(command.request_id),

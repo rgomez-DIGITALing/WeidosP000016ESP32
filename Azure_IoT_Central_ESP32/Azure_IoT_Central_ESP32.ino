@@ -128,7 +128,9 @@ void setup()
   Serial.println("Persisten Module has begun!");
   mainSDLogger.logInfo("Persisten Module has begun!");
   Serial.println(PersistentDataModule.getWiFiSSID());
+  mainSDLogger.logInfo(PersistentDataModule.getWiFiSSID());
   Serial.println(PersistentDataModule.getScopeId());
+  mainSDLogger.logInfo(PersistentDataModule.getScopeId());
 
   //WebServer.setAP();
   //WebServer.setServer();
