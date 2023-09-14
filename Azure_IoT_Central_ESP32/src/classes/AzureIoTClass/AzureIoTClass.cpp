@@ -58,14 +58,6 @@
 static const unsigned long MQTT_LOOP_FREQUENCY = 10;
 
 void AzureIoTDevice::loop(){
-    if(!provisioned){
-        mqtt_client_config_t* mqtt_client_config;
-        mqtt_client_handle_t* mqtt_client_handle;
-        //mqtt_client_init_function(mqtt_client_config , mqtt_client_handle);
-        Serial.println("Provisioning device");
-        provisioned = true;
-    }
-
 
     switch (azure_iot_get_status(&azure_iot))
     {

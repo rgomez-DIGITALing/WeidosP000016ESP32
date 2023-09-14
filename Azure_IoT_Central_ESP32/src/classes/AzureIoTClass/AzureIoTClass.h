@@ -24,7 +24,6 @@ class AzureIoTDevice{
         AzureIoTDevice(MQTTClient* mqttClient, Client* client) : mqttClient(mqttClient), client(client){};
         void loop();
         void stop();
-        bool isProvisioned(){ return provisioned; }
         void init();
         bool sendDeviceInfo(){ return deviceInfoSent; }
         void isDeviceInfoSent(bool deviceInfoSent){ this->deviceInfoSent = deviceInfoSent; }
@@ -45,7 +44,6 @@ class AzureIoTDevice{
 
     private:
         azure_iot_status_t prevState = azure_iot_connected;
-        bool provisioned = false;
         azure_iot_t azure_iot;
         azure_iot_config_t azure_iot_config;
         uint8_t az_iot_data_buffer[AZ_IOT_DATA_BUFFER_SIZE];
@@ -81,11 +79,4 @@ class AzureIoTDevice{
         int azure_iot_mqtt_client_publish_completed(azure_iot_t* azure_iot, int packet_id);
         int azure_iot_mqtt_client_message_received(azure_iot_t* azure_iot, mqtt_message_t* mqtt_message);
         az_span generate_dps_register_custom_property(az_span model_id, az_span data_buffer, az_span* remainder);
-
-
-
-
-        unsigned long lastTime;
-        int mqttClientId = 23;
-        
-};
+};};
