@@ -7,6 +7,52 @@
 #include <clockModule.h>
 #include <LogModule.h>
 
+/* --- Function Returns --- */
+#define RESULT_OK 0
+#define RESULT_ERROR __LINE__
+
+#define MQTT_DO_NOT_RETAIN_MSG 0
+
+
+/* --- Azure Definitions --- */
+#define IOT_HUB_MQTT_PORT AZ_IOT_DEFAULT_MQTT_CONNECT_PORT
+#define MQTT_PROTOCOL_PREFIX "mqtts://"
+#define DPS_GLOBAL_ENDPOINT_MQTT_URI MQTT_PROTOCOL_PREFIX DPS_GLOBAL_ENDPOINT_FQDN
+#define DPS_GLOBAL_ENDPOINT_MQTT_URI_WITH_PORT \
+  DPS_GLOBAL_ENDPOINT_MQTT_URI ":" STR(DPS_GLOBAL_ENDPOINT_PORT)
+
+#define MQTT_CLIENT_ID_BUFFER_SIZE 256
+#define MQTT_USERNAME_BUFFER_SIZE 350
+#define DECODED_SAS_KEY_BUFFER_SIZE 64
+#define PLAIN_SAS_SIGNATURE_BUFFER_SIZE 256
+#define SAS_HMAC256_ENCRYPTED_SIGNATURE_BUFFER_SIZE 32
+#define SAS_SIGNATURE_BUFFER_SIZE 64
+#define MQTT_PASSWORD_BUFFER_SIZE 512
+
+#define DPS_REGISTER_CUSTOM_PAYLOAD_BEGIN "{\"modelId\":\""
+#define DPS_REGISTER_CUSTOM_PAYLOAD_END "\"}"
+
+
+#define DPS_REGISTER_CUSTOM_GATEWAY_PAYLOAD_END "\"}"
+#define DPS_REGISTER_CUSTOM_GATEWAY_PAYLOAD "\",\"iotcGateway\":{\"iotcGatewayId\":\""
+#define DPS_REGISTER_CUSTOM_GATEWAY_PAYLOAD_END "\"}}"
+
+#define NUMBER_OF_SECONDS_IN_A_MINUTE 60
+
+#define EXIT_IF_TRUE(condition, retcode, message, ...) \
+  do                                                   \
+  {                                                    \
+    if (condition)                                     \
+    {                                                  \
+      LogError(message, ##__VA_ARGS__);                \
+      return retcode;                                  \
+    }                                                  \
+  } while (0)
+
+#define EXIT_IF_AZ_FAILED(azresult, retcode, message, ...) \
+  EXIT_IF_TRUE(az_result_failed(azresult), retcode, message, ##__VA_ARGS__)
+
+
 
 
 static const unsigned long MQTT_LOOP_FREQUENCY = 10;
@@ -77,13 +123,12 @@ void AzureIoTDevice::init(){
   azure_iot_config.data_manipulation_functions.base64_encode = base64_encode;
   azure_iot_config.on_properties_update_completed = on_properties_update_completed;
   azure_iot_config.on_properties_received = on_properties_received;
-  azure_iot_config.on_command_request_received = default_on_command_request_received;
+  azure_iot_config.on_command_request_received = on_command_request_received;
 
   azure_iot_init(&azure_iot, &azure_iot_config);
   azure_iot_start(&azure_iot);
   azure_iot.mqtt_client_handle = mqttClient;
 }
-
 
 void AzureIoTDevice::setDeviceId(char* deviceId){
   azure_iot_config.dps_registration_id = az_span_create_from_str(deviceId); // Use Device ID for Azure IoT Central.
@@ -1140,7 +1185,7 @@ int AzureIoTDevice::azure_iot_mqtt_client_message_received(azure_iot_t* azure_io
           command_request.command_name = az_sdk_command_request.command_name;
           command_request.payload = mqtt_message->payload;
 
-          azure_iot->config->on_command_request_received(this, command_request);
+          azure_iot->config->on_command_request_received(command_request);
         }
 
         result = RESULT_OK;

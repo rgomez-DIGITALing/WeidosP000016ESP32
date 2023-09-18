@@ -22,56 +22,6 @@
 #include <az_core.h>
 #include <az_iot.h>
 
-/* --- Function Returns --- */
-#define RESULT_OK 0
-#define RESULT_ERROR __LINE__
-
-#define MQTT_DO_NOT_RETAIN_MSG 0
-
-
-/* --- Azure Definitions --- */
-#define IOT_HUB_MQTT_PORT AZ_IOT_DEFAULT_MQTT_CONNECT_PORT
-#define MQTT_PROTOCOL_PREFIX "mqtts://"
-#define DPS_GLOBAL_ENDPOINT_MQTT_URI MQTT_PROTOCOL_PREFIX DPS_GLOBAL_ENDPOINT_FQDN
-#define DPS_GLOBAL_ENDPOINT_MQTT_URI_WITH_PORT \
-  DPS_GLOBAL_ENDPOINT_MQTT_URI ":" STR(DPS_GLOBAL_ENDPOINT_PORT)
-
-#define MQTT_CLIENT_ID_BUFFER_SIZE 256
-#define MQTT_USERNAME_BUFFER_SIZE 350
-#define DECODED_SAS_KEY_BUFFER_SIZE 64
-#define PLAIN_SAS_SIGNATURE_BUFFER_SIZE 256
-#define SAS_HMAC256_ENCRYPTED_SIGNATURE_BUFFER_SIZE 32
-#define SAS_SIGNATURE_BUFFER_SIZE 64
-#define MQTT_PASSWORD_BUFFER_SIZE 512
-
-#define DPS_REGISTER_CUSTOM_PAYLOAD_BEGIN "{\"modelId\":\""
-#define DPS_REGISTER_CUSTOM_PAYLOAD_END "\"}"
-
-
-#define DPS_REGISTER_CUSTOM_GATEWAY_PAYLOAD_END "\"}"
-#define DPS_REGISTER_CUSTOM_GATEWAY_PAYLOAD "\",\"iotcGateway\":{\"iotcGatewayId\":\""
-#define DPS_REGISTER_CUSTOM_GATEWAY_PAYLOAD_END "\"}}"
-
-#define NUMBER_OF_SECONDS_IN_A_MINUTE 60
-
-#define EXIT_IF_TRUE(condition, retcode, message, ...) \
-  do                                                   \
-  {                                                    \
-    if (condition)                                     \
-    {                                                  \
-      LogError(message, ##__VA_ARGS__);                \
-      return retcode;                                  \
-    }                                                  \
-  } while (0)
-
-#define EXIT_IF_AZ_FAILED(azresult, retcode, message, ...) \
-  EXIT_IF_TRUE(az_result_failed(azresult), retcode, message, ##__VA_ARGS__)
-
-
-
-
-
-
 /* --- Array and String Helpers --- */
 #define lengthof(s) (sizeof(s) - 1)
 #define sizeofarray(a) (sizeof(a) / sizeof(a[0]))
@@ -89,23 +39,13 @@
 #define DPS_GLOBAL_ENDPOINT_PORT AZ_IOT_DEFAULT_MQTT_CONNECT_PORT
 #define IOT_HUB_ENDPOINT_PORT AZ_IOT_DEFAULT_MQTT_CONNECT_PORT
 
-
 #define DEFAULT_SAS_TOKEN_LIFETIME_IN_MINUTES 60
 #define SAS_TOKEN_REFRESH_THRESHOLD_IN_SECS 30
-
-#define COMMAND_RESPONSE_CODE_ACCEPTED 202
-#define COMMAND_RESPONSE_CODE_REJECTED 404
-
 
 /*
  * The structures below define a generic interface to abstract the interaction of this module,
  * with any MQTT client used in the user application.
  */
-
-class AzureIoTDevice;
-
-typedef struct azure_iot_t_struct azure_iot_t;
-
 
 #define MQTT_QOS_AT_MOST_ONCE 0
 #define MQTT_QOS_AT_LEAST_ONCE 1
@@ -392,7 +332,7 @@ typedef struct command_request_t_struct
  *
  * @return                   Nothing.
  */
-typedef void (*command_request_received_t)(AzureIoTDevice* azureIoTDevice, command_request_t command);
+typedef void (*command_request_received_t)(command_request_t command);
 
 /*
  * @brief    All the possible statuses returned by `azure_iot_get_status`.
