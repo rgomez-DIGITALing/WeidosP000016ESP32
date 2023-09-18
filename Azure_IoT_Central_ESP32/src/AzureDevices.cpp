@@ -1,15 +1,25 @@
 #include "AzureDevices.h"
-
-#include <Ethernet.h>
 #include <ArduinoBearSSL.h>
 
-EthernetClient ethernetClient0(1);
-EthernetClient ethernetClient1(2);
-EthernetClient ethernetClient2(3);
-EthernetClient ethernetClient3(4);
-EthernetClient ethernetClient4(5);
-EthernetClient ethernetClient5(6);
+#ifdef USING_ETHERNET_CLIENT
+#include <Ethernet.h>
+EthernetClient client0(1);
+EthernetClient client1(2);
+EthernetClient client2(3);
+EthernetClient client3(4);
+EthernetClient client4(5);
+EthernetClient client5(6);
+#endif
 
+#ifdef USING_WIFI_CLIENT
+#include <WiFiClient.h>
+WiFiClient client0;
+WiFiClient client1;
+WiFiClient client2;
+WiFiClient client3;
+WiFiClient client4;
+WiFiClient client5;
+#endif
 
 
 AzureIoTDevice* Azure0;
@@ -20,32 +30,36 @@ AzureIoTDevice* Azure4;
 AzureIoTDevice* Azure5;
 
 
-#define MQTT_CLIENT_BUFFER_SIZE 4096
+#define MQTT_CLIENT_BUFFER_SIZE 3000
 
 void createObjects(){
-    BearSSLClient* bear_ssl_client0 = new BearSSLClient(ethernetClient0);
+    BearSSLClient* bear_ssl_client0 = new BearSSLClient(client0);
     MQTTClient* mqttClient0 = new MQTTClient(MQTT_CLIENT_BUFFER_SIZE);
     Azure0 = new AzureIoTDevice(mqttClient0, bear_ssl_client0);
-
-    BearSSLClient* bear_ssl_client1 = new BearSSLClient(ethernetClient1);
+    Serial.println("9");
+    BearSSLClient* bear_ssl_client1 = new BearSSLClient(client1);
     MQTTClient* mqttClient1 = new MQTTClient(MQTT_CLIENT_BUFFER_SIZE);
     Azure1 = new AzureIoTDevice(mqttClient1, bear_ssl_client1);
-
-    BearSSLClient* bear_ssl_client2 = new BearSSLClient(ethernetClient2);
+    Serial.println("10");
+    BearSSLClient* bear_ssl_client2 = new BearSSLClient(client2);
     MQTTClient* mqttClient2 = new MQTTClient(MQTT_CLIENT_BUFFER_SIZE);
     Azure2 = new AzureIoTDevice(mqttClient2, bear_ssl_client2);
-
-    BearSSLClient* bear_ssl_client3 = new BearSSLClient(ethernetClient3);
+    Serial.println("11");
+    BearSSLClient* bear_ssl_client3 = new BearSSLClient(client3);
     MQTTClient* mqttClient3 = new MQTTClient(MQTT_CLIENT_BUFFER_SIZE);
     Azure3 = new AzureIoTDevice(mqttClient3, bear_ssl_client3);
-
-    BearSSLClient* bear_ssl_client4 = new BearSSLClient(ethernetClient4);
+    Serial.println("12");
+    BearSSLClient* bear_ssl_client4 = new BearSSLClient(client4);
     MQTTClient* mqttClient4 = new MQTTClient(MQTT_CLIENT_BUFFER_SIZE);
     Azure4 = new AzureIoTDevice(mqttClient4, bear_ssl_client4);
-
-    BearSSLClient* bear_ssl_client5 = new BearSSLClient(ethernetClient5);
+    Serial.println("13");
+    BearSSLClient* bear_ssl_client5 = new BearSSLClient(client5);
+    Serial.println("13.5");
     MQTTClient* mqttClient5 = new MQTTClient(MQTT_CLIENT_BUFFER_SIZE);
+    Serial.println("13.6");
     Azure5 = new AzureIoTDevice(mqttClient5, bear_ssl_client5);
+    Serial.println("14");
+    return;
 }
 
 char emModelId[60] = "dtmi:conexiones:EnergyMeter_6bm;1";

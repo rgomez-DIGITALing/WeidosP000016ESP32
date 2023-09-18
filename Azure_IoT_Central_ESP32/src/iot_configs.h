@@ -2,9 +2,12 @@
 // SPDX-License-Identifier: MIT
 
 // Wifi
-#define IOT_CONFIG_WIFI_SSID "IoT_Hub"
-#define IOT_CONFIG_WIFI_PASSWORD "DetmoldDetmold"
+#define IOT_CONFIG_WIFI_SSID "MOVISTAR_FD60"
+#define IOT_CONFIG_WIFI_PASSWORD "IoTHub2024"
 
+
+//#define USING_ETHERNET_CLIENT         //Uncomment this line to use Ethernet and Ethernet Clients
+#define USING_WIFI_CLIENT               //Uncomment this line to use WiFi and WiFi Clients
 
 // Model and partNumber for "General"
 // char* model = "EA750-230"; 
@@ -14,8 +17,8 @@
 // char* model = "EM750-230"; 
 // char* partNumber = "2540910000";
 
-//#define BATCH_TESTS
-#define BATCH_TESTS_2
+#define BATCH_TESTS
+//#define BATCH_TESTS_2
 //#define BATCH_MODULAS_TRANSELEVADORES
 //#define BATCH_GENERAL_LINEA_EMPAQUETADO
 #if defined BATCH_MODULAS_TRANSELEVADORES || defined BATCH_TESTS || defined BATCH_TESTS_2

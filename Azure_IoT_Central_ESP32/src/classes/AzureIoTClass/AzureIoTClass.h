@@ -79,4 +79,4 @@ class AzureIoTDevice{
         int azure_iot_mqtt_client_publish_completed(azure_iot_t* azure_iot, int packet_id);
         int azure_iot_mqtt_client_message_received(azure_iot_t* azure_iot, mqtt_message_t* mqtt_message);
         az_span generate_dps_register_custom_property(az_span model_id, az_span data_buffer, az_span* remainder);
-};};
+};

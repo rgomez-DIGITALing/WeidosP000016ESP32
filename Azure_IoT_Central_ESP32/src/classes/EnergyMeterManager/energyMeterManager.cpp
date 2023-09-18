@@ -1,14 +1,23 @@
 //#include "tasks.h"
 #include "energyMeterManager.h"
-#include <Ethernet.h>
 #include <LogModule.h>
 #include <clockModule.h>
 
 #include "../DataHub/DataHub.h"
 #include "../../AzureDevices.h"
 
-static EthernetClient ethernetClientModbus(7);
-static ModbusTCPClient modbusTCPClient(ethernetClientModbus);
+
+#ifdef USING_ETHERNET_CLIENT
+#include <Ethernet.h>
+static EthernetClient modbusClient(7);
+#endif
+
+#ifdef USING_WIFI_CLIENT
+#include <WiFiClient.h>
+static WiFiClient modbusClient;
+#endif
+
+static ModbusTCPClient modbusTCPClient(modbusClient);
 
 
 //Weidos 1

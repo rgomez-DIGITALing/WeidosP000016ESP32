@@ -64,7 +64,17 @@
 // Additional sample headers
 #include <clockModule.h>
 #include <LogModule.h>
+#include "src/iot_configs.h"
+
+#ifdef USING_ETHERNET_CLIENT
 #include <EthernetModule.h>
+#endif
+
+#ifdef USING_WIFI_CLIENT
+#include <WiFiModule.h>
+#endif
+
+
 #include "src/classes/AzureIoTClass/AzureIoTClass.h"
 //#include "./tasks/energyMeterTask.h"
 #include "src/AzureDevices.h"
@@ -113,7 +123,16 @@ void setup()
   set_logging_function(logging_function);
   Serial.println("Welcome!");
   
+  #ifdef USING_ETHERNET_CLIENT
   EthernetModule.init();
+  #endif
+
+  #ifdef USING_WIFI_CLIENT
+  WiFiModule.init();
+  WiFiModule.setSSID(IOT_CONFIG_WIFI_SSID);
+  WiFiModule.setPassword(IOT_CONFIG_WIFI_PASSWORD);
+  #endif
+
   //connect_to_wifi();
   systemClock.begin();
   ArduinoBearSSL.onGetTime(get_time); // Required for server trusted root validation.
@@ -130,12 +149,15 @@ void setup()
   //while(1){}
   
   //char* scopeId = PersistentDataModule.getScopeId();
-  
+  Serial.println("1");
   createObjects();
+  Serial.println("2");
   fillArray();
+  Serial.println("3");
   configureAzureDevices();
+  Serial.println("4");
   setEnergyMeterProperties();
-
+  Serial.println("5");
 
   weidosMetadata_t metadata = WeidosESP32.getMetadata();
   metadata.printMetadata();
@@ -160,8 +182,15 @@ int prevLinkStatus = LinkON;
 
 void loop()
 {
+  #ifdef USING_ETHERNET_CLIENT
   EthernetModule.loop();
   networkUp = EthernetModule.isNetworkUp();
+  #endif
+  #ifdef USING_WIFI_CLIENT
+  WiFiModule.loop();
+  networkUp = WiFiModule.isNetworkUp();
+  #endif
+  
   systemClock.loop(networkUp);
   clockRunning = systemClock.clockRunning();
   
@@ -206,11 +235,11 @@ void loop()
 
   if(networkUp){
     Azure0->loop();
-    Azure1->loop();
-    Azure2->loop();
-    Azure3->loop();
-    Azure4->loop();
-    Azure5->loop();
+    //Azure1->loop();
+    //Azure2->loop();
+    //Azure3->loop();
+    //Azure4->loop();
+    //Azure5->loop();
   }
 
   Azure0->statusChange();
