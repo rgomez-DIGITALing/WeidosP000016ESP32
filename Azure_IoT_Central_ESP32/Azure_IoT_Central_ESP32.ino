@@ -102,7 +102,7 @@ void loopEnergyMeters();
 void setEnergyMeterProperties();
 void triggerEnergyMeters();
 void sendEnergyMeterProperties();
-
+static void connect_to_wifi();
 
 /*
  * See the documentation of `get_time_t` in AzureIoT.h for details.
@@ -128,12 +128,12 @@ void setup()
   #endif
 
   #ifdef USING_WIFI_CLIENT
-  WiFiModule.init();
-  WiFiModule.setSSID(IOT_CONFIG_WIFI_SSID);
-  WiFiModule.setPassword(IOT_CONFIG_WIFI_PASSWORD);
+  //WiFiModule.init();
+  //WiFiModule.setSSID(IOT_CONFIG_WIFI_SSID);
+  //WiFiModule.setPassword(IOT_CONFIG_WIFI_PASSWORD);
   #endif
 
-  //connect_to_wifi();
+  connect_to_wifi();
   systemClock.begin();
   ArduinoBearSSL.onGetTime(get_time); // Required for server trusted root validation.
 
@@ -149,15 +149,11 @@ void setup()
   //while(1){}
   
   //char* scopeId = PersistentDataModule.getScopeId();
-  Serial.println("1");
   createObjects();
-  Serial.println("2");
   fillArray();
-  Serial.println("3");
   configureAzureDevices();
-  Serial.println("4");
   setEnergyMeterProperties();
-  Serial.println("5");
+
 
   weidosMetadata_t metadata = WeidosESP32.getMetadata();
   metadata.printMetadata();
@@ -187,20 +183,28 @@ void loop()
   networkUp = EthernetModule.isNetworkUp();
   #endif
   #ifdef USING_WIFI_CLIENT
-  WiFiModule.loop();
-  networkUp = WiFiModule.isNetworkUp();
+  if (WiFi.status() != WL_CONNECTED)
+  {
+    networkUp = false;
+    connect_to_wifi();
+  }else{
+    networkUp = true;
+  }
   #endif
   
+  
+
+
   systemClock.loop(networkUp);
   clockRunning = systemClock.clockRunning();
   
   if(!networkUp){
-    Azure0->stop();
-    Azure1->stop();
-    Azure2->stop();
-    Azure3->stop();
-    Azure4->stop();
-    Azure5->stop();
+   Azure0->stop();
+   Azure1->stop();
+   Azure2->stop();
+   Azure3->stop();
+   Azure4->stop();
+   Azure5->stop();
   }
 
 
@@ -208,18 +212,18 @@ void loop()
 
 
   if(networkUp && clockRunning){
-    if(millis()-prevTime>DELTA_TIME){
-      triggerEnergyMeters();
-      weidosESP32Manager.triggerUpdate();
-      prevTime = millis();
-    }
+   if(millis()-prevTime>DELTA_TIME){
+     triggerEnergyMeters();
+     weidosESP32Manager.triggerUpdate();
+     prevTime = millis();
+   }
   }
 
 
 
   if(networkUp){
-    weidosESP32Manager.loop();
-    loopEnergyMeters();
+   weidosESP32Manager.loop();
+   loopEnergyMeters();
   }
 
 
@@ -235,11 +239,11 @@ void loop()
 
   if(networkUp){
     Azure0->loop();
-    //Azure1->loop();
-    //Azure2->loop();
-    //Azure3->loop();
-    //Azure4->loop();
-    //Azure5->loop();
+    Azure1->loop();
+    Azure2->loop();
+    Azure3->loop();
+    Azure4->loop();
+    Azure5->loop();
   }
 
   Azure0->statusChange();
@@ -261,7 +265,9 @@ void loop()
 
   if(millis()-prevTime2>DELTA_TIME2){
     prevTime2 = millis();
-    LogInfo("Link status: %i", Ethernet.linkStatus());  
+    //LogInfo("Link status: %i", Ethernet.linkStatus()); 
+    weidosMetadata_t metadata = WeidosESP32.getMetadata();
+    metadata.printMetadata(); 
   }
 }
 
@@ -270,11 +276,11 @@ void loop()
 //Since they all share the same Modbus TCP Client, they can not work at the same time.
 void loopEnergyMeters(){
   #ifdef USING_MODULAS_TRANSELEVADORES
+  if(modula4.loop() != ENERGY_METER_IDLE) return;
+  if(modula11.loop() != ENERGY_METER_IDLE) return;
   if(transelevador1.loop() != ENERGY_METER_IDLE) return;
   if(transelevador2.loop() != ENERGY_METER_IDLE) return;
   if(transelevador3.loop() != ENERGY_METER_IDLE) return;
-  if(modula4.loop() != ENERGY_METER_IDLE) return;
-  if(modula11.loop() != ENERGY_METER_IDLE) return;
   #endif
 
   #ifdef BATCH_GENERAL_LINEA_EMPAQUETADO
@@ -365,11 +371,11 @@ void setEnergyMeterProperties(){
 
 void triggerEnergyMeters(){
   #ifdef USING_MODULAS_TRANSELEVADORES
+  modula4.triggerUpdate();
+  modula11.triggerUpdate();
   transelevador1.triggerUpdate(); 
   transelevador2.triggerUpdate();
   transelevador3.triggerUpdate();
-  modula4.triggerUpdate();
-  modula11.triggerUpdate();
   #endif
 
   #ifdef BATCH_GENERAL_LINEA_EMPAQUETADO
@@ -399,4 +405,28 @@ void sendEnergyMeterProperties(){
   aireCondicionado.sendProperties();
   aireComprimido.sendProperties();
   #endif
+}
+
+
+int connectionTimeout = 15000;
+static void connect_to_wifi()
+{
+  LogInfo("Connecting to WIFI wifi_ssid %s", IOT_CONFIG_WIFI_SSID);
+  unsigned long startTime = millis();
+  WiFi.mode(WIFI_STA);
+  //WiFi.begin(wifi_ssid, wifi_password);
+  WiFi.setAutoReconnect(true);
+  WiFi.persistent(true);
+  while (WiFi.status() != WL_CONNECTED)
+  {
+    unsigned long actualTime = millis();
+   if(actualTime-startTime >= connectionTimeout){
+      WiFi.begin(IOT_CONFIG_WIFI_SSID, IOT_CONFIG_WIFI_PASSWORD);
+      startTime = millis();
+    }
+    delay(500);
+    Serial.print(":");
+  }
+    Serial.println("");
+    LogInfo("WiFi connected, IP address: %s", WiFi.localIP().toString().c_str());
 }

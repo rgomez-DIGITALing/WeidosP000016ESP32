@@ -17,8 +17,8 @@
 // char* model = "EM750-230"; 
 // char* partNumber = "2540910000";
 
-#define BATCH_TESTS
-//#define BATCH_TESTS_2
+//#define BATCH_TESTS
+#define BATCH_TESTS_2
 //#define BATCH_MODULAS_TRANSELEVADORES
 //#define BATCH_GENERAL_LINEA_EMPAQUETADO
 #if defined BATCH_MODULAS_TRANSELEVADORES || defined BATCH_TESTS || defined BATCH_TESTS_2

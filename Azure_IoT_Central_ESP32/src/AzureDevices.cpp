@@ -13,12 +13,12 @@ EthernetClient client5(6);
 
 #ifdef USING_WIFI_CLIENT
 #include <WiFiClient.h>
-WiFiClient client0;
-WiFiClient client1;
-WiFiClient client2;
-WiFiClient client3;
-WiFiClient client4;
-WiFiClient client5;
+WiFiClient client0(1);
+WiFiClient client1(2);
+WiFiClient client2(3);
+WiFiClient client3(4);
+WiFiClient client4(5);
+WiFiClient client5(6);
 #endif
 
 
@@ -36,29 +36,27 @@ void createObjects(){
     BearSSLClient* bear_ssl_client0 = new BearSSLClient(client0);
     MQTTClient* mqttClient0 = new MQTTClient(MQTT_CLIENT_BUFFER_SIZE);
     Azure0 = new AzureIoTDevice(mqttClient0, bear_ssl_client0);
-    Serial.println("9");
+
     BearSSLClient* bear_ssl_client1 = new BearSSLClient(client1);
     MQTTClient* mqttClient1 = new MQTTClient(MQTT_CLIENT_BUFFER_SIZE);
     Azure1 = new AzureIoTDevice(mqttClient1, bear_ssl_client1);
-    Serial.println("10");
+
     BearSSLClient* bear_ssl_client2 = new BearSSLClient(client2);
     MQTTClient* mqttClient2 = new MQTTClient(MQTT_CLIENT_BUFFER_SIZE);
     Azure2 = new AzureIoTDevice(mqttClient2, bear_ssl_client2);
-    Serial.println("11");
+
     BearSSLClient* bear_ssl_client3 = new BearSSLClient(client3);
     MQTTClient* mqttClient3 = new MQTTClient(MQTT_CLIENT_BUFFER_SIZE);
     Azure3 = new AzureIoTDevice(mqttClient3, bear_ssl_client3);
-    Serial.println("12");
+
     BearSSLClient* bear_ssl_client4 = new BearSSLClient(client4);
     MQTTClient* mqttClient4 = new MQTTClient(MQTT_CLIENT_BUFFER_SIZE);
     Azure4 = new AzureIoTDevice(mqttClient4, bear_ssl_client4);
-    Serial.println("13");
+
     BearSSLClient* bear_ssl_client5 = new BearSSLClient(client5);
-    Serial.println("13.5");
     MQTTClient* mqttClient5 = new MQTTClient(MQTT_CLIENT_BUFFER_SIZE);
-    Serial.println("13.6");
     Azure5 = new AzureIoTDevice(mqttClient5, bear_ssl_client5);
-    Serial.println("14");
+
     return;
 }
 
