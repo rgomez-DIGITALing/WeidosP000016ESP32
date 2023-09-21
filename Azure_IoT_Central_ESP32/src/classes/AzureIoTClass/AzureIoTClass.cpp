@@ -54,8 +54,7 @@
 
 
 
-
-static const unsigned long MQTT_LOOP_FREQUENCY = 10;
+static const unsigned long MQTT_LOOP_POST_DELAY = 20;
 
 void AzureIoTDevice::loop(){
 
@@ -75,12 +74,10 @@ void AzureIoTDevice::loop(){
     }
 
     azure_iot_do_work(&azure_iot);
-    if(millis() - mqttLastLoopTime > MQTT_LOOP_FREQUENCY){
-      mqttClient->loop();
-      mqttLastLoopTime = millis();
-    }
+    mqttClient->loop();
+    delay(MQTT_LOOP_POST_DELAY);
 
-    
+
     //Check spurious disconnections.
     if(getStatus() == azure_iot_connecting || getStatus() == azure_iot_connected ){
       if(!mqttClient->connected()){

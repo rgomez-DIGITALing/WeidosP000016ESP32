@@ -54,7 +54,7 @@ class AzureIoTDevice{
         securityType_t securityType;
         char* gatewayId = nullptr;
         uint32_t properties_request_id = 0;
-        unsigned long mqttLastLoopTime = 0;
+        
 
         int mqtt_client_init(mqtt_client_config_t* mqtt_client_config);
         int mqtt_client_subscribe(az_span topic, mqtt_qos_t qos);
