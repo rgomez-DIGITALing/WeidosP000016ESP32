@@ -2,6 +2,7 @@
 #include "classes/EM750/EM750.h"
 #include <LogModule.h>
 #include "classes/WeidosESP32Class/WeidosESP32Class.h"
+#include <RTClib.h>
 
 #include <az_core.h>
 #include <az_iot.h>
@@ -391,8 +392,10 @@ int em750_generete_payload(uint8_t* payload_buffer,
 
     rc = az_json_writer_append_property_name(&jw, AZ_SPAN_FROM_STR(TELEMETRY_PROP_NAME_TIMESTAMP));
   EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding timestamp property name to telemetry payload.");
-  rc = az_json_writer_append_int32(&jw, timestamp);
-  EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding timestamp property value to telemetry payload. ");
+  DateTime date = DateTime(timestamp);
+  char dateFormat[] = "YYYY-MM-DDThh:mm:ss.000Z";
+  date.toString(dateFormat);
+  rc = az_json_writer_append_string(&jw, az_span_create_from_str(dateFormat));
 
 
 
@@ -498,7 +501,10 @@ int weidosESP32_generete_payload(uint8_t* payload_buffer,
 
   rc = az_json_writer_append_property_name(&jw, AZ_SPAN_FROM_STR(TELEMETRY_PROP_NAME_TIMESTAMP));
   EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding timestamp property name to telemetry payload.");
-  rc = az_json_writer_append_int32(&jw, weidosData.timestamp);
+  DateTime date = DateTime(weidosData.timestamp);
+  char dateFormat[] = "YYYY-MM-DDThh:mm:ss.000Z";
+  date.toString(dateFormat);
+  rc = az_json_writer_append_string(&jw, az_span_create_from_str(dateFormat));
   EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding timestamp property value to telemetry payload. ");
 
   
