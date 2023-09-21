@@ -77,8 +77,6 @@
 
 #include "src/classes/WeidosManager/WeidosManager.h"
 #include "src/classes/DataHub/DataHub.h"
-#include "src/classes/PersistentData/PersistentDataClass.h"
-#include "src/classes/WebServer/WebServer.h"
 #include "src/classes/WeidosESP32Class/WeidosESP32Class.h"
 
 //#include "Azure_IoT_PnP_Template.h"
@@ -88,7 +86,6 @@
 #include "src/classes/DataHub/DataHub.h"
 
 #include <ArduinoBearSSL.h>
-#include "src/classes/PersistentData/PersistentDataClass.h"
 #include "src/payloadGenerators.h"
 
 
@@ -118,22 +115,10 @@ void setup()
   Serial.println("Welcome!");
   
   EthernetModule.init();
-  //connect_to_wifi();
   systemClock.begin();
   ArduinoBearSSL.onGetTime(get_time); // Required for server trusted root validation.
 
-  //azure_pnp_init();
-  Serial.println("Let's persist: ");
-  PersistentDataModule.begin();
-  Serial.println("Persisten Module has begun!");
-  Serial.println(PersistentDataModule.getWiFiSSID());
-  Serial.println(PersistentDataModule.getScopeId());
 
-  //WebServer.setAP();
-  //WebServer.setServer();
-  //while(1){}
-  
-  //char* scopeId = PersistentDataModule.getScopeId();
   
   createObjects();
   fillArray();
