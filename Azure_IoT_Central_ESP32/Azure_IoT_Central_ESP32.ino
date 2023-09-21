@@ -42,6 +42,10 @@
 #include <mbedtls/md.h>
 #include <mbedtls/sha256.h>
 
+#include <esp_task_wdt.h>
+
+#define WDT_TIMEOUT 2*60 //in seconds
+
 #define ARDUINO
 // Libraries for MQTT client and WiFi connection
 //#include <WiFi.h>
@@ -141,6 +145,10 @@ void setup()
   metadata.printMetadata();
   emDataHub.setPayloadGenerator(em750_generete_payload);
   weidosDataHub.setPayloadGenerator(weidosESP32_generete_payload);
+
+  esp_task_wdt_init(WDT_TIMEOUT, true); //enable panic so ESP32 restarts
+  esp_task_wdt_add(NULL); //add current thread to WDT watch
+
   LogInfo("Let's go to the looP function");
 }
 
@@ -160,6 +168,7 @@ int prevLinkStatus = LinkON;
 
 void loop()
 {
+  esp_task_wdt_reset();
   EthernetModule.loop();
   networkUp = EthernetModule.isNetworkUp();
   systemClock.loop(networkUp);
