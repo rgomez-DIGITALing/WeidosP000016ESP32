@@ -90,6 +90,8 @@
 
 
 void loopEnergyMeters();
+void loopDataHubs();
+void setDataHubsPayloadGenerators();
 void setEnergyMeterProperties();
 void triggerEnergyMeters();
 void sendEnergyMeterProperties();
@@ -122,13 +124,16 @@ void setup()
   
   createObjects();
   fillArray();
+  fillDataHubsArray();
   configureAzureDevices();
   setEnergyMeterProperties();
 
 
   weidosMetadata_t metadata = WeidosESP32.getMetadata();
   metadata.printMetadata();
-  emDataHub.setPayloadGenerator(em750_generete_payload);
+
+  //emDataHub.setPayloadGenerator(em750_generete_payload);
+  setDataHubsPayloadGenerators();
   weidosDataHub.setPayloadGenerator(weidosESP32_generete_payload);
 
   esp_task_wdt_init(WDT_TIMEOUT, true); //enable panic so ESP32 restarts
@@ -189,7 +194,7 @@ void loop()
 
 
   if(networkUp){
-    emDataHub.loop();
+    loopDataHubs();
     weidosDataHub.loop();
   }
 
@@ -253,6 +258,18 @@ void loopEnergyMeters(){
   return;
 }
 
+void loopDataHubs(){
+  for(int i=0;i<5; i++){
+    energyMeterDataHubs[i]->loop();
+  }
+}
+
+
+void setDataHubsPayloadGenerators(){
+  for(int i=0;i<5; i++){
+    energyMeterDataHubs[i]->setPayloadGenerator(em750_generete_payload);
+  }
+}
 
 void setEnergyMeterProperties(){
   EM750* energyMeter = nullptr;

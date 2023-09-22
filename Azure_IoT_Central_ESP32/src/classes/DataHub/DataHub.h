@@ -13,7 +13,9 @@
 #include "../../AzureDevices.h"
 
 #define NUM_TOTAL_DATA 60
-#define RING_BUFFER_SIZE 20
+
+#define ENERGY_METER_RING_BUFFER_SIZE 15
+#define WEIDOS_METADATA_RING_BUFFER_SIZE 20
 
 enum DataHubState{
     GET_DATA_FROM_EM_FIFO,
@@ -40,7 +42,7 @@ enum DataHubState{
 
 
 
-template <class T>
+template <class T, int N>
 class DataHub{
 
     typedef int (*payloadGenerator)(uint8_t* payload_buffer, size_t payload_buffer_size, size_t* payload_buffer_length, T& data);
@@ -56,7 +58,7 @@ class DataHub{
     //void setPayloadGenerator(payloadGenerator payloadGenerator){ generatePayload = payloadGenerator; };
     
   private:
-      RingBuf<T,RING_BUFFER_SIZE> dataBuffer;
+      RingBuf<T,N> dataBuffer;
       //RingBuf<weidosMetadata_t ,RING_BUFFER_SIZE> weidosData;
       int state = GET_DATA_FROM_FIFO;
       //payloadGenerator generatePayload;
@@ -66,8 +68,8 @@ class DataHub{
 };
 
 
-template <class T>
-void DataHub<T>::loop(){
+template <class T, int N>
+void DataHub<T,N>::loop(){
     uint8_t deviceId = 0;
     switch(state){
         case GET_DATA_FROM_FIFO:
@@ -111,5 +113,8 @@ void DataHub<T>::loop(){
     }
 }
 
-extern DataHub<energyMeterManagerData_t> emDataHub;
-extern DataHub<WeidosManagerData_t> weidosDataHub;
+
+void fillDataHubsArray();
+
+extern DataHub<WeidosManagerData_t, WEIDOS_METADATA_RING_BUFFER_SIZE> weidosDataHub;
+extern DataHub<energyMeterManagerData_t, ENERGY_METER_RING_BUFFER_SIZE>* energyMeterDataHubs[5];

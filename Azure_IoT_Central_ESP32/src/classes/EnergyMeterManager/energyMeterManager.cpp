@@ -98,7 +98,8 @@ EnergyMeterUpdateState EnergyMeterManager::loop(){
         payload.timestamp = systemClock.getEpochTime();
         em750.getData(payload.data);
         LogInfo("Pushing data for device ID: %i", deviceId);
-        emDataHub.push(payload);
+        energyMeterDataHubs[deviceId-1]->push(payload);
+        //emDataHub.push(payload);
         state = END_TASK;
         break;
       case END_TASK:
