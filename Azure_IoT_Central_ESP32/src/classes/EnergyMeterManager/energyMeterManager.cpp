@@ -34,11 +34,11 @@ EnergyMeterManager transelevador3(transelevador3EM, 5, 5);
 
 //Weidos 2
 #ifdef BATCH_GENERAL_LINEA_EMPAQUETADO
-IPAddress ipGeneral(10, 88, 47, 242);        //Transelevador 1
-IPAddress ipRobot(10, 88, 47, 243);        //Transelevador 2
-IPAddress ipLineaEmpaquetado(10, 88, 47, 244);        //Transelevador 3
-IPAddress ipAireCondicionado(10, 88, 47, 222);        //Modula 4
-IPAddress ipAireComprimido(10, 88, 47, 223);        //Modula 11
+IPAddress ipGeneral(10, 88, 47, 202);                   //General
+IPAddress ipRobot(10, 88, 47, 220);                     //Robot
+IPAddress ipLineaEmpaquetado(10, 88, 47, 221);          //Linea Empaquetado
+IPAddress ipAireCondicionado(10, 88, 47, 241);          //Aire Acondicionado
+IPAddress ipAireComprimido(10, 88, 47, 203);            //Aire Comprimido
 
 EM750 generalEM(modbusTCPClient, ipGeneral);
 EM750 robotEM(modbusTCPClient, ipRobot);
