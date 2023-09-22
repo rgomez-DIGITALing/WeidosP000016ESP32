@@ -108,19 +108,19 @@
 
 // Azure IoT Central
 #ifdef BATCH_GENERAL_LINEA_EMPAQUETADO
-#define IOT_CONFIG_DEVICE_GATEWAY_ID ""     ////Gateway General-Otros (2)
-#define IOT_CONFIG_DEVICE_1_ID ""           ////General (2)
-#define IOT_CONFIG_DEVICE_2_ID ""           ////Robot (2)
-#define IOT_CONFIG_DEVICE_3_ID ""           ////Linea Empaquetado (2)
-#define IOT_CONFIG_DEVICE_4_ID ""           ////Aire Condicionado (2)
-#define IOT_CONFIG_DEVICE_5_ID ""           ////Aire Comprimido (2)
+#define IOT_CONFIG_DEVICE_GATEWAY_ID "1iyt0p0nos5"     ////Gateway General-Otros (2)
+#define IOT_CONFIG_DEVICE_1_ID "1s5lc81kxju"           ////General (2)
+#define IOT_CONFIG_DEVICE_2_ID "6vxabuk14d"           ////Robot (2)
+#define IOT_CONFIG_DEVICE_3_ID "qhogh8wdhh"           ////Linea Empaquetado (2)
+#define IOT_CONFIG_DEVICE_4_ID "idxz6otb9n"           ////Aire Condicionado (2)
+#define IOT_CONFIG_DEVICE_5_ID "1n67jcyxcef"           ////Aire Comprimido (2)
 
-#define IOT_CONFIG_DEVICE_GATEWAY_KEY ""    //Gateway General-Otros (2)
-#define IOT_CONFIG_DEVICE_1_KEY ""          //General (2)
-#define IOT_CONFIG_DEVICE_2_KEY ""          //Robot (2)
-#define IOT_CONFIG_DEVICE_3_KEY ""          //Linea Empaquetado (2)
-#define IOT_CONFIG_DEVICE_4_KEY ""          //Aire Condicionado (2)
-#define IOT_CONFIG_DEVICE_5_KEY ""          //Aire Comprimido (2)
+#define IOT_CONFIG_DEVICE_GATEWAY_KEY "YJ44De/cAaFcdQaR50FZd7MuFTBWDH9tofaUwlJxUh8="    //Gateway General-Otros (2)
+#define IOT_CONFIG_DEVICE_1_KEY "aybjmIKBaO95YG4Xc9Pdt1brIR45hMeof84j+VWIAjI="          //General (2)
+#define IOT_CONFIG_DEVICE_2_KEY "emH3afVfZL8YGz1+DWHgfeqXW0Vj5Hq70yqxrBeUL3E="          //Robot (2)
+#define IOT_CONFIG_DEVICE_3_KEY "9cbOezaVa4b67RPrMcc61gGjzcBA3QLrmzf3hN31sPE="          //Linea Empaquetado (2)
+#define IOT_CONFIG_DEVICE_4_KEY "YFcaJRjCNx/AOYPcmXZh1toVzXe7JBUz/ap45zWR+OY="          //Aire Condicionado (2)
+#define IOT_CONFIG_DEVICE_5_KEY "rjUQAd80tnTiBVITw8FjbdmNUxqNCJqetSEljngkBho="          //Aire Comprimido (2)
 #endif
 
 
