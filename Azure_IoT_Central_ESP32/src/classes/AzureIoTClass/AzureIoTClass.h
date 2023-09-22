@@ -56,10 +56,10 @@ class AzureIoTDevice{
         uint32_t properties_request_id = 0;
         
 
-        int mqtt_client_init(mqtt_client_config_t* mqtt_client_config);
-        int mqtt_client_subscribe(az_span topic, mqtt_qos_t qos);
-        int mqtt_client_publish(mqtt_message_t* mqtt_message);
-        int mqtt_client_deinit();
+        int mqtt_client_init(mqtt_client_config_t* mqtt_client_config, mqtt_client_handle_t *mqtt_client_handle);
+        int mqtt_client_subscribe(mqtt_client_handle_t mqtt_client_handle, az_span topic, mqtt_qos_t qos);
+        int mqtt_client_publish(mqtt_client_handle_t mqtt_client_handle, mqtt_message_t* mqtt_message);
+        int mqtt_client_deinit(mqtt_client_handle_t mqtt_client_handle);
         void onMessageReceived(String &topic, String &payload);
         void azure_iot_init(azure_iot_t* azure_iot, azure_iot_config_t* azure_iot_config);
         int azure_iot_start(azure_iot_t* azure_iot);
