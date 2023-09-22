@@ -24,27 +24,33 @@ AzureIoTDevice* Azure5;
 
 void createObjects(){
     BearSSLClient* bear_ssl_client0 = new BearSSLClient(ethernetClient0);
-    MQTTClient* mqttClient0 = new MQTTClient(MQTT_CLIENT_BUFFER_SIZE);
+    MqttClient* mqttClient0 = new MqttClient(bear_ssl_client0);
+    mqttClient0->setConnectionTimeout(5000);
     Azure0 = new AzureIoTDevice(mqttClient0, bear_ssl_client0);
 
     BearSSLClient* bear_ssl_client1 = new BearSSLClient(ethernetClient1);
-    MQTTClient* mqttClient1 = new MQTTClient(MQTT_CLIENT_BUFFER_SIZE);
+    MqttClient* mqttClient1 = new MqttClient(bear_ssl_client1);
+    mqttClient1->setConnectionTimeout(5000);
     Azure1 = new AzureIoTDevice(mqttClient1, bear_ssl_client1);
 
     BearSSLClient* bear_ssl_client2 = new BearSSLClient(ethernetClient2);
-    MQTTClient* mqttClient2 = new MQTTClient(MQTT_CLIENT_BUFFER_SIZE);
+    MqttClient* mqttClient2 = new MqttClient(bear_ssl_client2);
+    mqttClient2->setConnectionTimeout(5000);
     Azure2 = new AzureIoTDevice(mqttClient2, bear_ssl_client2);
 
     BearSSLClient* bear_ssl_client3 = new BearSSLClient(ethernetClient3);
-    MQTTClient* mqttClient3 = new MQTTClient(MQTT_CLIENT_BUFFER_SIZE);
+    MqttClient* mqttClient3 = new MqttClient(bear_ssl_client3);
+    mqttClient3->setConnectionTimeout(5000);
     Azure3 = new AzureIoTDevice(mqttClient3, bear_ssl_client3);
 
     BearSSLClient* bear_ssl_client4 = new BearSSLClient(ethernetClient4);
-    MQTTClient* mqttClient4 = new MQTTClient(MQTT_CLIENT_BUFFER_SIZE);
+    MqttClient* mqttClient4 = new MqttClient(bear_ssl_client4);
+    mqttClient4->setConnectionTimeout(5000);
     Azure4 = new AzureIoTDevice(mqttClient4, bear_ssl_client4);
 
     BearSSLClient* bear_ssl_client5 = new BearSSLClient(ethernetClient5);
-    MQTTClient* mqttClient5 = new MQTTClient(MQTT_CLIENT_BUFFER_SIZE);
+    MqttClient* mqttClient5 = new MqttClient(bear_ssl_client5);
+    mqttClient5->setConnectionTimeout(5000);
     Azure5 = new AzureIoTDevice(mqttClient5, bear_ssl_client5);
 }
 

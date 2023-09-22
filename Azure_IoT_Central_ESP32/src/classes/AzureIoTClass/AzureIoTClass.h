@@ -2,7 +2,10 @@
 
 //#define MQTT_HAS_FUNCTIONAL false
 #include "AzureIoT_definitions.h"
-#include <MQTTClient.h>
+//#include <MQTTClient.h>
+
+#define MQTT_CLIENT_STD_FUNCTION_CALLBACK
+#include <ArduinoMqttClient.h>
 #include <Client.h>
 #include "../../iot_configs.h"
 
@@ -19,9 +22,9 @@ enum securityType_t{
 class AzureIoTDevice{
     public:
         AzureIoTDevice() : mqttClient(nullptr), client(nullptr){};
-        AzureIoTDevice(MQTTClient& mqttClient, Client& client) : mqttClient(&mqttClient), client(&client){};
-        AzureIoTDevice(MQTTClient& mqttClient, Client* client) : mqttClient(&mqttClient), client(client){};
-        AzureIoTDevice(MQTTClient* mqttClient, Client* client) : mqttClient(mqttClient), client(client){};
+        AzureIoTDevice(MqttClient& mqttClient, Client& client) : mqttClient(&mqttClient), client(&client){};
+        AzureIoTDevice(MqttClient& mqttClient, Client* client) : mqttClient(&mqttClient), client(client){};
+        AzureIoTDevice(MqttClient* mqttClient, Client* client) : mqttClient(mqttClient), client(client){};
         void loop();
         void stop();
         void init();
@@ -38,7 +41,7 @@ class AzureIoTDevice{
         azure_iot_t* getAzureIoT(){ return &azure_iot; }
         uint8_t* getDataBuffer(){ return az_iot_data_buffer; }
         uint8_t* getDataBuffer2(){ return data_buffer; }
-        void setClients(MQTTClient& mqttClient, Client& client){ this->mqttClient = &mqttClient; this->client = &client;}
+        void setClients(MqttClient& mqttClient, Client& client){ this->mqttClient = &mqttClient; this->client = &client;}
         void setGatewayId(char* gatewayId){ this->gatewayId = gatewayId; }
         void statusChange();
 
@@ -49,18 +52,20 @@ class AzureIoTDevice{
         uint8_t az_iot_data_buffer[AZ_IOT_DATA_BUFFER_SIZE];
         uint8_t data_buffer[DATA_BUFFER_SIZE];
         Client* client;
-        MQTTClient* mqttClient;
+        MqttClient* mqttClient;
         bool deviceInfoSent = false;
         securityType_t securityType;
         char* gatewayId = nullptr;
         uint32_t properties_request_id = 0;
         unsigned long mqttLastLoopTime = 0;
 
-        int mqtt_client_init(mqtt_client_config_t* mqtt_client_config);
-        int mqtt_client_subscribe(az_span topic, mqtt_qos_t qos);
-        int mqtt_client_publish(mqtt_message_t* mqtt_message);
-        int mqtt_client_deinit();
-        void onMessageReceived(String &topic, String &payload);
+        int mqtt_client_init(mqtt_client_config_t* mqtt_client_config, mqtt_client_handle_t *mqtt_client_handle);
+        int mqtt_client_subscribe(mqtt_client_handle_t mqtt_client_handle, az_span topic, mqtt_qos_t qos);
+        int mqtt_client_publish(mqtt_client_handle_t mqtt_client_handle, mqtt_message_t* mqtt_message);
+        int mqtt_client_deinit(mqtt_client_handle_t mqtt_client_handle);
+
+        void onMessageReceived2(String &topic, String &payload);
+        void onMessageReceived(MqttClient *client, int messageSize);
         void azure_iot_init(azure_iot_t* azure_iot, azure_iot_config_t* azure_iot_config);
         int azure_iot_start(azure_iot_t* azure_iot);
         int azure_iot_stop(azure_iot_t* azure_iot);
@@ -79,4 +84,4 @@ class AzureIoTDevice{
         int azure_iot_mqtt_client_publish_completed(azure_iot_t* azure_iot, int packet_id);
         int azure_iot_mqtt_client_message_received(azure_iot_t* azure_iot, mqtt_message_t* mqtt_message);
         az_span generate_dps_register_custom_property(az_span model_id, az_span data_buffer, az_span* remainder);
-};};
+};

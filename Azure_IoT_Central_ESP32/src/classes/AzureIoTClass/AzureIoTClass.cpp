@@ -55,7 +55,7 @@
 
 
 
-static const unsigned long MQTT_LOOP_FREQUENCY = 10;
+static const unsigned long MQTT_LOOP_POST_DELAY = 20;
 
 void AzureIoTDevice::loop(){
 
@@ -75,10 +75,10 @@ void AzureIoTDevice::loop(){
     }
 
     azure_iot_do_work(&azure_iot);
-    if(millis() - mqttLastLoopTime > MQTT_LOOP_FREQUENCY){
-      mqttClient->loop();
-      mqttLastLoopTime = millis();
-    }
+    
+    mqttClient->poll();
+    delay(MQTT_LOOP_POST_DELAY);
+
 
     
     //Check spurious disconnections.
@@ -182,7 +182,7 @@ int AzureIoTDevice::sendMessage(az_span message)
   mqtt_message.payload = message;
   mqtt_message.qos = mqtt_qos_at_most_once;
 
-  int error = mqtt_client_publish(&mqtt_message);
+  int error = mqtt_client_publish(azure_iot.mqtt_client_handle, &mqtt_message);
   EXIT_IF_TRUE(error > 0, RESULT_ERROR, "Failed publishing to telemetry topic");
 
   return RESULT_OK;
@@ -237,15 +237,8 @@ void on_message_received(String &topic, String &payload)
 /*
  * See the documentation of `mqtt_client_init_function_t` in AzureIoT.h for details.
  */
-int AzureIoTDevice::mqtt_client_init(mqtt_client_config_t* mqtt_client_config)
+int AzureIoTDevice::mqtt_client_init(mqtt_client_config_t* mqtt_client_config, mqtt_client_handle_t *mqtt_client_handle)
 {
-  //MQTTClient* mqttClient = (MQTTClient*)(*mqtt_client_handle);
-
-  //mqttClient->begin(bear_ssl_client);
-  mqttClient->begin(*client);
-  mqttClient->onMessage(std::bind(&AzureIoTDevice::onMessageReceived, this, std::placeholders::_1, std::placeholders::_2));
-  //mqttClient->onMessage(on_message_received);
-  mqttClient->setTimeout(20000);
   int result;
 
   const char* client_id = (const char*)az_span_ptr(mqtt_client_config->client_id);
@@ -259,31 +252,21 @@ int AzureIoTDevice::mqtt_client_init(mqtt_client_config_t* mqtt_client_config)
   char address[128] = {0}; // Default to null-termination.
   memcpy(address, az_span_ptr(mqtt_client_config->address), az_span_size(mqtt_client_config->address));
 
-  //arduino_mqtt_client.setId(client_id);
-  //arduino_mqtt_client.setUsernamePassword(username, password);
-  //arduino_mqtt_client.setCleanSession(true);
-  //arduino_mqtt_client.onMessage(on_message_received);
+  mqttClient->setId(client_id);
+  mqttClient->setUsernamePassword(username, password);
+  mqttClient->setCleanSession(true);
+  mqttClient->onMessage(std::bind(&AzureIoTDevice::onMessageReceived, this, std::placeholders::_1, std::placeholders::_2));
 
   LogInfo("MQTT Client ID: %s", client_id);
   LogInfo("MQTT Username: %s", username);
-  LogInfo("MQTT Password: %s", password);
+  LogInfo("MQTT Password: ***");
   LogInfo("MQTT client address: %s", address);
   LogInfo("MQTT client port: %d", port);
-
-  mqttClient->setHost(address, port);
-  //mqttClient1.connect(client_id, username, password);
-
-  if(!mqttClient->connect(client_id, username, password)){
-    int code = mqttClient->lastError();
-    LogError("Cannot connect. Error Code: %d", code);
+  LogInfo("Let's try to connect!");
+  if(!mqttClient->connect(address, port)){
+    LogInfo("MQTT client failed to connect.");
     return RESULT_ERROR;
-  }
-  //while (!mqttClient->connect(client_id, username, password)) 
-  //{
-  //  int code = mqttClient->lastError();
-  //  LogError("Cannot connect. Error Code: %d", code);
-  //  delay(5000);
-  //}
+  } 
 
   LogInfo("MQTT client connected.");
 
@@ -292,6 +275,10 @@ int AzureIoTDevice::mqtt_client_init(mqtt_client_config_t* mqtt_client_config)
   {
     LogError("Failed updating azure iot client of MQTT connection.");
   }
+  else
+  {
+    *mqtt_client_handle = mqttClient;
+  }
 
   return result;
 }
@@ -299,14 +286,14 @@ int AzureIoTDevice::mqtt_client_init(mqtt_client_config_t* mqtt_client_config)
 /*
  * See the documentation of `mqtt_client_deinit_function_t` in AzureIoT.h for details.
  */
-int AzureIoTDevice::mqtt_client_deinit()
+int AzureIoTDevice::mqtt_client_deinit(mqtt_client_handle_t mqtt_client_handle)
 {
   int result;
-  //MQTTClient* mqttClient = (MQTTClient*)mqtt_client_handle;
+  MqttClient* arduino_mqtt_client_handle = (MqttClient*)mqtt_client_handle;
 
   LogInfo("MQTT client being disconnected.");
 
-  mqttClient->disconnect();
+  arduino_mqtt_client_handle->stop();
 
   result = azure_iot_mqtt_client_disconnected(&azure_iot);
   if (result != RESULT_OK)
@@ -320,16 +307,16 @@ int AzureIoTDevice::mqtt_client_deinit()
 /*
  * See the documentation of `mqtt_client_subscribe_function_t` in AzureIoT.h for details.
  */
-int AzureIoTDevice::mqtt_client_subscribe( az_span topic, mqtt_qos_t qos)
+int AzureIoTDevice::mqtt_client_subscribe(mqtt_client_handle_t mqtt_client_handle, az_span topic, mqtt_qos_t qos)
 {
   LogInfo("MQTT client subscribing to '%.*s'", az_span_size(topic), az_span_ptr(topic));
    
   int result;
-  //MQTTClient* mqttClient = (MQTTClient*)mqtt_client_handle;
+  MqttClient* arduino_mqtt_client_handle = (MqttClient*)mqtt_client_handle;
 
-  bool subscribed = mqttClient->subscribe((const char*)az_span_ptr(topic), (uint8_t)qos);
+  int mqtt_result = arduino_mqtt_client_handle->subscribe((const char*)az_span_ptr(topic), (uint8_t)qos);
   
-  if (subscribed) // ArduinoMqttClient: 1 on success, 0 on failure
+  if (mqtt_result == 1) // ArduinoMqttClient: 1 on success, 0 on failure
   {
       LogInfo("MQTT topic subscribed");
 
@@ -352,40 +339,57 @@ int AzureIoTDevice::mqtt_client_subscribe( az_span topic, mqtt_qos_t qos)
 /*
  * See the documentation of `mqtt_client_publish_function_t` in AzureIoT.h for details.
  */
-int AzureIoTDevice::mqtt_client_publish(mqtt_message_t* mqtt_message)
+int AzureIoTDevice::mqtt_client_publish(mqtt_client_handle_t mqtt_client_handle, mqtt_message_t* mqtt_message)
 {
-  LogInfo("Oriol: MQTT client publishing to '%s'", az_span_ptr(mqtt_message->topic));
-  //LogInfo("Oriol: MQTT client publishing payload '%s'", az_span_ptr(mqtt_message->payload));
-  //LogInfo("Oriol: MQTT payload size: '%i'", az_span_size(mqtt_message->payload));
+  LogInfo("MQTT client publishing to '%s'", az_span_ptr(mqtt_message->topic));
 
   int result;
-  //MQTTClient* mqttClient = (MQTTClient*)mqtt_client_handle;
+  MqttClient* arduino_mqtt_client_handle = (MqttClient*)mqtt_client_handle;
 
+  int mqtt_result = arduino_mqtt_client_handle->beginMessage(
+                        (const char*)az_span_ptr(mqtt_message->topic), 
+                        MQTT_DO_NOT_RETAIN_MSG, 
+                        (uint8_t)mqtt_message->qos);
 
-
-  bool mqtt_sent = mqttClient->publish(
-                        (const char*)az_span_ptr(mqtt_message->topic),
-                        (const char*)az_span_ptr(mqtt_message->payload),
-                        az_span_size(mqtt_message->payload),
-                        MQTT_DO_NOT_RETAIN_MSG,
-                        (int)mqtt_message->qos);
-    
-  if (mqtt_sent)
+  if (mqtt_result == 1) // ArduinoMqttClient: 1 on success, 0 on failure 
   {
-    result = RESULT_OK;
+    int messageLength = az_span_size(mqtt_message->payload);
+    Serial.print("Message length to loop: ");
+    Serial.println(messageLength);
+    char* msg = (char*)az_span_ptr(mqtt_message->payload);
+    for(int i=0; i<messageLength; i++){
+      arduino_mqtt_client_handle->write(msg[i]);
+    }
+
+    //arduino_mqtt_client_handle->print((const char*)az_span_ptr(mqtt_message->payload));
+    mqtt_result = arduino_mqtt_client_handle->endMessage();
+    if (mqtt_result == 1)
+    {
+      int packet_id = 0; // packet id is private in ArduinoMqttClient library.
+      result = azure_iot_mqtt_client_publish_completed(&azure_iot, packet_id);
+      if (result != RESULT_OK)
+      {
+        LogError("Failed updating azure iot client of MQTT publish.");
+      }
+    }
+    else
+    {
+      LogError("ArduinoMqttClient endMessage failed.");
+      result = RESULT_ERROR;
+    }
   }
   else
   {
-    LogError("ArduinoMqttClient endMessage failed.");
+    LogError("ArduinoMqttClient beginMessage failed.");
     result = RESULT_ERROR;
   }
-  
+ 
   return result;
 }
 
 
 
-void AzureIoTDevice::onMessageReceived(String &topic, String &payload) 
+void AzureIoTDevice::onMessageReceived2(String &topic, String &payload) 
 {
   LogInfo("MQTT message received inside Class.");
 
@@ -408,6 +412,27 @@ void AzureIoTDevice::onMessageReceived(String &topic, String &payload)
   if (azure_iot_mqtt_client_message_received(&azure_iot, &mqtt_message) != 0)
   {
     LogError("azure_iot_mqtt_client_message_received failed (topic=%s).", topic.c_str());
+  }
+}
+
+void AzureIoTDevice::onMessageReceived(MqttClient *client, int message_size){
+  LogInfo("MQTT message received.");
+
+  mqtt_message_t mqtt_message;
+
+  // Copy message topic. Avoids any inadvertant ArduinoMqttClient _rxState or _rxMessageTopic changes.
+  // messageTopic() must be called before read();
+  String message_topic = mqttClient->messageTopic();
+
+  mqttClient->read(data_buffer, (size_t)message_size);
+
+  mqtt_message.topic = az_span_create((uint8_t*)message_topic.c_str(), message_topic.length());
+  mqtt_message.payload = az_span_create(data_buffer, message_size);
+  mqtt_message.qos = mqtt_qos_at_most_once; // QoS is unused by azure_iot_mqtt_client_message_received. 
+
+  if (azure_iot_mqtt_client_message_received(&azure_iot, &mqtt_message) != 0)
+  {
+    LogError("azure_iot_mqtt_client_message_received failed (topic=%s).", mqttClient->messageTopic().c_str());
   }
 }
 
@@ -550,7 +575,7 @@ int AzureIoTDevice::azure_iot_stop(azure_iot_t* azure_iot)
   {
     if (azure_iot->mqtt_client_handle != NULL)
     {
-      if (mqtt_client_deinit() != 0)
+      if (mqtt_client_deinit(azure_iot->mqtt_client_handle) != 0)
       {
         azure_iot->state = azure_iot_state_error;
         LogError("Failed deinitializing MQTT client.");
@@ -617,13 +642,14 @@ azure_iot_status_t AzureIoTDevice::azure_iot_get_status(azure_iot_t* azure_iot)
   return status;
 }
 
+
 void AzureIoTDevice::azure_iot_do_work(azure_iot_t* azure_iot)
 {
   _az_PRECONDITION_NOT_NULL(azure_iot);
 
   int result;
   int64_t now;
-  int error;
+  int mqtt_result;
   az_result azrc;
   size_t length;
   mqtt_client_config_t mqtt_client_config;
@@ -637,24 +663,22 @@ void AzureIoTDevice::azure_iot_do_work(azure_iot_t* azure_iot)
     case azure_iot_state_initialized:
       break;
     case azure_iot_state_started:
-      if (azure_iot->config->use_device_provisioning && !is_device_provisioned(azure_iot))
+      if (azure_iot->config->use_device_provisioning &&
+          !is_device_provisioned(azure_iot))
       {
         // This seems harmless, but...
         // azure_iot->config->data_buffer always points to the original buffer provided by the user.
-        // azure_iot->data_buffer is an intermediate pointer. It starts by pointing to
-        // azure_iot->config->data_buffer. In the steps below the code might need to retain part of
-        // azure_iot->data_buffer for saving some critical information, namely the DPS operation id,
-        // the provisioned IoT Hub FQDN and provisioned Device ID (if provisioning is being used).
-        // In these cases, azure_iot->data_buffer will then point to `the remaining available space`
-        // of azure_iot->config->data_buffer after deducting the spaces for the data mentioned above
-        // (DPS operation id, IoT Hub FQDN and Device ID). Not all these data exist at the same time
-        // though. Memory (from azure_iot->data_buffer) is taken/reserved for the `Operation ID`
-        // while provisioning is in progress, but as soon as it is succesfully completed the
-        // `Operation ID` is no longer needed, so its memory is released back into
-        // azure_iot->data_buffer, but then space is reserved again for the provisioned IoT Hub FQDN
-        // and Device ID. Finally, when the client is stopped and started again, it does not do
-        // provisioning again if done already. In such case, the logic needs to preserve the spaces
-        // reserved for IoT Hub FQDN and Device ID previously provisioned.
+        // azure_iot->data_buffer is an intermediate pointer. It starts by pointing to azure_iot->config->data_buffer.
+        // In the steps below the code might need to retain part of azure_iot->data_buffer for saving some critical information,
+        // namely the DPS operation id, the provisioned IoT Hub FQDN and provisioned Device ID (if provisioning is being used).
+        // In these cases, azure_iot->data_buffer will then point to `the remaining available space` of azure_iot->config->data_buffer
+        // after deducting the spaces for the data mentioned above (DPS operation id, IoT Hub FQDN and Device ID).
+        // Not all these data exist at the same time though.
+        // Memory (from azure_iot->data_buffer) is taken/reserved for the `Operation ID` while provisioning is in progress,
+        // but as soon as it is succesfully completed the `Operation ID` is no longer needed, so its memory is released back into
+        // azure_iot->data_buffer, but then space is reserved again for the provisioned IoT Hub FQDN and Device ID.
+        // Finally, when the client is stopped and started again, it does not do provisioning again if done already.
+        // In such case, the logic needs to preserve the spaces reserved for IoT Hub FQDN and Device ID previously provisioned.
         azure_iot->data_buffer = azure_iot->config->data_buffer;
 
         result = get_mqtt_client_config_for_dps(azure_iot, &mqtt_client_config);
@@ -666,28 +690,25 @@ void AzureIoTDevice::azure_iot_do_work(azure_iot_t* azure_iot)
         azure_iot->state = azure_iot_state_connecting_to_hub;
       }
 
-      if (result != 0
-          || mqtt_client_init(
-                 &mqtt_client_config)
-              != 0)
+      if (result != RESULT_OK || 
+          mqtt_client_init(&mqtt_client_config, &azure_iot->mqtt_client_handle) != RESULT_OK)
       {
         azure_iot->state = azure_iot_state_error;
         LogError("Failed initializing MQTT client.");
         return;
       }
-
       break;
     case azure_iot_state_connecting_to_dps:
       break;
     case azure_iot_state_connected_to_dps:
       // Subscribe to DPS topic.
       azure_iot->state = azure_iot_state_subscribing_to_dps;
-
-      error = mqtt_client_subscribe(
+      mqtt_result = mqtt_client_subscribe(
+          azure_iot->mqtt_client_handle, 
           AZ_SPAN_FROM_STR(AZ_IOT_PROVISIONING_CLIENT_REGISTER_SUBSCRIBE_TOPIC),
           mqtt_qos_at_most_once);
 
-      if (error)
+      if (mqtt_result != RESULT_OK)
       {
         azure_iot->state = azure_iot_state_error;
         LogError("Failed subscribing to Azure Device Provisioning respose topic.");
@@ -701,10 +722,7 @@ void AzureIoTDevice::azure_iot_do_work(azure_iot_t* azure_iot)
       data_buffer = azure_iot->data_buffer;
 
       azrc = az_iot_provisioning_client_register_get_publish_topic(
-          &azure_iot->dps_client,
-          (char*)az_span_ptr(data_buffer),
-          az_span_size(data_buffer),
-          &length);
+          &azure_iot->dps_client, (char*)az_span_ptr(data_buffer), az_span_size(data_buffer), &length);
 
       if (az_result_failed(azrc))
       {
@@ -715,8 +733,7 @@ void AzureIoTDevice::azure_iot_do_work(azure_iot_t* azure_iot)
 
       mqtt_message.topic = split_az_span(data_buffer, length + 1, &data_buffer);
 
-      if (az_span_is_content_equal(mqtt_message.topic, AZ_SPAN_EMPTY)
-          || az_span_is_content_equal(data_buffer, AZ_SPAN_EMPTY))
+      if (az_span_is_content_equal(mqtt_message.topic, AZ_SPAN_EMPTY) || az_span_is_content_equal(data_buffer, AZ_SPAN_EMPTY))
       {
         azure_iot->state = azure_iot_state_error;
         LogError("Failed reserving memory for DPS register payload.");
@@ -724,8 +741,7 @@ void AzureIoTDevice::azure_iot_do_work(azure_iot_t* azure_iot)
       }
 
       dps_register_custom_property = generate_dps_register_custom_property(
-          azure_iot->config->model_id, data_buffer, &mqtt_message.payload);
-      
+        azure_iot->config->model_id, data_buffer, &mqtt_message.payload);
 
       if (az_span_is_content_equal(dps_register_custom_property, AZ_SPAN_EMPTY))
       {
@@ -753,9 +769,10 @@ void AzureIoTDevice::azure_iot_do_work(azure_iot_t* azure_iot)
       mqtt_message.qos = mqtt_qos_at_most_once;
       azure_iot->state = azure_iot_state_provisioning_waiting;
 
-      error = mqtt_client_publish(&mqtt_message);
 
-      if (error > 0)
+      mqtt_result = mqtt_client_publish(azure_iot->mqtt_client_handle, &mqtt_message);
+      
+      if (mqtt_result != RESULT_OK)
       {
         azure_iot->state = azure_iot_state_error;
         LogError("Failed publishing to DPS registration topic");
@@ -780,18 +797,16 @@ void AzureIoTDevice::azure_iot_do_work(azure_iot_t* azure_iot)
       }
 
       azrc = az_iot_provisioning_client_query_status_get_publish_topic(
-          &azure_iot->dps_client,
-          azure_iot->dps_operation_id, // register_response->operation_id,
-          (char*)az_span_ptr(azure_iot->data_buffer),
-          (size_t)az_span_size(azure_iot->data_buffer),
-          &length);
+        &azure_iot->dps_client,
+        azure_iot->dps_operation_id, // register_response->operation_id,
+        (char*)az_span_ptr(azure_iot->data_buffer),
+        (size_t)az_span_size(azure_iot->data_buffer),
+        &length);
 
       if (az_result_failed(azrc))
       {
         azure_iot->state = azure_iot_state_error;
-        LogError(
-            "Unable to get provisioning query status publish topic: az_result return code 0x%08x.",
-            azrc);
+        LogError("Unable to get provisioning query status publish topic: az_result return code 0x%08x.", azrc);
         return;
       }
 
@@ -802,9 +817,9 @@ void AzureIoTDevice::azure_iot_do_work(azure_iot_t* azure_iot)
       azure_iot->state = azure_iot_state_provisioning_waiting;
       azure_iot->dps_last_query_time = now;
 
-      error = mqtt_client_publish(&mqtt_message);
-
-      if (error > 0)
+      mqtt_result = mqtt_client_publish(azure_iot->mqtt_client_handle, &mqtt_message);
+      
+      if (mqtt_result != RESULT_OK)
       {
         azure_iot->state = azure_iot_state_error;
         LogError("Failed publishing to DPS status query topic");
@@ -816,8 +831,9 @@ void AzureIoTDevice::azure_iot_do_work(azure_iot_t* azure_iot)
       break;
     case azure_iot_state_provisioned:
       // Disconnect from Provisioning Service first.
-      if (azure_iot->config->use_device_provisioning && azure_iot->mqtt_client_handle != NULL
-          && mqtt_client_deinit() != 0)
+      if (azure_iot->config->use_device_provisioning &&
+          azure_iot->mqtt_client_handle != NULL &&
+          mqtt_client_deinit(azure_iot->mqtt_client_handle) != 0)
       {
         azure_iot->state = azure_iot_state_error;
         LogError("Failed de-initializing MQTT client.");
@@ -838,9 +854,7 @@ void AzureIoTDevice::azure_iot_do_work(azure_iot_t* azure_iot)
 
       azure_iot->state = azure_iot_state_connecting_to_hub;
 
-      if (mqtt_client_init(
-              &mqtt_client_config)
-          != 0)
+      if (mqtt_client_init(&mqtt_client_config, &azure_iot->mqtt_client_handle) != RESULT_OK)
       {
         azure_iot->state = azure_iot_state_error;
         LogError("Failed initializing MQTT client for IoT Hub connection.");
@@ -853,11 +867,12 @@ void AzureIoTDevice::azure_iot_do_work(azure_iot_t* azure_iot)
     case azure_iot_state_connected_to_hub:
       azure_iot->state = azure_iot_state_subscribing_to_pnp_cmds;
 
-      error = mqtt_client_subscribe(
+      mqtt_result = mqtt_client_subscribe(
+          azure_iot->mqtt_client_handle,
           AZ_SPAN_FROM_STR(AZ_IOT_HUB_CLIENT_COMMANDS_SUBSCRIBE_TOPIC),
           mqtt_qos_at_least_once);
 
-      if (error)
+      if (mqtt_result != RESULT_OK)
       {
         azure_iot->state = azure_iot_state_error;
         LogError("Failed subscribing to IoT Plug and Play commands topic.");
@@ -870,11 +885,12 @@ void AzureIoTDevice::azure_iot_do_work(azure_iot_t* azure_iot)
     case azure_iot_state_subscribed_to_pnp_cmds:
       azure_iot->state = azure_iot_state_subscribing_to_pnp_props;
 
-      error = mqtt_client_subscribe(
-          AZ_SPAN_FROM_STR(AZ_IOT_HUB_CLIENT_PROPERTIES_MESSAGE_SUBSCRIBE_TOPIC),
+      mqtt_result = mqtt_client_subscribe(
+          azure_iot->mqtt_client_handle,
+          AZ_SPAN_FROM_STR(AZ_IOT_HUB_CLIENT_PROPERTIES_MESSAGE_SUBSCRIBE_TOPIC), 
           mqtt_qos_at_least_once);
 
-      if (error)
+      if (mqtt_result != RESULT_OK)
       {
         azure_iot->state = azure_iot_state_error;
         LogError("Failed subscribing to IoT Plug and Play properties topic.");
@@ -887,11 +903,12 @@ void AzureIoTDevice::azure_iot_do_work(azure_iot_t* azure_iot)
     case azure_iot_state_subscribed_to_pnp_props:
       azure_iot->state = azure_iot_state_subscribing_to_pnp_writable_props;
 
-      error = mqtt_client_subscribe(
+      mqtt_result = mqtt_client_subscribe(
+          azure_iot->mqtt_client_handle,
           AZ_SPAN_FROM_STR(AZ_IOT_HUB_CLIENT_PROPERTIES_WRITABLE_UPDATES_SUBSCRIBE_TOPIC),
           mqtt_qos_at_least_once);
 
-      if (error)
+      if (mqtt_result != RESULT_OK)
       {
         azure_iot->state = azure_iot_state_error;
         LogError("Failed subscribing to IoT Plug and Play writable properties topic.");
@@ -914,7 +931,7 @@ void AzureIoTDevice::azure_iot_do_work(azure_iot_t* azure_iot)
       else if ((azure_iot->sas_token_expiration_time - now) < SAS_TOKEN_REFRESH_THRESHOLD_IN_SECS)
       {
         azure_iot->state = azure_iot_state_refreshing_sas;
-        if (mqtt_client_deinit() != 0)
+        if (mqtt_client_deinit(azure_iot->mqtt_client_handle) != 0)
         {
           azure_iot->state = azure_iot_state_error;
           LogError("Failed de-initializing MQTT client.");
@@ -932,6 +949,7 @@ void AzureIoTDevice::azure_iot_do_work(azure_iot_t* azure_iot)
   }
 }
 
+
 int AzureIoTDevice::azure_iot_send_telemetry(azure_iot_t* azure_iot, az_span message)
 {
   _az_PRECONDITION_NOT_NULL(azure_iot);
@@ -942,19 +960,15 @@ int AzureIoTDevice::azure_iot_send_telemetry(azure_iot_t* azure_iot, az_span mes
   mqtt_message_t mqtt_message;
 
   azr = az_iot_hub_client_telemetry_get_publish_topic(
-      &azure_iot->iot_hub_client,
-      NULL,
-      (char*)az_span_ptr(azure_iot->data_buffer),
-      az_span_size(azure_iot->data_buffer),
-      &topic_length);
+      &azure_iot->iot_hub_client, NULL, (char*)az_span_ptr(azure_iot->data_buffer), az_span_size(azure_iot->data_buffer), &topic_length);
   EXIT_IF_AZ_FAILED(azr, RESULT_ERROR, "Failed to get the telemetry topic");
 
   mqtt_message.topic = az_span_slice(azure_iot->data_buffer, 0, topic_length + 1);
   mqtt_message.payload = message;
   mqtt_message.qos = mqtt_qos_at_most_once;
 
-  int error = mqtt_client_publish(&mqtt_message);
-  EXIT_IF_TRUE(error > 0, RESULT_ERROR, "Failed publishing to telemetry topic");
+  int mqtt_result = mqtt_client_publish(azure_iot->mqtt_client_handle, &mqtt_message);
+  EXIT_IF_TRUE(mqtt_result != RESULT_OK, RESULT_ERROR, "Failed publishing to telemetry topic");
 
   return RESULT_OK;
 }
@@ -987,8 +1001,9 @@ int AzureIoTDevice::azure_iot_send_properties_update(azure_iot_t* azure_iot, uin
   mqtt_message.payload = message;
   mqtt_message.qos = mqtt_qos_at_most_once;
 
-  int error = mqtt_client_publish(&mqtt_message);
-  EXIT_IF_TRUE(error > 0, RESULT_ERROR, "Failed publishing to reported properties topic.");
+
+  int mqtt_result = mqtt_client_publish(azure_iot->mqtt_client_handle, &mqtt_message);
+  EXIT_IF_TRUE(mqtt_result != RESULT_OK, RESULT_ERROR, "Failed publishing to reported properties topic.");
 
   return RESULT_OK;
 }
@@ -1055,7 +1070,7 @@ int AzureIoTDevice::azure_iot_mqtt_client_subscribe_completed(azure_iot_t* azure
 {
   _az_PRECONDITION_NOT_NULL(azure_iot);
 
-  (void)packet_id;
+  packet_id;
   int result;
 
   if (azure_iot->state == azure_iot_state_subscribing_to_dps)
@@ -1299,7 +1314,7 @@ int AzureIoTDevice::azure_iot_send_command_response(
   az_result azrc;
   mqtt_message_t mqtt_message;
   size_t topic_length;
-  int error;
+  int mqtt_result;
 
   mqtt_message.topic = azure_iot->data_buffer;
 
@@ -1316,9 +1331,9 @@ int AzureIoTDevice::azure_iot_send_command_response(
   mqtt_message.payload = payload;
   mqtt_message.qos = mqtt_qos_at_most_once;
 
-  error = mqtt_client_publish(&mqtt_message);
+  mqtt_result = mqtt_client_publish(azure_iot->mqtt_client_handle, &mqtt_message);
 
-  if (error > 0)
+  if (mqtt_result != RESULT_OK)
   {
     azure_iot->state = azure_iot_state_error;
     LogError(
