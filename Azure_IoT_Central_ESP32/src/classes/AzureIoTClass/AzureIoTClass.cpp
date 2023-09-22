@@ -237,12 +237,6 @@ void on_message_received(String &topic, String &payload)
 int AzureIoTDevice::mqtt_client_init(mqtt_client_config_t* mqtt_client_config, mqtt_client_handle_t *mqtt_client_handle)
 {
   //MQTTClient* mqttClient = (MQTTClient*)(*mqtt_client_handle);
-
-  //mqttClient->begin(bear_ssl_client);
-  mqttClient->begin(*client);
-  mqttClient->onMessage(std::bind(&AzureIoTDevice::onMessageReceived, this, std::placeholders::_1, std::placeholders::_2));
-  //mqttClient->onMessage(on_message_received);
-  mqttClient->setTimeout(20000);
   int result;
 
   const char* client_id = (const char*)az_span_ptr(mqtt_client_config->client_id);
@@ -256,10 +250,13 @@ int AzureIoTDevice::mqtt_client_init(mqtt_client_config_t* mqtt_client_config, m
   char address[128] = {0}; // Default to null-termination.
   memcpy(address, az_span_ptr(mqtt_client_config->address), az_span_size(mqtt_client_config->address));
 
-  //arduino_mqtt_client.setId(client_id);
-  //arduino_mqtt_client.setUsernamePassword(username, password);
-  //arduino_mqtt_client.setCleanSession(true);
-  //arduino_mqtt_client.onMessage(on_message_received);
+
+  mqttClient->begin(*client);
+  mqttClient->onMessage(std::bind(&AzureIoTDevice::onMessageReceived, this, std::placeholders::_1, std::placeholders::_2));
+  mqttClient->setCleanSession(true);
+  mqttClient->setKeepAlive(MQTT_KEEP_ALIVE);
+  mqttClient->setTimeout(MQTT_TIMEOUT);  //To be changed
+
 
   LogInfo("MQTT Client ID: %s", client_id);
   LogInfo("MQTT Username: %s", username);

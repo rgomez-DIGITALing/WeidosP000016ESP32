@@ -15,6 +15,9 @@ enum securityType_t{
 #define AZ_IOT_DATA_BUFFER_SIZE 4096
 #define DATA_BUFFER_SIZE 4096
 
+static const int MQTT_KEEP_ALIVE = 60;
+static const int MQTT_TIMEOUT = 5000;
+
 
 class AzureIoTDevice{
     public:
