@@ -64,6 +64,7 @@ class DataHub{
       //payloadGenerator generatePayload;
       
       payloadGenerator generatePayload;
+      int numSendTries = 0;
       T currentPayload;
 };
 
@@ -77,6 +78,7 @@ void DataHub<T,N>::loop(){
             if(dataBuffer.pop(currentPayload)){
                 state = MOVE_MESSAGE;
                 deviceId = currentPayload.deviceId;
+                numSendTries = 1;
                 LogInfo("Info for device ID: %i poped", deviceId);
             }
             break;
@@ -98,13 +100,14 @@ void DataHub<T,N>::loop(){
             break;
 
         case TELEMETRY_SENT:
-            LogInfo("Message successfully sent.");
+            LogInfo("Message successfully sent. Required number of tries: %i", numSendTries);
             state = GET_DATA_FROM_FIFO;
             break;
 
         case TELEMETRY_SEND_FAILURE:
-            LogError("Failed sending telemetry");
-            state = GET_DATA_FROM_FIFO;
+            LogError("Failed sending telemetry. Current number of tries: %i", numSendTries++);
+            
+            state = MOVE_MESSAGE;
             break;
 
         default:
