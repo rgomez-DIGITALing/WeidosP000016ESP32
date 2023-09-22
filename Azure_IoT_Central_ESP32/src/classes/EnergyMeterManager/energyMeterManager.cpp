@@ -48,7 +48,7 @@ EM750 aireComprimidoEM(modbusTCPClient, ipAireComprimido);
 
 EnergyMeterManager general(generalEM, 1, 5);
 EnergyMeterManager robot(robotEM, 2, 5);
-EnergyMeterManager lineaEmpaquetadoEM(lineaEmpaquetadoEM, 3, 5);
+EnergyMeterManager lineaEmpaquetado(lineaEmpaquetadoEM, 3, 5);
 EnergyMeterManager aireCondicionado(aireCondicionadoEM, 4, 5);
 EnergyMeterManager aireComprimido(aireComprimidoEM, 5, 5);
 #endif
