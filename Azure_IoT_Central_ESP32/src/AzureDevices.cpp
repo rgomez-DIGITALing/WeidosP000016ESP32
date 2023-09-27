@@ -74,6 +74,7 @@ void configureAzureDevices(){
     Azure2->setModelId(emModelId);
     Azure2->init();
 
+    #ifndef BATCH_IT
     Azure3->usingSasToken(IOT_CONFIG_DEVICE_3_KEY);
     Azure3->setDeviceId(IOT_CONFIG_DEVICE_3_ID);
     Azure3->setDpsScopeId(scopeId);
@@ -96,6 +97,7 @@ void configureAzureDevices(){
     Azure5->setGatewayId(gatewayId);
     Azure5->setModelId(emModelId);
     Azure5->init();
+    #endif
 }
 
 

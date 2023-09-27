@@ -53,6 +53,18 @@ EnergyMeterManager aireCondicionado(aireCondicionadoEM, 4, 5);
 EnergyMeterManager aireComprimido(aireComprimidoEM, 5, 5);
 #endif
 
+#ifdef BATCH_IT
+IPAddress ipCompresorIT1(10, 88, 47, 224);                   //Compresor IT 1
+IPAddress ipCompresorIT2(10, 88, 47, 225);                     //Compresor IT 2
+
+EM750 compresorIT1EM(modbusTCPClient, ipCompresorIT1);
+EM750 compresorIT2EM(modbusTCPClient, ipCompresorIT2);
+
+EnergyMeterManager compresorIT1(compresorIT1EM, 1, 5);
+EnergyMeterManager compresorIT2(compresorIT2EM, 2, 5);
+
+#endif
+
 
 
 EnergyMeterUpdateState EnergyMeterManager::loop(){

@@ -66,3 +66,8 @@ extern EnergyMeterManager aireCondicionado;
 extern EnergyMeterManager aireComprimido;
 extern EnergyMeterManager lineaEmpaquetado;
 #endif
+
+#ifdef BATCH_IT
+extern EnergyMeterManager compresorIT1;
+extern EnergyMeterManager compresorIT2;
+#endif

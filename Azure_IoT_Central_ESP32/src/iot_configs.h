@@ -15,9 +15,11 @@
 // char* partNumber = "2540910000";
 
 //#define BATCH_TESTS
-#define BATCH_TESTS_2
+//#define BATCH_TESTS_2
 //#define BATCH_MODULAS_TRANSELEVADORES
 //#define BATCH_GENERAL_LINEA_EMPAQUETADO
+#define BATCH_IT
+
 #if defined BATCH_MODULAS_TRANSELEVADORES || defined BATCH_TESTS || defined BATCH_TESTS_2
     #define USING_MODULAS_TRANSELEVADORES
 #endif
@@ -33,10 +35,13 @@
 #define IDENTIFIER_MODULA_11 "400-03-EM750-08"
 #define IDENTIFIER_AIRE_ACONDICIONADO "400-03-EM750-09"
 #define IDENTIFIER_AIRE_COMPRIMIDO "400-03-EM750-10"
+#define IDENTIFIER_COMPRESOR_IT_1 "400-03-EM750-11"
+#define IDENTIFIER_COMPRESOR_IT_2 "400-03-EM750-12"
 
 #define LOCATION_NAVE_400 "Nave 400"
 #define LOCATION_CUADRO_ALMACEN "Cuadro general en Almacén"
 #define LOCATION_CUADRO_ENTRADA "Cuadro General Entrada"
+#define LOCATION_SALA_IT "Sala IT"
 
 #define ASSET_MODULA_4 "Modula 4"
 #define ASSET_MODULA_11 "Modula 11"
@@ -48,6 +53,8 @@
 #define ASSET_LINEA_EMPAQUETADO "Linea empaquetado"
 #define ASSET_AIRE_ACONDICIONADO "AC Oficinas (General por conducto)"
 #define ASSET_AIRE_COMPRIMIDO "Aire comprimido"
+#define ASSET_COMPRESOR_IT_1 "Compresor IT 1"
+#define ASSET_COMPRESOR_IT_2 "Compresor IT 2"
 
 
 
@@ -121,6 +128,24 @@
 #define IOT_CONFIG_DEVICE_3_KEY "9cbOezaVa4b67RPrMcc61gGjzcBA3QLrmzf3hN31sPE="          //Linea Empaquetado (2)
 #define IOT_CONFIG_DEVICE_4_KEY "YFcaJRjCNx/AOYPcmXZh1toVzXe7JBUz/ap45zWR+OY="          //Aire Condicionado (2)
 #define IOT_CONFIG_DEVICE_5_KEY "rjUQAd80tnTiBVITw8FjbdmNUxqNCJqetSEljngkBho="          //Aire Comprimido (2)
+#endif
+
+
+#ifdef BATCH_IT
+#define IOT_CONFIG_DEVICE_GATEWAY_ID "1e6woguwe4o"     //Gateway IT
+#define IOT_CONFIG_DEVICE_1_ID "2fhsdtielz1"           //Compresor IT 1
+#define IOT_CONFIG_DEVICE_2_ID "1mxx5f1jx1j"           //Compresor IT 2
+#define IOT_CONFIG_DEVICE_3_ID ""           //Unused
+#define IOT_CONFIG_DEVICE_4_ID ""           //Unused
+#define IOT_CONFIG_DEVICE_5_ID ""           //Unused
+
+#define IOT_CONFIG_DEVICE_GATEWAY_KEY "1F8a2WfUIsXtOWBBEcBLKyBmgOYG0AzthtRWV9sZ970="    //Gateway IT
+#define IOT_CONFIG_DEVICE_1_KEY "tZiK+dwMMBQ+ZkHGdBzcMCnECCMfY7HZjrk8kgJ6MdM="          //Compresor IT 1
+#define IOT_CONFIG_DEVICE_2_KEY "FuF6xXcjVVD6K8UL4OT2OyTQHe26qcESkZlLVBYH8K4="          //Compresor IT 2
+#define IOT_CONFIG_DEVICE_3_KEY ""                                                     //Unused
+#define IOT_CONFIG_DEVICE_4_KEY ""                                                      //Unused
+#define IOT_CONFIG_DEVICE_5_KEY ""                                                      //Unused
+
 #endif
 
 

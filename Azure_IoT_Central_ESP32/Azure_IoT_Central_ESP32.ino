@@ -120,14 +120,12 @@ void setup()
   systemClock.begin();
   ArduinoBearSSL.onGetTime(get_time); // Required for server trusted root validation.
 
-
   
   createObjects();
   fillArray();
   fillDataHubsArray();
   configureAzureDevices();
   setEnergyMeterProperties();
-
 
   weidosMetadata_t metadata = WeidosESP32.getMetadata();
   metadata.printMetadata();
@@ -168,9 +166,11 @@ void loop()
     Azure0->stop();
     Azure1->stop();
     Azure2->stop();
+    #ifndef BATCH_IT
     Azure3->stop();
     Azure4->stop();
     Azure5->stop();
+    #endif
   }
 
 
@@ -207,26 +207,32 @@ void loop()
     Azure0->loop();
     Azure1->loop();
     Azure2->loop();
+    #ifndef BATCH_IT
     Azure3->loop();
     Azure4->loop();
     Azure5->loop();
+    #endif
   }
 
   Azure0->statusChange();
   Azure1->statusChange();
   Azure2->statusChange();
+  #ifndef BATCH_IT
   Azure3->statusChange();
   Azure4->statusChange();
   Azure5->statusChange();
+  #endif
 
   if(millis()-prevTime3>DELTA_TIME3){
     prevTime3 = millis();
     LogInfo("Azure0 state: %i", Azure0->getStatus());
     LogInfo("Azure1 state: %i", Azure1->getStatus());
     LogInfo("Azure2 state: %i", Azure2->getStatus());
+    #ifndef BATCH_IT
     LogInfo("Azure3 state: %i", Azure3->getStatus());
     LogInfo("Azure4 state: %i", Azure4->getStatus());
     LogInfo("Azure5 state: %i", Azure5->getStatus());
+    #endif
   }
 
   if(millis()-prevTime2>DELTA_TIME2){
@@ -255,13 +261,27 @@ void loopEnergyMeters(){
   if(aireComprimido.loop() != ENERGY_METER_IDLE) return;
   #endif
 
+
+  #ifdef BATCH_IT
+  if(compresorIT1.loop() != ENERGY_METER_IDLE) return;
+  if(compresorIT2.loop() != ENERGY_METER_IDLE) return;
+  #endif
+
   return;
 }
 
 void loopDataHubs(){
+  #ifndef BATCH_IT
   for(int i=0;i<5; i++){
     energyMeterDataHubs[i]->loop();
   }
+  #endif
+
+  #ifdef BATCH_IT
+  for(int i=0;i<2; i++){
+    energyMeterDataHubs[i]->loop();
+  }
+  #endif
 }
 
 
@@ -342,6 +362,20 @@ void setEnergyMeterProperties(){
   energyMeter->setLocation1(LOCATION_NAVE_400);
   energyMeter->setLocation2(LOCATION_CUADRO_ALMACEN);
   #endif
+
+  #ifdef BATCH_IT
+  energyMeter = compresorIT1.getEnergyMeter();
+  energyMeter->setAsset(ASSET_COMPRESOR_IT_1);
+  energyMeter->setIdentifier(IDENTIFIER_COMPRESOR_IT_1);
+  energyMeter->setLocation1(LOCATION_NAVE_400);
+  energyMeter->setLocation2(LOCATION_SALA_IT);
+
+  energyMeter = compresorIT2.getEnergyMeter();
+  energyMeter->setAsset(ASSET_COMPRESOR_IT_2);
+  energyMeter->setIdentifier(IDENTIFIER_COMPRESOR_IT_2);
+  energyMeter->setLocation1(LOCATION_NAVE_400);
+  energyMeter->setLocation2(LOCATION_SALA_IT);
+  #endif
 }
 
 
@@ -362,6 +396,11 @@ void triggerEnergyMeters(){
   aireComprimido.triggerUpdate();
   #endif
 
+  #ifdef BATCH_IT
+  compresorIT1.triggerUpdate();
+  compresorIT2.triggerUpdate();
+  #endif
+
 }
 
 
@@ -380,5 +419,10 @@ void sendEnergyMeterProperties(){
   lineaEmpaquetado.sendProperties();
   aireCondicionado.sendProperties();
   aireComprimido.sendProperties();
+  #endif
+
+  #ifdef BATCH_IT
+  compresorIT1.sendProperties();
+  compresorIT2.sendProperties();
   #endif
 }
