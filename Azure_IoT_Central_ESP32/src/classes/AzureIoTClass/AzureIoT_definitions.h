@@ -47,6 +47,10 @@
  * with any MQTT client used in the user application.
  */
 
+class AzureIoTDevice;
+
+
+
 #define MQTT_QOS_AT_MOST_ONCE 0
 #define MQTT_QOS_AT_LEAST_ONCE 1
 #define MQTT_QOS_EXACTLY_ONCE 2
@@ -332,7 +336,7 @@ typedef struct command_request_t_struct
  *
  * @return                   Nothing.
  */
-typedef void (*command_request_received_t)(command_request_t command);
+typedef void (*command_request_received_t)(AzureIoTDevice* azureIoTDevice, command_request_t command);
 
 /*
  * @brief    All the possible statuses returned by `azure_iot_get_status`.

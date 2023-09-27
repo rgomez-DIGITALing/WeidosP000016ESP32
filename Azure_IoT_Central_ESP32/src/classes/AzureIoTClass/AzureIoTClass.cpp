@@ -7,6 +7,9 @@
 #include <clockModule.h>
 #include <LogModule.h>
 
+#include "mqttCallbacks.h"
+
+
 /* --- Function Returns --- */
 #define RESULT_OK 0
 #define RESULT_ERROR __LINE__
@@ -120,7 +123,7 @@ void AzureIoTDevice::init(){
   azure_iot_config.data_manipulation_functions.base64_encode = base64_encode;
   azure_iot_config.on_properties_update_completed = on_properties_update_completed;
   azure_iot_config.on_properties_received = on_properties_received;
-  azure_iot_config.on_command_request_received = on_command_request_received;
+  azure_iot_config.on_command_request_received = default_on_command_request_received;
 
   azure_iot_init(&azure_iot, &azure_iot_config);
   azure_iot_start(&azure_iot);
@@ -1162,7 +1165,7 @@ int AzureIoTDevice::azure_iot_mqtt_client_message_received(azure_iot_t* azure_io
           command_request.command_name = az_sdk_command_request.command_name;
           command_request.payload = mqtt_message->payload;
 
-          azure_iot->config->on_command_request_received(command_request);
+          azure_iot->config->on_command_request_received(this, command_request);
         }
 
         result = RESULT_OK;
