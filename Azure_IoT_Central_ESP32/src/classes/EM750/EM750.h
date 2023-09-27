@@ -96,6 +96,8 @@ class EM750{
      */
     int update();
 
+    void validateData();
+
     void setId(uint8_t id){ this->id = id; }
     uint8_t getId(){ return id; }
     

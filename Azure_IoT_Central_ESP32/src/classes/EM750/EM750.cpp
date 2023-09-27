@@ -66,6 +66,15 @@ int EM750::update(){
 }
 
 
+void EM750::validateData(){
+  for(int i=0; i<NUM_TOTAL_DATA; i++){
+    if(isnan(data[i])) data[i] = -1;
+  }
+  
+  return;
+}
+
+
 void EM750::copyData(float* buffer, int bufferSize){
   int length = (bufferSize<NUM_TOTAL_DATA) ? bufferSize : NUM_TOTAL_DATA;
 
