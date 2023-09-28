@@ -51,6 +51,7 @@ class DataHub{
     DataHub(){};
     void loop();
     void push(T data){ dataBuffer.push(data);}
+    int getSize(){ return dataBuffer.size();}
     //void push(weidosMetadata_t data){ weidosData.push(data);}
     void setPayloadGenerator(payloadGenerator generatePayload){ this->generatePayload = generatePayload;}
     

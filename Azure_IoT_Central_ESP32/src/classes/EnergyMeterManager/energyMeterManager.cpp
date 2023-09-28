@@ -112,6 +112,8 @@ EnergyMeterUpdateState EnergyMeterManager::loop(){
         em750.getData(payload.data);
         LogInfo("Pushing data for device ID: %i", deviceId);
         energyMeterDataHubs[deviceId-1]->push(payload);
+        LogInfo("Buffer size: %i", energyMeterDataHubs[deviceId-1]->getSize());
+        
         //emDataHub.push(payload);
         state = END_TASK;
         break;
