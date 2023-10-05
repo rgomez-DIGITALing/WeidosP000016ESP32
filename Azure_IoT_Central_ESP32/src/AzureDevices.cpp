@@ -26,26 +26,55 @@ void createObjects(){
     BearSSLClient* bear_ssl_client0 = new BearSSLClient(ethernetClient0);
     MQTTClient* mqttClient0 = new MQTTClient(MQTT_CLIENT_BUFFER_SIZE);
     Azure0 = new AzureIoTDevice(mqttClient0, bear_ssl_client0);
+    uint8_t* bufferPtr = new uint8_t[AZ_IOT_DATA_BUFFER_SIZE];
+    Azure0->setDataBuffer(bufferPtr);
+    bufferPtr = new uint8_t[DATA_BUFFER_SIZE];
+    Azure0->setDataBuffer2(bufferPtr);
+
 
     BearSSLClient* bear_ssl_client1 = new BearSSLClient(ethernetClient1);
     MQTTClient* mqttClient1 = new MQTTClient(MQTT_CLIENT_BUFFER_SIZE);
     Azure1 = new AzureIoTDevice(mqttClient1, bear_ssl_client1);
+    bufferPtr = new uint8_t[AZ_IOT_DATA_BUFFER_SIZE];
+    Azure1->setDataBuffer(bufferPtr);
+    bufferPtr = new uint8_t[DATA_BUFFER_SIZE];
+    Azure1->setDataBuffer2(bufferPtr);
+
+
 
     BearSSLClient* bear_ssl_client2 = new BearSSLClient(ethernetClient2);
     MQTTClient* mqttClient2 = new MQTTClient(MQTT_CLIENT_BUFFER_SIZE);
     Azure2 = new AzureIoTDevice(mqttClient2, bear_ssl_client2);
+    bufferPtr = new uint8_t[AZ_IOT_DATA_BUFFER_SIZE];
+    Azure2->setDataBuffer(bufferPtr);
+    bufferPtr = new uint8_t[DATA_BUFFER_SIZE];
+    Azure2->setDataBuffer2(bufferPtr);
+
 
     BearSSLClient* bear_ssl_client3 = new BearSSLClient(ethernetClient3);
     MQTTClient* mqttClient3 = new MQTTClient(MQTT_CLIENT_BUFFER_SIZE);
     Azure3 = new AzureIoTDevice(mqttClient3, bear_ssl_client3);
+    bufferPtr = new uint8_t[AZ_IOT_DATA_BUFFER_SIZE];
+    Azure3->setDataBuffer(bufferPtr);
+    bufferPtr = new uint8_t[DATA_BUFFER_SIZE];
+    Azure3->setDataBuffer2(bufferPtr);
+
 
     BearSSLClient* bear_ssl_client4 = new BearSSLClient(ethernetClient4);
     MQTTClient* mqttClient4 = new MQTTClient(MQTT_CLIENT_BUFFER_SIZE);
     Azure4 = new AzureIoTDevice(mqttClient4, bear_ssl_client4);
+    bufferPtr = new uint8_t[AZ_IOT_DATA_BUFFER_SIZE];
+    Azure4->setDataBuffer(bufferPtr);
+    bufferPtr = new uint8_t[DATA_BUFFER_SIZE];
+    Azure4->setDataBuffer2(bufferPtr);
 
     BearSSLClient* bear_ssl_client5 = new BearSSLClient(ethernetClient5);
     MQTTClient* mqttClient5 = new MQTTClient(MQTT_CLIENT_BUFFER_SIZE);
     Azure5 = new AzureIoTDevice(mqttClient5, bear_ssl_client5);
+    bufferPtr = new uint8_t[AZ_IOT_DATA_BUFFER_SIZE];
+    Azure5->setDataBuffer(bufferPtr);
+    bufferPtr = new uint8_t[DATA_BUFFER_SIZE];
+    Azure5->setDataBuffer2(bufferPtr);
 }
 
 char emModelId[60] = "dtmi:conexiones:EnergyMeter_6bm;1";

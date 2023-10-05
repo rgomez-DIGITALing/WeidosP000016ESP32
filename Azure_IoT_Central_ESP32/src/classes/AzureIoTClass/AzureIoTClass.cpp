@@ -115,7 +115,7 @@ void AzureIoTDevice::init(){
   azure_iot_config.device_id = AZ_SPAN_EMPTY;
 
 
-  azure_iot_config.data_buffer = AZ_SPAN_FROM_BUFFER(az_iot_data_buffer);
+  azure_iot_config.data_buffer = az_span_create(az_iot_data_buffer, AZ_IOT_DATA_BUFFER_SIZE);
   azure_iot_config.sas_token_lifetime_in_minutes = MQTT_PASSWORD_LIFETIME_IN_MINUTES;
 
   azure_iot_config.data_manipulation_functions.hmac_sha256_encrypt = eccx08_hmac_sha256;

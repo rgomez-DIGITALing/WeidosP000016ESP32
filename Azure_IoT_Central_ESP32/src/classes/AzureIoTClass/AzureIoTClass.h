@@ -40,6 +40,8 @@ class AzureIoTDevice{
         int sendMessage(az_span message);
         int sendProperties(az_span message);
         azure_iot_t* getAzureIoT(){ return &azure_iot; }
+        void setDataBuffer(uint8_t* az_iot_data_buffer){ this->az_iot_data_buffer = az_iot_data_buffer; }
+        void setDataBuffer2(uint8_t* data_buffer){ this->data_buffer = data_buffer; }
         uint8_t* getDataBuffer(){ return az_iot_data_buffer; }
         uint8_t* getDataBuffer2(){ return data_buffer; }
         void setClients(MQTTClient& mqttClient, Client& client){ this->mqttClient = &mqttClient; this->client = &client;}
@@ -52,8 +54,9 @@ class AzureIoTDevice{
         azure_iot_status_t prevState = azure_iot_connected;
         azure_iot_t azure_iot;
         azure_iot_config_t azure_iot_config;
-        uint8_t az_iot_data_buffer[AZ_IOT_DATA_BUFFER_SIZE];
-        uint8_t data_buffer[DATA_BUFFER_SIZE];
+        uint8_t* az_iot_data_buffer;
+        uint8_t* data_buffer;
+
         Client* client;
         MQTTClient* mqttClient;
         bool deviceInfoSent = false;
