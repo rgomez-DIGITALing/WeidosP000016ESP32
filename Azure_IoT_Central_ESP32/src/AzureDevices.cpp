@@ -20,7 +20,7 @@ AzureIoTDevice* Azure4;
 AzureIoTDevice* Azure5;
 
 
-#define MQTT_CLIENT_BUFFER_SIZE 4096
+#define MQTT_CLIENT_BUFFER_SIZE 3000
 
 void createObjects(){
     BearSSLClient* bear_ssl_client0 = new BearSSLClient(ethernetClient0);

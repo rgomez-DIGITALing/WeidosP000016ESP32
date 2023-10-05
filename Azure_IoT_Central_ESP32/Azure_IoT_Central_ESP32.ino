@@ -114,6 +114,7 @@ void setup()
 {
   Serial.begin(SERIAL_LOGGER_BAUD_RATE);
   set_logging_function(logging_function);
+  set_logging_function_2(logging_function_2);
   Serial.println("Welcome!");
   
   EthernetModule.init();
