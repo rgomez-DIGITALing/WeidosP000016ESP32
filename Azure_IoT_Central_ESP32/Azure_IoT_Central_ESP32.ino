@@ -84,6 +84,7 @@
 #include "src/iot_configs.h"
 
 #include "src/classes/DataHub/DataHub.h"
+#include "src/classes/SDBackupManager/sdTasks.h"
 
 #include <ArduinoBearSSL.h>
 #include "src/payloadGenerators.h"
@@ -127,6 +128,8 @@ void setup()
   configureAzureDevices();
   setEnergyMeterProperties();
 
+  createBackupFolders();
+  moveAllProvisionalDirectories();
   weidosMetadata_t metadata = WeidosESP32.getMetadata();
   metadata.printMetadata();
 

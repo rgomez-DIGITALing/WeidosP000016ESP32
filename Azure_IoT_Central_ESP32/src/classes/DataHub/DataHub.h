@@ -3,6 +3,8 @@
 #include "../EnergyMeterManager/energyMeterManager.h"
 #include "../WeidosManager/WeidosManager.h"
 
+#include "../SDBackupManager/SDFolderManager.h"
+#include "../SDBackupManager/SDFileManager.h"
 //#include "./classes/WeidosESP32Class/WeidosESP32Class.h"
 #include <RingBuf.h>
 
@@ -50,7 +52,7 @@ class DataHub{
   public:
     DataHub(){};
     void loop();
-    void push(T data){ dataBuffer.push(data);}
+    void push(const T& data);
     int getSize(){ return dataBuffer.size();}
     //void push(weidosMetadata_t data){ weidosData.push(data);}
     void setPayloadGenerator(payloadGenerator generatePayload){ this->generatePayload = generatePayload;}
@@ -68,6 +70,19 @@ class DataHub{
       int numSendTries = 0;
       T currentPayload;
 };
+
+
+template <class T, int N>
+void DataHub<T,N>::push(const T& data){
+    if(dataBuffer.isFull()){
+        sdFileManager.storeInPendingFolder(data);
+        return;
+    }
+
+    dataBuffer.push(data);
+    sdFileManager.storeInProvisionalFolder(data);
+    return;
+}    
 
 
 template <class T, int N>

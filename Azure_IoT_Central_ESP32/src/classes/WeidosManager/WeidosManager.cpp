@@ -15,6 +15,7 @@ WeidosState WeidosManager::loop(){
         msg.deviceId = deviceId;
         msg.payload = metadata;
         msg.timestamp = systemClock.getEpochTime();
+        msg.millis = millis();
         weidosDataHub.push(msg);
         state = WEIDOS_IDLE;
         break;

@@ -11,6 +11,7 @@
 typedef struct energyMeterManagerData_struct_t{
   int deviceId;
   unsigned long timestamp;
+  unsigned long millis;
   em750Data_t data;
 } energyMeterManagerData_t;
 
