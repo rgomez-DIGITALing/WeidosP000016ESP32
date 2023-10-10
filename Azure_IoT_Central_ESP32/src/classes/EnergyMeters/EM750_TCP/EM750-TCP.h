@@ -1,7 +1,8 @@
 #pragma once
 #include <ArduinoModbus.h>
-#include "EM750_telemetryDefinition.h"
-#include "EM750_propertiesDefinition.h"
+#include "../EMDataDefinitions.h"
+//#include "../em3ph_telemetryDefinition.h"
+//#include "../EM750_propertiesDefinition.h"
 
 #define LOG(x) Serial.println(x)
 #define LOG2(x) Serial.print(x)
@@ -26,52 +27,8 @@
 #define NUM_REGISTERS3       2
 #define NUM_DATA3            NUM_REGISTERS3/2
 
-#define NUM_TOTAL_DATA 60
-
-#define COM_STATE_OK    1
-#define COM_STATE_ERROR 0
 
 
-
-typedef struct em750Data_struct_t{
-  uint8_t comState;
-  union{
-      float data[NUM_TOTAL_DATA];
-
-      struct{
-        float voltageL1N, voltageL2N, voltageL3N;
-        float avgVoltageLN;
-        float voltageL1L2, voltageL2L3, voltageL1L3, avgVoltageLL;
-        float currentL1, currentL2, currentL3;
-        float currentNeutral;
-        float avgCurrentL;
-        float currentTotal;
-        float realPowerL1N, realPowerL2N, realPowerL3N;
-        float realPowerTotal;
-        float apparentPowerL1N, apparentPowerL2N, apparentPowerL3N;
-        float apparentPowerTotal;
-        float reactivePowerL1N, reactivePowerL2N, reactivePowerL3N;
-        float reactivePowerTotal;
-        float cosPhiL1, cosPhiL2, cosPhiL3;
-        float avgCosPhi, frequency, rotField;
-        float realEnergyL1N, realEnergyL2N, realEnergyL3N;
-        float realEnergyTotal;
-        float apparentEnergyL1, apparentEnergyL2, apparentEnergyL3;
-        float apparentEnergyTotal;
-        float reactiveEnergyL1, reactiveEnergyL2, reactiveEnergyL3;
-        float reactiveEnergyTotal;
-        float THDVoltsL1N, THDVoltsL2N, THDVoltsL3N;
-        float avgTHDVoltsLN;
-        float THDCurrentL1N, THDCurrentL2N, THDCurrentL3N;
-        float avgTHDCurrentLN;
-        float THDVoltsL1L2, THDVoltsL2L3, THDVoltsL1L3;
-        float avgTHDVoltsLL;
-        float powerFactorL1N, powerFactorL2N, powerFactorL3N;
-        float powerFactorTotal;
-      };
-    };
-} em750Data_t;
-  
 
 class EM750{
   public:
@@ -101,10 +58,9 @@ class EM750{
     void setId(uint8_t id){ this->id = id; }
     uint8_t getId(){ return id; }
     
-    void printData();
-    void printDataPack();
+
     void copyData(float* buffer, int bufferSize);
-    void getData(em750Data_t& payload);
+    void getData(em3phData_t& payload);
     float* getData();
 
     void setAsEA750(){ isEA750Type = true; }
@@ -160,41 +116,34 @@ class EM750{
     char* location2;
     bool isEA750Type = false;
 
-    uint8_t comState;
+    COM_error_t comError;
     
     union{
-      float data[NUM_TOTAL_DATA];
+      float data[NUM_TOTAL_DATA_3PHASE];
 
       struct{
         float voltageL1N, voltageL2N, voltageL3N;
-        float avgVoltageLN;
-        float voltageL1L2, voltageL2L3, voltageL1L3, avgVoltageLL;
         float currentL1, currentL2, currentL3;
-        float currentNeutral;
-        float avgCurrentL;
-        float currentTotal;
         float realPowerL1N, realPowerL2N, realPowerL3N;
-        float realPowerTotal;
         float apparentPowerL1N, apparentPowerL2N, apparentPowerL3N;
-        float apparentPowerTotal;
         float reactivePowerL1N, reactivePowerL2N, reactivePowerL3N;
-        float reactivePowerTotal;
-        float cosPhiL1, cosPhiL2, cosPhiL3;
-        float avgCosPhi, frequency, rotField;
-        float realEnergyL1N, realEnergyL2N, realEnergyL3N;
-        float realEnergyTotal;
-        float apparentEnergyL1, apparentEnergyL2, apparentEnergyL3;
-        float apparentEnergyTotal;
-        float reactiveEnergyL1, reactiveEnergyL2, reactiveEnergyL3;
-        float reactiveEnergyTotal;
-        float THDVoltsL1N, THDVoltsL2N, THDVoltsL3N;
-        float avgTHDVoltsLN;
-        float THDCurrentL1N, THDCurrentL2N, THDCurrentL3N;
-        float avgTHDCurrentLN;
-        float THDVoltsL1L2, THDVoltsL2L3, THDVoltsL1L3;
-        float avgTHDVoltsLL;
         float powerFactorL1N, powerFactorL2N, powerFactorL3N;
-        float powerFactorTotal;
+        float cosPhiL1, cosPhiL2, cosPhiL3;
+        float avgVoltageLN, avgCurrentL;
+        float currentTotal, realPowerTotal, apparentPowerTotal, reactivePowerTotal, powerFactorTotal;
+        float avgCosPhi, frequency;
+        float apparentEnergyTotal;
+        float voltageL1L2, voltageL2L3, voltageL1L3, avgVoltageLL;
+        float currentNeutral;
+        float THDVoltsL1N, THDVoltsL2N, THDVoltsL3N;
+        float THDCurrentL1N, THDCurrentL2N, THDCurrentL3N;
+        float avgTHDVoltsLN, avgTHDCurrentLN;
+        float THDVoltsL1L2, THDVoltsL2L3, THDVoltsL1L3, avgTHDVoltsLL;
+        float realEnergyTotal, reactiveEnergyTotal;
+        float realEnergyL1, realEnergyL2, realEnergyL3;
+        float reactiveEnergyL1, reactiveEnergyL2, reactiveEnergyL3;
+        float apparentEnergyL1, apparentEnergyL2, apparentEnergyL3;
+        float rotField;
       };
     };
 };

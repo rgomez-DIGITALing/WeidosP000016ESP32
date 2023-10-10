@@ -1,5 +1,7 @@
 #include "WeidosManager.h"
-#include "../DataHub/DataHub.h"
+//#include "../DataHub/DataHub.h"
+#include "../../globals/DataHubCollection.h"
+#include "../DataHubCollection/DataHubCollection.h"
 #include <clockModule.h>
 #include <LogModule.h>
 
@@ -15,7 +17,7 @@ WeidosState WeidosManager::loop(){
         msg.deviceId = deviceId;
         msg.payload = metadata;
         msg.timestamp = systemClock.getEpochTime();
-        weidosDataHub.push(msg);
+        DataHubCollection.push(msg);
         state = WEIDOS_IDLE;
         break;
     }

@@ -1,23 +1,23 @@
-#include "EM750.h"
+#include "EM750-TCP.h"
 #include <ArduinoModbus.h>
-#include "DebugLogger.h"
+
 
 
 #define MODBUS_ADDRESS      1
 #define MODBUS_TIMEOUT      500
 
 
-#define REG_ADDRESS         19000
-#define NUM_REGISTERS       122
-#define NUM_DATA            NUM_REGISTERS/2
+#define REG_ADDRESS_BATCH_1         19000
+#define NUM_REGISTERS_BATCH_1       122
+#define NUM_DATA_BATCH_1            NUM_REGISTERS_BATCH_1/2
 
-#define REG_ADDRESS2         828
-#define NUM_REGISTERS2       20
-#define NUM_DATA2            NUM_REGISTERS2/2
+#define REG_ADDRESS_BATCH_2         828
+#define NUM_REGISTERS_BATCH_2       20
+#define NUM_DATA_BATCH_2            NUM_REGISTERS_BATCH_2/2
 
-#define REG_ADDRESS3         10085
-#define NUM_REGISTERS3       2
-#define NUM_DATA3            NUM_REGISTERS3/2
+#define REG_ADDRESS_BATCH_3         10085
+#define NUM_REGISTERS_BATCH_3       2
+#define NUM_DATA_BATCH_3            NUM_REGISTERS_BATCH_3/2
 
 EM750::EM750(ModbusTCPClient& client, IPAddress ipAddress) : _client(client), ipAddress(ipAddress){}
 
@@ -32,30 +32,30 @@ void EM750::stop(){
 }
 
 int EM750::update(){
-    comState = COM_STATE_OK;
+    comError = COM_OK;
 
-    int response = _client.requestFrom(MODBUS_ADDRESS, INPUT_REGISTERS, REG_ADDRESS, NUM_REGISTERS);
-    if(!response)
+    int response = _client.requestFrom(MODBUS_ADDRESS, INPUT_REGISTERS, REG_ADDRESS_BATCH_1, NUM_REGISTERS_BATCH_1);
+    if(response != NUM_REGISTERS_BATCH_1)
     {   
-        comState = COM_STATE_ERROR;
+        comError = COM_BATCH_1_ERROR;
         return 0;
     }
     assignData();
 
 
-    response = _client.requestFrom(MODBUS_ADDRESS, INPUT_REGISTERS, REG_ADDRESS2, NUM_REGISTERS2);
-    if(!response)
+    response = _client.requestFrom(MODBUS_ADDRESS, INPUT_REGISTERS, REG_ADDRESS_BATCH_2, NUM_REGISTERS_BATCH_2);
+    if(response != NUM_REGISTERS_BATCH_2)
     {
-        comState = COM_STATE_ERROR;
+        comError = COM_BATCH_2_ERROR;
         return 0;
     }
     assignData2();
     
 
-    response = _client.requestFrom(MODBUS_ADDRESS, INPUT_REGISTERS, REG_ADDRESS3, NUM_REGISTERS3);  
-    if(!response)
+    response = _client.requestFrom(MODBUS_ADDRESS, INPUT_REGISTERS, REG_ADDRESS_BATCH_3, NUM_REGISTERS_BATCH_3);  
+    if(response != NUM_REGISTERS_BATCH_3)
     {
-        comState = COM_STATE_ERROR;
+        comError = COM_BATCH_3_ERROR;
         return 0;
     }
     assignData3();
@@ -67,7 +67,7 @@ int EM750::update(){
 
 
 void EM750::validateData(){
-  for(int i=0; i<NUM_TOTAL_DATA; i++){
+  for(int i=0; i<NUM_TOTAL_DATA_3PHASE; i++){
     if(isnan(data[i])) data[i] = -1;
   }
   
@@ -75,8 +75,9 @@ void EM750::validateData(){
 }
 
 
+
 void EM750::copyData(float* buffer, int bufferSize){
-  int length = (bufferSize<NUM_TOTAL_DATA) ? bufferSize : NUM_TOTAL_DATA;
+  int length = (bufferSize<NUM_TOTAL_DATA_3PHASE) ? bufferSize : NUM_TOTAL_DATA_3PHASE;
 
 
   for(int i=0; i<length; i++){
@@ -85,9 +86,9 @@ void EM750::copyData(float* buffer, int bufferSize){
   return;
 };
 
-void EM750::getData(em750Data_t& payload){
-  payload.comState = comState;
-  copyData(payload.data, NUM_TOTAL_DATA);
+void EM750::getData(em3phData_t& payload){
+  payload.comError = comError;
+  copyData(payload.data, NUM_TOTAL_DATA_3PHASE);
   return;
 }
 
@@ -123,9 +124,9 @@ void EM750::assignData(){
     cosPhiL3 = getNextData();
     frequency = getNextData();
     rotField = getNextData();
-    realEnergyL1N = getNextData()/1000.0f;
-    realEnergyL2N = getNextData()/1000.0f;
-    realEnergyL3N = getNextData()/1000.0f;
+    realEnergyL1 = getNextData()/1000.0f;
+    realEnergyL2 = getNextData()/1000.0f;
+    realEnergyL3 = getNextData()/1000.0f;
     realEnergyTotal = getNextData()/1000.0f;
     getNextData();       //realEnergyConsL1 deleted variable
     getNextData();       //realEnergyConsL2 deleted variable

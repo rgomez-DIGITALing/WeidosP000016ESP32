@@ -1,10 +1,9 @@
-#include "EM750_propertiesDefinition.h"
+
 
 char* EM_IDENTIFIER_PROPERTY_NAME = "identifier";
 char* EM_ASSET_PROPERTY_NAME = "asset";
 char* EM_LOCATION_1_PROPERTY_NAME = "location1";
 char* EM_LOCATION_2_PROPERTY_NAME = "location2";
-
 
 char* EM_MODEL_PROPERTY_NAME = "model";
 char* EM_BRAND_PROPERTY_NAME = "brand";
@@ -25,12 +24,23 @@ char* EM_CT_SECONDARY_PROPERY_NAME = "cTSecondary";
 char* RTU_COM_TYPE = "RTU";
 char* TCP_COM_TYPE = "TCP";
 
+char* DEFAULT_TCP_PORT = "502";
+
+char* EM110_PART_NUMBER = "7760051002";
+char* EM111_PART_NUMBER = "7760051001";
+char* EM120_PART_NUMBER = "7760051004";
+char* EM122_PART_NUMBER = "7760051003";
+char* EM220_PART_NUMBER = "7760051005";
 char* EM750_PART_NUMBER = "2540910000";
 char* EA750_PART_NUMBER = "2534130000";
-char* EM750_MODEL_NAME = "EM750-230";
+
+char* EM110_MODEL_NAME = "EM110";
+char* EM111_MODEL_NAME = "EM111";
+char* EM120_MODEL_NAME = "EM120";
+char* EM122_MODEL_NAME = "EM122";
+char* EM220_MODEL_NAME = "EM220";
+char* EM750_MODEL_NAME = "EM750";
 char* EA750_MODEL_NAME = "EA750-230";
-
-
 
 char* WEIDMULLER_BRAND = "Weidmuller";
 char* EVEN_PARITY = "Even";
@@ -42,8 +52,6 @@ char* EM_INDIRECT_MEASUREMENT_METHOD = "Indirect";
 
 char* EM3PHASES_NUM_PHASES = "3 phases";
 char* EM1PHASES_NUM_PHASES = "1 phases";
-
-char* DEFAULT_TCP_PORT = "502";
 
 char* EM_BAUDRATE = "9600";
 char* EM_STOP_BITS = "1";

@@ -6,8 +6,6 @@ extern char* EM_ASSET_PROPERTY_NAME;
 extern char* EM_LOCATION_1_PROPERTY_NAME;
 extern char* EM_LOCATION_2_PROPERTY_NAME;
 
-
-extern char* EM_IDENTIFIER_PROPERTY_NAME;
 extern char* EM_MODEL_PROPERTY_NAME;
 extern char* EM_BRAND_PROPERTY_NAME;
 extern char* EM_NUM_PHASES_PROPERTY_NAME;
@@ -28,10 +26,23 @@ extern char* EM_CT_SECONDARY_PROPERY_NAME;
 extern char* RTU_COM_TYPE;
 extern char* TCP_COM_TYPE;
 
-extern char* EM750_MODEL_NAME;
-extern char* EA750_MODEL_NAME;
+extern char* DEFAULT_TCP_PORT;
+
+extern char* EM110_PART_NUMBER;
+extern char* EM111_PART_NUMBER;
+extern char* EM120_PART_NUMBER;
+extern char* EM122_PART_NUMBER;
+extern char* EM220_PART_NUMBER;
 extern char* EM750_PART_NUMBER;
 extern char* EA750_PART_NUMBER;
+
+extern char* EM110_MODEL_NAME;
+extern char* EM111_MODEL_NAME;
+extern char* EM120_MODEL_NAME;
+extern char* EM122_MODEL_NAME;
+extern char* EM220_MODEL_NAME;
+extern char* EM750_MODEL_NAME;
+extern char* EA750_MODEL_NAME;
 
 extern char* WEIDMULLER_BRAND;
 
@@ -44,8 +55,6 @@ extern char* INDIRECT_MEASUREMENT_METHOD;
 
 extern char* EM3PHASES_NUM_PHASES;
 extern char* EM1PHASES_NUM_PHASES;
-
-extern char* DEFAULT_TCP_PORT;
 
 extern char* EM_BAUDRATE;
 extern char* EM_STOP_BITS;

@@ -1,21 +1,13 @@
 #pragma once
 
-#include "../EnergyMeterManager/energyMeterManager.h"
-#include "../WeidosManager/WeidosManager.h"
-
-//#include "./classes/WeidosESP32Class/WeidosESP32Class.h"
 #include <RingBuf.h>
-
-
+#include <LogModule.h>
 
 #include "../../payloadGenerators.h"
-#include <LogModule.h>
-#include "../../AzureDevices.h"
+//#include "../../globals/AzureDevices.h"
+#include "../AzureIoTCollection/AzureIoTCollection.h"
 
-#define NUM_TOTAL_DATA 60
 
-#define ENERGY_METER_RING_BUFFER_SIZE 15
-#define WEIDOS_METADATA_RING_BUFFER_SIZE 20
 
 enum DataHubState{
     GET_DATA_FROM_EM_FIFO,
@@ -87,14 +79,14 @@ void DataHub<T,N>::loop(){
         case MOVE_MESSAGE:
             deviceId = currentPayload.deviceId;
             LogInfo("Moving Info for device ID: %i", deviceId);
-            if(azureDevices[deviceId]->getStatus() == azure_iot_connected){
+            if(AzureIoTCollection[deviceId]->getStatus() == azure_iot_connected){
                 size_t payload_buffer_length = 0;
-                uint8_t* payload_buffer = azureDevices[deviceId]->getDataBuffer2();
+                uint8_t* payload_buffer = AzureIoTCollection[deviceId]->getDataBuffer2();
 
                 //em750_generete_payload(payload_buffer, AZ_IOT_DATA_BUFFER_SIZE, &payload_buffer_length, currentPayload);
                 generatePayload(payload_buffer, AZ_IOT_DATA_BUFFER_SIZE, &payload_buffer_length, currentPayload);
                 
-                int error = azureDevices[deviceId]->sendMessage(az_span_create(payload_buffer, payload_buffer_length));
+                int error = AzureIoTCollection[deviceId]->sendMessage(az_span_create(payload_buffer, payload_buffer_length));
                 if(!error) state = TELEMETRY_SENT;
                 else state = TELEMETRY_SEND_FAILURE;
             }else state = TELEMETRY_SEND_FAILURE;
@@ -116,9 +108,3 @@ void DataHub<T,N>::loop(){
             break;
     }
 }
-
-
-void fillDataHubsArray();
-
-extern DataHub<WeidosManagerData_t, WEIDOS_METADATA_RING_BUFFER_SIZE> weidosDataHub;
-extern DataHub<energyMeterManagerData_t, ENERGY_METER_RING_BUFFER_SIZE>* energyMeterDataHubs[5];

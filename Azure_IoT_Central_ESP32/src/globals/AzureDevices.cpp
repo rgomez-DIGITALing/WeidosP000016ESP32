@@ -1,7 +1,9 @@
 #include "AzureDevices.h"
-#include "classes/AzureIoTClass/mqttCallbacks.h"
+#include "../classes/AzureIoTClass/mqttCallbacks.h"
 #include <Ethernet.h>
 #include <ArduinoBearSSL.h>
+
+#include "../classes/AzureIoTCollection/AzureIoTCollection.h"
 
 EthernetClient ethernetClient0(1);
 EthernetClient ethernetClient1(2);
@@ -10,14 +12,12 @@ EthernetClient ethernetClient3(4);
 EthernetClient ethernetClient4(5);
 EthernetClient ethernetClient5(6);
 
-
-
-AzureIoTDevice* Azure0;
-AzureIoTDevice* Azure1;
-AzureIoTDevice* Azure2;
-AzureIoTDevice* Azure3;
-AzureIoTDevice* Azure4;
-AzureIoTDevice* Azure5;
+AzureIoTDevice* Azure0 = nullptr;
+AzureIoTDevice* Azure1 = nullptr;
+AzureIoTDevice* Azure2 = nullptr;
+AzureIoTDevice* Azure3 = nullptr;
+AzureIoTDevice* Azure4 = nullptr;
+AzureIoTDevice* Azure5 = nullptr;
 
 
 #define MQTT_CLIENT_BUFFER_SIZE 3000
@@ -60,21 +60,21 @@ void createObjects(){
     Azure3->setDataBuffer2(bufferPtr);
 
 
-    BearSSLClient* bear_ssl_client4 = new BearSSLClient(ethernetClient4);
-    MQTTClient* mqttClient4 = new MQTTClient(MQTT_CLIENT_BUFFER_SIZE);
-    Azure4 = new AzureIoTDevice(mqttClient4, bear_ssl_client4);
-    bufferPtr = new uint8_t[AZ_IOT_DATA_BUFFER_SIZE];
-    Azure4->setDataBuffer(bufferPtr);
-    bufferPtr = new uint8_t[DATA_BUFFER_SIZE];
-    Azure4->setDataBuffer2(bufferPtr);
+    // BearSSLClient* bear_ssl_client4 = new BearSSLClient(ethernetClient4);
+    // MQTTClient* mqttClient4 = new MQTTClient(MQTT_CLIENT_BUFFER_SIZE);
+    // Azure4 = new AzureIoTDevice(mqttClient4, bear_ssl_client4);
+    // bufferPtr = new uint8_t[AZ_IOT_DATA_BUFFER_SIZE];
+    // Azure4->setDataBuffer(bufferPtr);
+    // bufferPtr = new uint8_t[DATA_BUFFER_SIZE];
+    // Azure4->setDataBuffer2(bufferPtr);
 
-    BearSSLClient* bear_ssl_client5 = new BearSSLClient(ethernetClient5);
-    MQTTClient* mqttClient5 = new MQTTClient(MQTT_CLIENT_BUFFER_SIZE);
-    Azure5 = new AzureIoTDevice(mqttClient5, bear_ssl_client5);
-    bufferPtr = new uint8_t[AZ_IOT_DATA_BUFFER_SIZE];
-    Azure5->setDataBuffer(bufferPtr);
-    bufferPtr = new uint8_t[DATA_BUFFER_SIZE];
-    Azure5->setDataBuffer2(bufferPtr);
+    // BearSSLClient* bear_ssl_client5 = new BearSSLClient(ethernetClient5);
+    // MQTTClient* mqttClient5 = new MQTTClient(MQTT_CLIENT_BUFFER_SIZE);
+    // Azure5 = new AzureIoTDevice(mqttClient5, bear_ssl_client5);
+    // bufferPtr = new uint8_t[AZ_IOT_DATA_BUFFER_SIZE];
+    // Azure5->setDataBuffer(bufferPtr);
+    // bufferPtr = new uint8_t[DATA_BUFFER_SIZE];
+    // Azure5->setDataBuffer2(bufferPtr);
 }
 
 char emModelId[60] = "dtmi:conexiones:EnergyMeter_6bm;1";
@@ -83,12 +83,13 @@ char gatewayId[50] = IOT_CONFIG_DEVICE_GATEWAY_ID;
 char* scopeId = DPS_ID_SCOPE;
 
 void configureAzureDevices(){
-    Azure0->usingSasToken(IOT_CONFIG_DEVICE_GATEWAY_KEY);
-    Azure0->setDeviceId(IOT_CONFIG_DEVICE_GATEWAY_ID);
+    //Azure 0 is always for the Gateway
+    Azure0->usingSasToken(IOT_CONFIG_DEVICE_0_KEY);
+    Azure0->setDeviceId(IOT_CONFIG_DEVICE_0_ID);
     Azure0->setDpsScopeId(scopeId);
-    Azure0->setModelId(gwModelId);
+    Azure1->setGatewayId(gatewayId);
+    Azure0->setModelId(emModelId);
     Azure0->init();
-    Azure0->setOnCommandReceived(gateway_on_command_request_received);
   
     Azure1->usingSasToken(IOT_CONFIG_DEVICE_1_KEY);
     Azure1->setDeviceId(IOT_CONFIG_DEVICE_1_ID);
@@ -121,25 +122,23 @@ void configureAzureDevices(){
     Azure4->init();
 
 
-    Azure5->usingSasToken(IOT_CONFIG_DEVICE_5_KEY);
-    Azure5->setDeviceId(IOT_CONFIG_DEVICE_5_ID);
+    Azure5->usingSasToken(IOT_CONFIG_DEVICE_GATEWAY_KEY);
+    Azure5->setDeviceId(IOT_CONFIG_DEVICE_GATEWAY_ID);
     Azure5->setDpsScopeId(scopeId);
-    Azure5->setGatewayId(gatewayId);
-    Azure5->setModelId(emModelId);
+    Azure5->setModelId(gwModelId);
     Azure5->init();
+    Azure5->setOnCommandReceived(gateway_on_command_request_received);
+
     #endif
 }
 
 
-
-AzureIoTDevice* azureDevices[6];
-
-void fillArray(){
-    azureDevices[0] = Azure0;
-    azureDevices[1] = Azure1;
-    azureDevices[2] = Azure2;
-    azureDevices[3] = Azure3;
-    azureDevices[4] = Azure4;
-    azureDevices[5] = Azure5;
+void setAzureIoTCollectionDevices(){
+    AzureIoTCollection.setAzureIoTDevice(Azure0, 0);
+    AzureIoTCollection.setAzureIoTDevice(Azure1, 1);
+    AzureIoTCollection.setAzureIoTDevice(Azure2, 2);
+    AzureIoTCollection.setAzureIoTDevice(Azure3, 3);
+    // AzureIoTCollection.setAzureIoTDevice(Azure4, 4);
+    //AzureIoTCollection.setAzureIoTDevice(Azure5, 5);
     return;
 }
