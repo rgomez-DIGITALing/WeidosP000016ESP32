@@ -84,12 +84,12 @@ char* scopeId = DPS_ID_SCOPE;
 
 void configureAzureDevices(){
     //Azure 0 is always for the Gateway
-    Azure0->usingSasToken(IOT_CONFIG_DEVICE_0_KEY);
-    Azure0->setDeviceId(IOT_CONFIG_DEVICE_0_ID);
+    Azure0->usingSasToken(IOT_CONFIG_DEVICE_GATEWAY_KEY);
+    Azure0->setDeviceId(IOT_CONFIG_DEVICE_GATEWAY_ID);
     Azure0->setDpsScopeId(scopeId);
-    Azure1->setGatewayId(gatewayId);
-    Azure0->setModelId(emModelId);
+    Azure0->setModelId(gwModelId);
     Azure0->init();
+    Azure0->setOnCommandReceived(gateway_on_command_request_received);
   
     Azure1->usingSasToken(IOT_CONFIG_DEVICE_1_KEY);
     Azure1->setDeviceId(IOT_CONFIG_DEVICE_1_ID);
@@ -121,13 +121,13 @@ void configureAzureDevices(){
     Azure4->setModelId(emModelId);
     Azure4->init();
 
-
-    Azure5->usingSasToken(IOT_CONFIG_DEVICE_GATEWAY_KEY);
-    Azure5->setDeviceId(IOT_CONFIG_DEVICE_GATEWAY_ID);
+    Azure5->usingSasToken(IOT_CONFIG_DEVICE_5_KEY);
+    Azure5->setDeviceId(IOT_CONFIG_DEVICE_5_ID);
     Azure5->setDpsScopeId(scopeId);
-    Azure5->setModelId(gwModelId);
+    Azure5->setGatewayId(gatewayId);
+    Azure5->setModelId(emModelId);
     Azure5->init();
-    Azure5->setOnCommandReceived(gateway_on_command_request_received);
+
 
     #endif
 }
