@@ -31,8 +31,8 @@
 // EM750Manager transelevador3(transelevador3EM, 4, MODBUS_NUMBER_TRIES);
 
 EM111Manager em111Taula(1);
-EM111Manager em111Taula(1);
-EM111Manager em111Taula(1);
+//EM111Manager em111Taula(1);
+//EM111Manager em111Taula(1);
 
 void configureDeviceCollection(){
     DeviceCollection.setEnergyMeter(em111Taula);
