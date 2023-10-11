@@ -119,15 +119,15 @@ void setup()
   DataHubCollection.init();
   DeviceCollection.init();
   AzureIoTCollection.init();
+
   createObjects();
   configureAzureDevices();
   setAzureIoTCollectionDevices();
-
   setDataHubCollection();
   setDataHubsPayloadGenerators();
   setEnergyMeterProperties();
   configureDeviceCollection();
-  
+
   esp_task_wdt_init(WDT_TIMEOUT, true); //enable panic so ESP32 restarts
   esp_task_wdt_add(NULL); //add current thread to WDT watch
 
@@ -137,11 +137,6 @@ void setup()
 unsigned long prevTime = 0;
 static const unsigned long DELTA_TIME = 60*1000;
 
-unsigned long prevTime2 = 0;
-static const unsigned long DELTA_TIME2 = 2*60*1000;
-
-unsigned long prevTime3 = 0;
-static const unsigned long DELTA_TIME3 = 10*1000;
 
 
 bool  networkUp = false;
@@ -188,8 +183,8 @@ void loop()
 
 
 
-  if(millis()-prevTime2>DELTA_TIME2){
-    prevTime2 = millis();
+  if(millis()-prevTime>DELTA_TIME){
+    prevTime = millis();
     LogInfo("Link status: %i", Ethernet.linkStatus());  
   }
 }

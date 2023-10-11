@@ -33,7 +33,7 @@ EnergyMeterUpdateState_t EM750Manager::loop(){
         numTries++;
         if(numTries>maxTries){
           numTries = 0;
-          state = END_TASK;
+          state = PASS_MESSAGE;
           LogError("Energy meter update failed.");
         }else{
           state = UPDATE_ENERGY_METER;
@@ -50,7 +50,6 @@ EnergyMeterUpdateState_t EM750Manager::loop(){
         em3phManagerData_t msg;
         msg.deviceId = deviceId;
         msg.timestamp = systemClock.getEpochTime();
-        em750.validateData();
         em750.getData(msg.payload);
         LogInfo("Pushing data for device ID: %i", deviceId);
         DataHubCollection.push(msg, deviceId);

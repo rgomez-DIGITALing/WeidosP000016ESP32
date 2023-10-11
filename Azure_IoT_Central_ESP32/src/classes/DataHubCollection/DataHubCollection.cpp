@@ -26,7 +26,11 @@ void DataHubCollectionClass::push(em3phManagerData_t data, int slot){
 void DataHubCollectionClass::loop(){
     weidosDataHub->loop();
     for(int i=0; i<MAX_DATA_HUBS_ALLOWED; i++){
-        if(em1phDataHubPool[i]) em1phDataHubPool[i]->loop();
+        if(em1phDataHubPool[i]){
+            // Serial.print("Looping for em1phDataHUB: ");
+            // Serial.println(i);
+            em1phDataHubPool[i]->loop();
+        } 
         if(em3phDataHubPool[i]) em3phDataHubPool[i]->loop();
     }
 }

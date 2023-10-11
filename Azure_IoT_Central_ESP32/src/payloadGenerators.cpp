@@ -46,13 +46,12 @@ static const uint8_t null_terminator = '\0';
 #define DOUBLE_DECIMAL_PLACE_DIGITS 2
 #define TRIPLE_DECIMAL_PLACE_DIGITS 3
 #define SAMPLE_DEVICE_INFORMATION_NAME "deviceInformation"
-
+static const double ERROR_DOUBLE = (double)999999999999999;
 
 
 int em1ph_generete_payload(uint8_t* payload_buffer,
     size_t payload_buffer_size,
     size_t* payload_buffer_length, em1phManagerData_t& emData){
-
 
     az_json_writer jw;
     az_result rc;
@@ -62,7 +61,9 @@ int em1ph_generete_payload(uint8_t* payload_buffer,
     unsigned long timestamp = emData.timestamp;
     int comError = emData.payload.comError;
     float* data = emData.payload.data;
-    
+    int lastDataError = 0;
+    int dataErrorCounter = 0;
+
 
     rc = az_json_writer_init(&jw, payload_buffer_span, NULL);
     EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed initializing json writer for telemetry.");
@@ -71,85 +72,47 @@ int em1ph_generete_payload(uint8_t* payload_buffer,
     EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed setting telemetry json root.");
 
 
-  //########################              ENERGY METER TELEMETRY           #########################
-  rc = az_json_writer_append_property_name(&jw, az_span_create_from_str(TELEMETRY_PROP_NAME_VOLTAGE_L1N));
-  EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding voltageL1N property name to telemetry payload.");
-  rc = az_json_writer_append_double(&jw, data[EM1PH_VOLTAGE_L1N_INDEX], TRIPLE_DECIMAL_PLACE_DIGITS);
-  EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding voltageL1N property value to telemetry payload. ");
 
+  if(!comError){
+    for(int i=0; i<NUM_TOTAL_DATA_1PHASE; i++){
+      rc = az_json_writer_append_property_name(&jw, az_span_create_from_str(EM1PH_DATA_TELEMETRY_NAMES[i]));
+      EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding %s property name to telemetry payload.", EM1PH_DATA_TELEMETRY_NAMES[i]);
+      int dataError = isEMDataValid(data[i]);
 
-  rc = az_json_writer_append_property_name(&jw, az_span_create_from_str(TELEMETRY_PROP_NAME_CURRENT_L1));
-  EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding currentL1 property name to telemetry payload.");
-  rc = az_json_writer_append_double(&jw, data[EM1PH_CURRENT_L1_INDEX], TRIPLE_DECIMAL_PLACE_DIGITS);
-  EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding currentL1 property value to telemetry payload. ");
+      if(!dataError) rc = az_json_writer_append_double(&jw, data[i], TRIPLE_DECIMAL_PLACE_DIGITS);
+      else{
+        lastDataError = dataError;
+        dataErrorCounter++;
+        rc = az_json_writer_append_double(&jw, ERROR_DOUBLE, DOUBLE_DECIMAL_PLACE_DIGITS);
+      }
 
+      EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding %s property value to telemetry payload.", EM1PH_DATA_TELEMETRY_NAMES[i]);
+    }
 
-  rc = az_json_writer_append_property_name(&jw, az_span_create_from_str(TELEMETRY_PROP_NAME_REAL_POWER_TOTAL));
-  EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding realPowerTotal property name to telemetry payload.");
-  rc = az_json_writer_append_double(&jw, data[EM1PH_TOTAL_REAL_POWER_INDEX], TRIPLE_DECIMAL_PLACE_DIGITS);
-  EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding realPowerTotal property value to telemetry payload. ");
+    rc = az_json_writer_append_property_name(&jw, az_span_create_from_str(TELEMETRY_PROP_NAME_LAST_DATA_ERROR));
+    EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding timestamp property name to telemetry payload.");
+    rc = az_json_writer_append_int32(&jw, lastDataError);
+    EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding timestamp property value to telemetry payload. ");
 
-
-
-  rc = az_json_writer_append_property_name(&jw, az_span_create_from_str(TELEMETRY_PROP_NAME_APPARENT_POWER_TOTAL));
-  EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding apparentPowerTotal property name to telemetry payload.");
-  rc = az_json_writer_append_double(&jw, data[EM1PH_TOTAL_APPARENT_POWER_INDEX], TRIPLE_DECIMAL_PLACE_DIGITS);
-  EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding apparentPowerTotal property value to telemetry payload. ");
-
-
-  rc = az_json_writer_append_property_name(&jw, az_span_create_from_str(TELEMETRY_PROP_NAME_REACTIVE_POWER_TOTAL));
-  EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding reactivePowerTotal property name to telemetry payload.");
-  rc = az_json_writer_append_double(&jw, data[EM1PH_TOTAL_REACTIVE_POWER_INDEX], TRIPLE_DECIMAL_PLACE_DIGITS);
-  EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding reactivePowerTotal property value to telemetry payload. ");
-
-
-  rc = az_json_writer_append_property_name(&jw, az_span_create_from_str(TELEMETRY_PROP_NAME_FREQUENCY));
-  EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding frequency property name to telemetry payload.");
-  rc = az_json_writer_append_double(&jw, data[EM1PH_FREQUENCY_INDEX], TRIPLE_DECIMAL_PLACE_DIGITS);
-  EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding frequency property value to telemetry payload. ");
-
-  rc = az_json_writer_append_property_name(&jw, az_span_create_from_str(TELEMETRY_PROP_NAME_ROT_FIELD));
-  EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding rotField property name to telemetry payload.");
-  rc = az_json_writer_append_double(&jw, data[EM1PH_ROTATION_FIELD_INDEX], TRIPLE_DECIMAL_PLACE_DIGITS);
-  EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding rotField property value to telemetry payload. ");
-
-
-  rc = az_json_writer_append_property_name(&jw, az_span_create_from_str(TELEMETRY_PROP_NAME_REAL_ENERGY_TOTAL));
-  EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding realEnergyTotal property name to telemetry payload.");
-  rc = az_json_writer_append_double(&jw, data[EM1PH_TOTAL_REAL_ENERGY_INDEX], TRIPLE_DECIMAL_PLACE_DIGITS);
-  EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding realEnergyTotal property value to telemetry payload. ");
-
-
-  rc = az_json_writer_append_property_name(&jw, az_span_create_from_str(TELEMETRY_PROP_NAME_APPARENT_ENERGY_TOTAL));
-  EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding apparentEnergyTotal property name to telemetry payload.");
-  rc = az_json_writer_append_double(&jw, data[EM1PH_TOTAL_APPARENT_ENERGY_INDEX], TRIPLE_DECIMAL_PLACE_DIGITS);
-  EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding apparentEnergyTotal property value to telemetry payload. ");
-
-
-  rc = az_json_writer_append_property_name(&jw, az_span_create_from_str(TELEMETRY_PROP_NAME_REACTIVE_ENERGY_TOTAL));
-  EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding reactiveEnergyTotal property name to telemetry payload.");
-  rc = az_json_writer_append_double(&jw, data[EM1PH_TOTAL_REACTIVE_ENERGY_INDEX], TRIPLE_DECIMAL_PLACE_DIGITS);
-  EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding reactiveEnergyTotal property value to telemetry payload. ");
-
-
-
-  rc = az_json_writer_append_property_name(&jw, az_span_create_from_str(TELEMETRY_PROP_NAME_POWER_FACTOR_TOTAL));
-  EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding powerFactorTotal property name to telemetry payload.");
-  rc = az_json_writer_append_double(&jw, data[EM1PH_TOTAL_POWER_FACTOR_INDEX], TRIPLE_DECIMAL_PLACE_DIGITS);
-  EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding powerFactorTotal property value to telemetry payload. ");
-
-
-
-
+    rc = az_json_writer_append_property_name(&jw, az_span_create_from_str(TELEMETRY_PROP_NAME_DATA_ERROR_COUNTER));
+    EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding timestamp property name to telemetry payload.");
+    rc = az_json_writer_append_int32(&jw, dataErrorCounter);
+    EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding timestamp property value to telemetry payload. ");
+  }
+  
+  
 
   rc = az_json_writer_append_property_name(&jw, az_span_create_from_str(TELEMETRY_PROP_NAME_COM_STATE));
   EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding timestamp property name to telemetry payload.");
   rc = az_json_writer_append_double(&jw, comError, TRIPLE_DECIMAL_PLACE_DIGITS);
   EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding timestamp property value to telemetry payload. ");
 
-    rc = az_json_writer_append_property_name(&jw, az_span_create_from_str(TELEMETRY_PROP_NAME_TIMESTAMP));
+  rc = az_json_writer_append_property_name(&jw, AZ_SPAN_FROM_STR(WEIDOS_TELEMETRY_PROP_NAME_TIMESTAMP));
   EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding timestamp property name to telemetry payload.");
-  rc = az_json_writer_append_int32(&jw, timestamp);
+  DateTime date = DateTime(timestamp);
+  char dateFormat[] = "YYYY-MM-DDThh:mm:ss.000Z";
+  date.toString(dateFormat);
+  rc = az_json_writer_append_string(&jw, az_span_create_from_str(dateFormat));
   EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding timestamp property value to telemetry payload. ");
 
 
@@ -177,7 +140,6 @@ int em3ph_generete_payload(uint8_t* payload_buffer,
     size_t payload_buffer_size,
     size_t* payload_buffer_length, em3phManagerData_t& emData){
 
-
     az_json_writer jw;
     az_result rc;
     az_span payload_buffer_span = az_span_create(payload_buffer, payload_buffer_size);
@@ -186,6 +148,8 @@ int em3ph_generete_payload(uint8_t* payload_buffer,
     unsigned long timestamp = emData.timestamp;
     int comError = emData.payload.comError;
     float* data = emData.payload.data;
+    int lastDataError = 0;
+    int dataErrorCounter = 0;
 
     rc = az_json_writer_init(&jw, payload_buffer_span, NULL);
     EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed initializing json writer for telemetry.");
@@ -194,346 +158,47 @@ int em3ph_generete_payload(uint8_t* payload_buffer,
     EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed setting telemetry json root.");
 
 
+  if(!comError){
+    for(int i=0; i<NUM_TOTAL_DATA_3PHASE; i++){
+      rc = az_json_writer_append_property_name(&jw, az_span_create_from_str(EM3PH_DATA_TELEMETRY_NAMES[i]));
+      EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding %s property name to telemetry payload.", EM3PH_DATA_TELEMETRY_NAMES[i]);
+      int dataError = isEMDataValid(data[i]);
 
-  //########################              ENERGY METER TELEMETRY           #########################
-  rc = az_json_writer_append_property_name(&jw, az_span_create_from_str(TELEMETRY_PROP_NAME_VOLTAGE_L1N));
-  EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding voltageL1N property name to telemetry payload.");
-  rc = az_json_writer_append_double(&jw, data[EM3PH_VOLTAGE_L1N_INDEX], TRIPLE_DECIMAL_PLACE_DIGITS);
-  EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding voltageL1N property value to telemetry payload. ");
+      if(!dataError) rc = az_json_writer_append_double(&jw, data[i], TRIPLE_DECIMAL_PLACE_DIGITS);
+      else{
+        lastDataError = dataError;
+        dataErrorCounter++;
+        rc = az_json_writer_append_double(&jw, ERROR_DOUBLE, DOUBLE_DECIMAL_PLACE_DIGITS);
+      }
 
+      EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding %s property value to telemetry payload.", EM3PH_DATA_TELEMETRY_NAMES[i]);
+    }
 
-  rc = az_json_writer_append_property_name(&jw, az_span_create_from_str(TELEMETRY_PROP_NAME_VOLTAGE_L2N));
-  EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding voltageL2N property name to telemetry payload.");
-  rc = az_json_writer_append_double(&jw, data[EM3PH_VOLTAGE_L2N_INDEX], TRIPLE_DECIMAL_PLACE_DIGITS);
-  EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding voltageL2N property value to telemetry payload. ");
+    rc = az_json_writer_append_property_name(&jw, az_span_create_from_str(TELEMETRY_PROP_NAME_LAST_DATA_ERROR));
+    EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding %s property name to telemetry payload.", TELEMETRY_PROP_NAME_LAST_DATA_ERROR);
+    rc = az_json_writer_append_int32(&jw, lastDataError);
+    EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding %s property value to telemetry payload. ", TELEMETRY_PROP_NAME_LAST_DATA_ERROR);
 
-  rc = az_json_writer_append_property_name(&jw, az_span_create_from_str(TELEMETRY_PROP_NAME_VOLTAGE_L3N));
-  EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding voltageL3N property name to telemetry payload.");
-  rc = az_json_writer_append_double(&jw, data[EM3PH_VOLTAGE_L3N_INDEX], TRIPLE_DECIMAL_PLACE_DIGITS);
-  EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding voltageL3N property value to telemetry payload. ");
-
-  rc = az_json_writer_append_property_name(&jw, az_span_create_from_str(TELEMETRY_PROP_NAME_AVG_VOLTAGE_LN));
-  EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding avgVoltageLN property name to telemetry payload.");
-  rc = az_json_writer_append_double(&jw, data[EM3PH_AVG_VOLTAGE_LN_INDEX], TRIPLE_DECIMAL_PLACE_DIGITS);
-  EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding avgVoltageLN property value to telemetry payload. ");
-
-
-
-  rc = az_json_writer_append_property_name(&jw, az_span_create_from_str(TELEMETRY_PROP_NAME_VOLTAGE_L1L2));
-  EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding voltageL1L2 property name to telemetry payload.");
-  rc = az_json_writer_append_double(&jw, data[EM3PH_VOLTAGE_L1L2_INDEX], TRIPLE_DECIMAL_PLACE_DIGITS);
-  EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding voltageL1L2 property value to telemetry payload. ");
-
-  rc = az_json_writer_append_property_name(&jw, az_span_create_from_str(TELEMETRY_PROP_NAME_VOLTAGE_L2L3));
-  EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding voltageL2L3 property name to telemetry payload.");
-  rc = az_json_writer_append_double(&jw, data[EM3PH_VOLTAGE_L2L3_INDEX], TRIPLE_DECIMAL_PLACE_DIGITS);
-  EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding voltageL2L3 property value to telemetry payload. ");
-
-  rc = az_json_writer_append_property_name(&jw, az_span_create_from_str(TELEMETRY_PROP_NAME_VOLTAGE_L1L3));
-  EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding voltageL1L3 property name to telemetry payload.");
-  rc = az_json_writer_append_double(&jw, data[EM3PH_VOLTAGE_L1L3_INDEX], TRIPLE_DECIMAL_PLACE_DIGITS);
-  EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding voltageL1L3 property value to telemetry payload. ");
-
-  rc = az_json_writer_append_property_name(&jw, az_span_create_from_str(TELEMETRY_PROP_NAME_AVG_VOLTAGE_LL));
-  EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding avgVoltageLL property name to telemetry payload.");
-  rc = az_json_writer_append_double(&jw, data[EM3PH_AVG_VOLTAGE_LL_INDEX], TRIPLE_DECIMAL_PLACE_DIGITS);
-  EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding avgVoltageLL property value to telemetry payload. ");
+    rc = az_json_writer_append_property_name(&jw, az_span_create_from_str(TELEMETRY_PROP_NAME_DATA_ERROR_COUNTER));
+    EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding %s property name to telemetry payload.", TELEMETRY_PROP_NAME_DATA_ERROR_COUNTER);
+    rc = az_json_writer_append_int32(&jw, dataErrorCounter);
+    EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding %s property value to telemetry payload. ", TELEMETRY_PROP_NAME_DATA_ERROR_COUNTER);
+  }
 
 
-
-  rc = az_json_writer_append_property_name(&jw, az_span_create_from_str(TELEMETRY_PROP_NAME_CURRENT_L1));
-  EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding currentL1 property name to telemetry payload.");
-  rc = az_json_writer_append_double(&jw, data[EM3PH_CURRENT_L1_INDEX], TRIPLE_DECIMAL_PLACE_DIGITS);
-  EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding currentL1 property value to telemetry payload. ");
-
-  rc = az_json_writer_append_property_name(&jw, az_span_create_from_str(TELEMETRY_PROP_NAME_CURRENT_L2));
-  EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding currentL2 property name to telemetry payload.");
-  rc = az_json_writer_append_double(&jw, data[EM3PH_CURRENT_L2_INDEX], TRIPLE_DECIMAL_PLACE_DIGITS);
-  EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding currentL2 property value to telemetry payload. ");
-
-  rc = az_json_writer_append_property_name(&jw, az_span_create_from_str(TELEMETRY_PROP_NAME_CURRENT_L3));
-  EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding currentL3 property name to telemetry payload.");
-  rc = az_json_writer_append_double(&jw, data[EM3PH_CURRENT_L3_INDEX], TRIPLE_DECIMAL_PLACE_DIGITS);
-  EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding currentL3 property value to telemetry payload. ");
-
-  rc = az_json_writer_append_property_name(&jw, az_span_create_from_str(TELEMETRY_PROP_NAME_CURRENT_NEUTRAL));
-  EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding currentNeutral property name to telemetry payload.");
-  rc = az_json_writer_append_double(&jw, data[EM3PH_CURRENT_NEUTRAL_INDEX], TRIPLE_DECIMAL_PLACE_DIGITS);
-  EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding currentNeutral property value to telemetry payload. ");
-
-  rc = az_json_writer_append_property_name(&jw, az_span_create_from_str(TELEMETRY_PROP_NAME_AVG_CURRENTL));
-  EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding avgCurrentL property name to telemetry payload.");
-  rc = az_json_writer_append_double(&jw, data[EM3PH_AVG_CURRENTL_INDEX], TRIPLE_DECIMAL_PLACE_DIGITS);
-  EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding avgCurrentL property value to telemetry payload. ");
-
-  rc = az_json_writer_append_property_name(&jw, az_span_create_from_str(TELEMETRY_PROP_NAME_CURRENT_TOTAL));
-  EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding currentTotal property name to telemetry payload.");
-  rc = az_json_writer_append_double(&jw, data[EM3PH_CURRENT_TOTAL_INDEX], TRIPLE_DECIMAL_PLACE_DIGITS);
-  EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding currentTotal property value to telemetry payload. ");
-
-
-
-  rc = az_json_writer_append_property_name(&jw, az_span_create_from_str(TELEMETRY_PROP_NAME_REAL_POWER_L1N));
-  EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding realPowerL1N property name to telemetry payload.");
-  rc = az_json_writer_append_double(&jw, data[EM3PH_REAL_POWER_L1N_INDEX], TRIPLE_DECIMAL_PLACE_DIGITS);
-  EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding realPowerL1N property value to telemetry payload. ");
-
-  rc = az_json_writer_append_property_name(&jw, az_span_create_from_str(TELEMETRY_PROP_NAME_REAL_POWER_L2N));
-  EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding realPowerL2N property name to telemetry payload.");
-  rc = az_json_writer_append_double(&jw, data[EM3PH_REAL_POWER_L2N_INDEX], TRIPLE_DECIMAL_PLACE_DIGITS);
-  EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding realPowerL2N property value to telemetry payload. ");
-
-  rc = az_json_writer_append_property_name(&jw, az_span_create_from_str(TELEMETRY_PROP_NAME_REAL_POWER_L3N));
-  EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding realPowerL3N property name to telemetry payload.");
-  rc = az_json_writer_append_double(&jw, data[EM3PH_REAL_POWER_L3N_INDEX], TRIPLE_DECIMAL_PLACE_DIGITS);
-  EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding realPowerL3N property value to telemetry payload. ");
-
-  rc = az_json_writer_append_property_name(&jw, az_span_create_from_str(TELEMETRY_PROP_NAME_REAL_POWER_TOTAL));
-  EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding realPowerTotal property name to telemetry payload.");
-  rc = az_json_writer_append_double(&jw, data[EM3PH_REAL_POWER_TOTAL_INDEX], TRIPLE_DECIMAL_PLACE_DIGITS);
-  EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding realPowerTotal property value to telemetry payload. ");
-
-
-
-  rc = az_json_writer_append_property_name(&jw, az_span_create_from_str(TELEMETRY_PROP_NAME_APPARENT_POWER_L1N));
-  EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding apparentPowerL1N property name to telemetry payload.");
-  rc = az_json_writer_append_double(&jw, data[EM3PH_APPARENT_POWER_L1N_INDEX], TRIPLE_DECIMAL_PLACE_DIGITS);
-  EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding apparentPowerL1N property value to telemetry payload. ");
-
-  rc = az_json_writer_append_property_name(&jw, az_span_create_from_str(TELEMETRY_PROP_NAME_APPARENT_POWER_L2N));
-  EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding apparentPowerL2N property name to telemetry payload.");
-  rc = az_json_writer_append_double(&jw, data[EM3PH_APPARENT_POWER_L2N_INDEX], TRIPLE_DECIMAL_PLACE_DIGITS);
-  EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding apparentPowerL2N property value to telemetry payload. ");
-
-  rc = az_json_writer_append_property_name(&jw, az_span_create_from_str(TELEMETRY_PROP_NAME_APPARENT_POWER_L3N));
-  EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding apparentPowerL3N property name to telemetry payload.");
-  rc = az_json_writer_append_double(&jw, data[EM3PH_APPARENT_POWER_L3N_INDEX], TRIPLE_DECIMAL_PLACE_DIGITS);
-  EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding apparentPowerL3N property value to telemetry payload. ");
-
-  rc = az_json_writer_append_property_name(&jw, az_span_create_from_str(TELEMETRY_PROP_NAME_APPARENT_POWER_TOTAL));
-  EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding apparentPowerTotal property name to telemetry payload.");
-  rc = az_json_writer_append_double(&jw, data[EM3PH_APPARENT_POWER_TOTAL_INDEX], TRIPLE_DECIMAL_PLACE_DIGITS);
-  EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding apparentPowerTotal property value to telemetry payload. ");
-
-
-
-  rc = az_json_writer_append_property_name(&jw, az_span_create_from_str(TELEMETRY_PROP_NAME_REACTIVE_POWER_L1N));
-  EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding reactivePowerL1N property name to telemetry payload.");
-  rc = az_json_writer_append_double(&jw, data[EM3PH_REACTIVE_POWER_L1N_INDEX], TRIPLE_DECIMAL_PLACE_DIGITS);
-  EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding reactivePowerL1N property value to telemetry payload. ");
-
-  rc = az_json_writer_append_property_name(&jw, az_span_create_from_str(TELEMETRY_PROP_NAME_REACTIVE_POWER_L2N));
-  EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding reactivePowerL2N property name to telemetry payload.");
-  rc = az_json_writer_append_double(&jw, data[EM3PH_REACTIVE_POWER_L2N_INDEX], TRIPLE_DECIMAL_PLACE_DIGITS);
-  EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding reactivePowerL2N property value to telemetry payload. ");
-
-  rc = az_json_writer_append_property_name(&jw, az_span_create_from_str(TELEMETRY_PROP_NAME_REACTIVE_POWER_L3N));
-  EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding reactivePowerL3N property name to telemetry payload.");
-  rc = az_json_writer_append_double(&jw, data[EM3PH_REACTIVE_POWER_L3N_INDEX], TRIPLE_DECIMAL_PLACE_DIGITS);
-  EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding reactivePowerL3N property value to telemetry payload. ");
-
-  rc = az_json_writer_append_property_name(&jw, az_span_create_from_str(TELEMETRY_PROP_NAME_REACTIVE_POWER_TOTAL));
-  EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding reactivePowerTotal property name to telemetry payload.");
-  rc = az_json_writer_append_double(&jw, data[EM3PH_REACTIVE_POWER_TOTAL_INDEX], TRIPLE_DECIMAL_PLACE_DIGITS);
-  EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding reactivePowerTotal property value to telemetry payload. ");
-
-
-
-  rc = az_json_writer_append_property_name(&jw, az_span_create_from_str(TELEMETRY_PROP_NAME_COS_PHI_L1));
-  EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding cosPhiL1 property name to telemetry payload.");
-  rc = az_json_writer_append_double(&jw, data[EM3PH_COS_PHI_L1_INDEX], TRIPLE_DECIMAL_PLACE_DIGITS);
-  EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding cosPhiL1 property value to telemetry payload. ");
-
-  rc = az_json_writer_append_property_name(&jw, az_span_create_from_str(TELEMETRY_PROP_NAME_COS_PHI_L2));
-  EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding cosPhiL2 property name to telemetry payload.");
-  rc = az_json_writer_append_double(&jw, data[EM3PH_COS_PHI_L2_INDEX], TRIPLE_DECIMAL_PLACE_DIGITS);
-  EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding cosPhiL2 property value to telemetry payload. ");
-
-  rc = az_json_writer_append_property_name(&jw, az_span_create_from_str(TELEMETRY_PROP_NAME_COS_PHI_L3));
-  EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding cosPhiL3 property name to telemetry payload.");
-  rc = az_json_writer_append_double(&jw, data[EM3PH_COS_PHI_L3_INDEX], TRIPLE_DECIMAL_PLACE_DIGITS);
-  EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding cosPhiL3 property value to telemetry payload. ");
   
-  rc = az_json_writer_append_property_name(&jw, az_span_create_from_str(TELEMETRY_PROP_NAME_AVG_COS_PHI));
-  EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding avgCosPhi property name to telemetry payload.");
-  rc = az_json_writer_append_double(&jw, data[EM3PH_AVG_COS_PHI_INDEX], TRIPLE_DECIMAL_PLACE_DIGITS);
-  EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding avgCosPhi property value to telemetry payload. ");
-
-  rc = az_json_writer_append_property_name(&jw, az_span_create_from_str(TELEMETRY_PROP_NAME_FREQUENCY));
-  EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding frequency property name to telemetry payload.");
-  rc = az_json_writer_append_double(&jw, data[EM3PH_FREQUENCY_INDEX], TRIPLE_DECIMAL_PLACE_DIGITS);
-  EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding frequency property value to telemetry payload. ");
-
-  rc = az_json_writer_append_property_name(&jw, az_span_create_from_str(TELEMETRY_PROP_NAME_ROT_FIELD));
-  EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding rotField property name to telemetry payload.");
-  rc = az_json_writer_append_double(&jw, data[EM3PH_ROT_FIELD_INDEX], TRIPLE_DECIMAL_PLACE_DIGITS);
-  EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding rotField property value to telemetry payload. ");
-
-
-  rc = az_json_writer_append_property_name(&jw, az_span_create_from_str(TELEMETRY_PROP_NAME_REAL_ENERGY_L1N));
-  EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding realEnergyL1N property name to telemetry payload.");
-  rc = az_json_writer_append_double(&jw, data[EM3PH_REAL_ENERGY_L1N_INDEX], TRIPLE_DECIMAL_PLACE_DIGITS);
-  EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding realEnergyL1N property value to telemetry payload. ");
-
-  rc = az_json_writer_append_property_name(&jw, az_span_create_from_str(TELEMETRY_PROP_NAME_REAL_ENERGY_L2N));
-  EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding realEnergyL2N property name to telemetry payload.");
-  rc = az_json_writer_append_double(&jw, data[EM3PH_REAL_ENERGY_L2N_INDEX], TRIPLE_DECIMAL_PLACE_DIGITS);
-  EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding realEnergyL2N property value to telemetry payload. ");
-
-  rc = az_json_writer_append_property_name(&jw, az_span_create_from_str(TELEMETRY_PROP_NAME_REAL_ENERGY_L3N));
-  EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding realEnergyL3N property name to telemetry payload.");
-  rc = az_json_writer_append_double(&jw, data[EM3PH_REAL_ENERGY_L3N_INDEX], TRIPLE_DECIMAL_PLACE_DIGITS);
-  EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding realEnergyL3N property value to telemetry payload. ");
-
-  rc = az_json_writer_append_property_name(&jw, az_span_create_from_str(TELEMETRY_PROP_NAME_REAL_ENERGY_TOTAL));
-  EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding realEnergyTotal property name to telemetry payload.");
-  rc = az_json_writer_append_double(&jw, data[EM3PH_REAL_ENERGY_TOTAL_INDEX], TRIPLE_DECIMAL_PLACE_DIGITS);
-  EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding realEnergyTotal property value to telemetry payload. ");
-
-
-
-  rc = az_json_writer_append_property_name(&jw, az_span_create_from_str(TELEMETRY_PROP_NAME_APPARENT_ENERGY_L1));
-  EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding apparentEnergyL1 property name to telemetry payload.");
-  rc = az_json_writer_append_double(&jw, data[EM3PH_APPARENT_ENERGY_L1_INDEX], TRIPLE_DECIMAL_PLACE_DIGITS);
-  EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding apparentEnergyL1 property value to telemetry payload. ");
-
-  rc = az_json_writer_append_property_name(&jw, az_span_create_from_str(TELEMETRY_PROP_NAME_APPARENT_ENERGY_L2));
-  EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding apparentEnergyL2 property name to telemetry payload.");
-  rc = az_json_writer_append_double(&jw, data[EM3PH_APPARENT_ENERGY_L2_INDEX], TRIPLE_DECIMAL_PLACE_DIGITS);
-  EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding apparentEnergyL2 property value to telemetry payload. ");
-
-  rc = az_json_writer_append_property_name(&jw, az_span_create_from_str(TELEMETRY_PROP_NAME_APPARENT_ENERGY_L3));
-  EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding apparentEnergyL3 property name to telemetry payload.");
-  rc = az_json_writer_append_double(&jw, data[EM3PH_APPARENT_ENERGY_L3_INDEX], TRIPLE_DECIMAL_PLACE_DIGITS);
-  EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding apparentEnergyL3 property value to telemetry payload. ");
-
-  rc = az_json_writer_append_property_name(&jw, az_span_create_from_str(TELEMETRY_PROP_NAME_APPARENT_ENERGY_TOTAL));
-  EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding apparentEnergyTotal property name to telemetry payload.");
-  rc = az_json_writer_append_double(&jw, data[EM3PH_APPARENT_ENERGY_TOTAL_INDEX], TRIPLE_DECIMAL_PLACE_DIGITS);
-  EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding apparentEnergyTotal property value to telemetry payload. ");
-
-
-
-  rc = az_json_writer_append_property_name(&jw, az_span_create_from_str(TELEMETRY_PROP_NAME_REACTIVE_ENERGY_L1));
-  EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding reactiveEnergyL1 property name to telemetry payload.");
-  rc = az_json_writer_append_double(&jw, data[EM3PH_REACTIVE_ENERGY_L1_INDEX], TRIPLE_DECIMAL_PLACE_DIGITS);
-  EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding reactiveEnergyL1 property value to telemetry payload. ");
-
-  rc = az_json_writer_append_property_name(&jw, az_span_create_from_str(TELEMETRY_PROP_NAME_REACTIVE_ENERGY_L2));
-  EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding reactiveEnergyL2 property name to telemetry payload.");
-  rc = az_json_writer_append_double(&jw, data[EM3PH_REACTIVE_ENERGY_L2_INDEX], TRIPLE_DECIMAL_PLACE_DIGITS);
-  EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding reactiveEnergyL2 property value to telemetry payload. ");
-
-  rc = az_json_writer_append_property_name(&jw, az_span_create_from_str(TELEMETRY_PROP_NAME_REACTIVE_ENERGY_L3));
-  EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding reactiveEnergyL3 property name to telemetry payload.");
-  rc = az_json_writer_append_double(&jw, data[EM3PH_REACTIVE_ENERGY_L3_INDEX], TRIPLE_DECIMAL_PLACE_DIGITS);
-  EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding reactiveEnergyL3 property value to telemetry payload. ");
-
-  rc = az_json_writer_append_property_name(&jw, az_span_create_from_str(TELEMETRY_PROP_NAME_REACTIVE_ENERGY_TOTAL));
-  EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding reactiveEnergyTotal property name to telemetry payload.");
-  rc = az_json_writer_append_double(&jw, data[EM3PH_REACTIVE_ENERGY_TOTAL_INDEX], TRIPLE_DECIMAL_PLACE_DIGITS);
-  EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding reactiveEnergyTotal property value to telemetry payload. ");
-
-
-
-  rc = az_json_writer_append_property_name(&jw, az_span_create_from_str(TELEMETRY_PROP_NAME_THD_VOLTS_L1N));
-  EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding THDVoltsL1N property name to telemetry payload.");
-  rc = az_json_writer_append_double(&jw, data[EM3PH_THD_VOLTS_L1N_INDEX], TRIPLE_DECIMAL_PLACE_DIGITS);
-  EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding THDVoltsL1N property value to telemetry payload. ");
-
-  rc = az_json_writer_append_property_name(&jw, az_span_create_from_str(TELEMETRY_PROP_NAME_THD_VOLTS_L2N));
-  EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding THDVoltsL2N property name to telemetry payload.");
-  rc = az_json_writer_append_double(&jw, data[EM3PH_THD_VOLTS_L2N_INDEX], TRIPLE_DECIMAL_PLACE_DIGITS);
-  EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding THDVoltsL2N property value to telemetry payload. ");
-
-  rc = az_json_writer_append_property_name(&jw, az_span_create_from_str(TELEMETRY_PROP_NAME_THD_VOLTS_L3N));
-  EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding THDVoltsL3N property name to telemetry payload.");
-  rc = az_json_writer_append_double(&jw, data[EM3PH_THD_VOLTS_L3N_INDEX], TRIPLE_DECIMAL_PLACE_DIGITS);
-  EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding THDVoltsL3N property value to telemetry payload. ");
-
-  rc = az_json_writer_append_property_name(&jw, az_span_create_from_str(TELEMETRY_PROP_NAME_AVG_THD_VOLTS_LN));
-  EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding THDVoltsL3N property name to telemetry payload.");
-  rc = az_json_writer_append_double(&jw, data[EM3PH_AVG_THD_VOLTS_LN_INDEX], TRIPLE_DECIMAL_PLACE_DIGITS);
-  EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding avgTHDVoltsLN property value to telemetry payload. ");
-
-
-
-  rc = az_json_writer_append_property_name(&jw, az_span_create_from_str(TELEMETRY_PROP_NAME_THD_CURRENT_L1N));
-  EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding THDCurrentL1N property name to telemetry payload.");
-  rc = az_json_writer_append_double(&jw, data[EM3PH_THD_CURRENT_L1N_INDEX], TRIPLE_DECIMAL_PLACE_DIGITS);
-  EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding THDCurrentL1N property value to telemetry payload. ");
-
-  rc = az_json_writer_append_property_name(&jw, az_span_create_from_str(TELEMETRY_PROP_NAME_THD_CURRENT_L2N));
-  EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding THDCurrentL2N property name to telemetry payload.");
-  rc = az_json_writer_append_double(&jw, data[EM3PH_THD_CURRENT_L2N_INDEX], TRIPLE_DECIMAL_PLACE_DIGITS);
-  EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding THDCurrentL2N property value to telemetry payload. ");
-
-  rc = az_json_writer_append_property_name(&jw, az_span_create_from_str(TELEMETRY_PROP_NAME_THD_CURRENT_L3N));
-  EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding THDCurrentL3N property name to telemetry payload.");
-  rc = az_json_writer_append_double(&jw, data[EM3PH_THD_CURRENT_L3N_INDEX], TRIPLE_DECIMAL_PLACE_DIGITS);
-  EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding THDCurrentL3N property value to telemetry payload. ");
-
-  rc = az_json_writer_append_property_name(&jw, az_span_create_from_str(TELEMETRY_PROP_NAME_AVG_THD_CURRENT_LN));
-  EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding avgTHDCurrentLN property name to telemetry payload.");
-  rc = az_json_writer_append_double(&jw, data[EM3PH_AVG_THD_CURRENT_LN_INDEX], TRIPLE_DECIMAL_PLACE_DIGITS);
-  EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding avgTHDCurrentLN property value to telemetry payload. ");
-
-
-
-  rc = az_json_writer_append_property_name(&jw, az_span_create_from_str(TELEMETRY_PROP_NAME_THD_VOLTS_L1L2));
-  EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding THDVoltsL1L2 property name to telemetry payload.");
-  rc = az_json_writer_append_double(&jw, data[EM3PH_THD_VOLTS_L1L2_INDEX], TRIPLE_DECIMAL_PLACE_DIGITS);
-  EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding THDVoltsL1L2 property value to telemetry payload. ");
-
-  rc = az_json_writer_append_property_name(&jw, az_span_create_from_str(TELEMETRY_PROP_NAME_THD_VOLTS_L2L3));
-  EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding THDVoltsL2L3 property name to telemetry payload.");
-  rc = az_json_writer_append_double(&jw, data[EM3PH_THD_VOLTS_L2L3_INDEX], TRIPLE_DECIMAL_PLACE_DIGITS);
-  EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding THDVoltsL2L3 property value to telemetry payload. ");
-
-  rc = az_json_writer_append_property_name(&jw, az_span_create_from_str(TELEMETRY_PROP_NAME_THD_VOLTS_L1L3));
-  EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding THDVoltsL1L3 property name to telemetry payload.");
-  rc = az_json_writer_append_double(&jw, data[EM3PH_THD_VOLTS_L1L3_INDEX], TRIPLE_DECIMAL_PLACE_DIGITS);
-  EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding THDVoltsL1L3 property value to telemetry payload. ");
-
-  rc = az_json_writer_append_property_name(&jw, az_span_create_from_str(TELEMETRY_PROP_NAME_AVG_THD_VOLTS_LL));
-  EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding avgTHDVoltsLL property name to telemetry payload.");
-  rc = az_json_writer_append_double(&jw, data[EM3PH_AVG_THD_VOLTS_LL_INDEX], TRIPLE_DECIMAL_PLACE_DIGITS);
-  EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding avgTHDVoltsLL property value to telemetry payload. ");
-
-
-
-  rc = az_json_writer_append_property_name(&jw, az_span_create_from_str(TELEMETRY_PROP_NAME_POWER_FACTOR_L1N));
-  EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding powerFactorL1N property name to telemetry payload.");
-  rc = az_json_writer_append_double(&jw, data[EM3PH_POWER_FACTOR_L1N_INDEX], TRIPLE_DECIMAL_PLACE_DIGITS);
-  EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding powerFactorL1N property value to telemetry payload. ");
-
-  rc = az_json_writer_append_property_name(&jw, az_span_create_from_str(TELEMETRY_PROP_NAME_POWER_FACTOR_L2N));
-  EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding powerFactorL2N property name to telemetry payload.");
-  rc = az_json_writer_append_double(&jw, data[EM3PH_POWER_FACTOR_L2N_INDEX], TRIPLE_DECIMAL_PLACE_DIGITS);
-  EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding powerFactorL2N property value to telemetry payload. ");
-
-  rc = az_json_writer_append_property_name(&jw, az_span_create_from_str(TELEMETRY_PROP_NAME_POWER_FACTOR_L3N));
-  EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding powerFactorL3N property name to telemetry payload.");
-  rc = az_json_writer_append_double(&jw, data[EM3PH_POWER_FACTOR_L3N_INDEX], TRIPLE_DECIMAL_PLACE_DIGITS);
-  EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding powerFactorL3N property value to telemetry payload. ");
-
-  rc = az_json_writer_append_property_name(&jw, az_span_create_from_str(TELEMETRY_PROP_NAME_POWER_FACTOR_TOTAL));
-  EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding powerFactorTotal property name to telemetry payload.");
-  rc = az_json_writer_append_double(&jw, data[EM3PH_POWER_FACTOR_TOTAL_INDEX], TRIPLE_DECIMAL_PLACE_DIGITS);
-  EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding powerFactorTotal property value to telemetry payload. ");
-
-
-
-
 
   rc = az_json_writer_append_property_name(&jw, az_span_create_from_str(TELEMETRY_PROP_NAME_COM_STATE));
   EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding timestamp property name to telemetry payload.");
   rc = az_json_writer_append_double(&jw, comError, TRIPLE_DECIMAL_PLACE_DIGITS);
-  EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding timestamp property value to telemetry payload. ");
+  EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding timestamp property value to telemetry payload.");
 
-    rc = az_json_writer_append_property_name(&jw, az_span_create_from_str(TELEMETRY_PROP_NAME_TIMESTAMP));
+  rc = az_json_writer_append_property_name(&jw, AZ_SPAN_FROM_STR(WEIDOS_TELEMETRY_PROP_NAME_TIMESTAMP));
   EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding timestamp property name to telemetry payload.");
-  rc = az_json_writer_append_int32(&jw, timestamp);
+  DateTime date = DateTime(timestamp);
+  char dateFormat[] = "YYYY-MM-DDThh:mm:ss.000Z";
+  date.toString(dateFormat);
+  rc = az_json_writer_append_string(&jw, az_span_create_from_str(dateFormat));
   EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding timestamp property value to telemetry payload. ");
 
 
@@ -556,6 +221,7 @@ int em3ph_generete_payload(uint8_t* payload_buffer,
     
 }
 
+
 int weidosESP32_generete_payload(uint8_t* payload_buffer,
     size_t payload_buffer_size,
     size_t* payload_buffer_length, WeidosManagerData_t& weidosData){
@@ -564,7 +230,6 @@ int weidosESP32_generete_payload(uint8_t* payload_buffer,
     az_result rc;
     az_span payload_buffer_span = az_span_create(payload_buffer, payload_buffer_size);
     az_span json_span;
-
 
     rc = az_json_writer_init(&jw, payload_buffer_span, NULL);
     EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed initializing json writer for telemetry.");
@@ -664,6 +329,11 @@ int weidosESP32_generete_payload(uint8_t* payload_buffer,
   
   return RESULT_OK;
 }
+
+
+
+
+
 
 int em750_generete_properties(az_iot_hub_client const* hub_client,
     uint8_t* payload_buffer,

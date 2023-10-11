@@ -48,7 +48,7 @@ EnergyMeterUpdateState_t EM122Manager::loop(){
         numTries++;
         if(numTries>maxTries){
           numTries = 0;
-          state = END_TASK;
+          state = PASS_MESSAGE;
           LogError("Energy meter update failed.");
         }else{
           state = UPDATE_ENERGY_METER;
@@ -57,7 +57,7 @@ EnergyMeterUpdateState_t EM122Manager::loop(){
         break;
 
       case ENERGY_METER_UPDATED:
-        LogInfo(" Updated EM220  (ID:%i)", deviceId);
+        LogInfo(" Updated EM122  (ID:%i)", deviceId);
         state = PASS_MESSAGE;
       break;
 
@@ -65,7 +65,6 @@ EnergyMeterUpdateState_t EM122Manager::loop(){
         em3phManagerData_t msg;
         msg.deviceId = deviceId;
         msg.timestamp = systemClock.getEpochTime();
-        em122->validateData();
         em122->getData(msg.payload);
         LogInfo("Pushing data for device ID: %i", deviceId);
         DataHubCollection.push(msg, deviceId);
