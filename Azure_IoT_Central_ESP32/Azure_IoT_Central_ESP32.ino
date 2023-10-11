@@ -134,9 +134,11 @@ void setup()
   LogInfo("Let's go to the looP function");
 }
 
-unsigned long prevTime = 0;
-static const unsigned long DELTA_TIME = 60*1000;
+unsigned long prevTcpTime = 0;
+static const unsigned long TCP_UPDATE_FREQUENCY = 60*1000;
 
+unsigned long prevNoTcpTime = 0;
+static const unsigned long NO_TCP_UPDATE_FREQUENCY = 60*1000;
 
 
 bool  networkUp = false;
@@ -157,12 +159,21 @@ void loop()
 
 
   if(networkUp && clockRunning){
-    if(millis()-prevTime>DELTA_TIME){
-      weidosESP32Manager.triggerUpdate();
-      DeviceCollection.triggerUpdate();
-      prevTime = millis();
+    if(millis()-prevTcpTime>TCP_UPDATE_FREQUENCY){
+      DeviceCollection.triggerUpdateTCP();
+      prevTcpTime = millis();
     }
   }
+
+
+  if(clockRunning){
+    if(millis()-prevNoTcpTime>NO_TCP_UPDATE_FREQUENCY){
+      weidosESP32Manager.triggerUpdate();
+      DeviceCollection.triggerUpdateRTU();
+      prevNoTcpTime = millis();
+    }
+  }
+
 
   if(networkUp){
     weidosESP32Manager.loop();

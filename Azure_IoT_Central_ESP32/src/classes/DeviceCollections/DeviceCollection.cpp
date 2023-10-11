@@ -47,13 +47,21 @@ void DeviceCollectionClass::loopDevices(){
 }
 
 
-void DeviceCollectionClass::triggerUpdate(){
+void DeviceCollectionClass::triggerUpdateRTU(){
     for(int i=0; i<MAX_ALLOWED_DEVICES; i++){
         if(EM110Pool[i]) EM110Pool[i]->triggerUpdate();
         if(EM111Pool[i]) EM111Pool[i]->triggerUpdate();
         if(EM120Pool[i]) EM120Pool[i]->triggerUpdate();
         if(EM122Pool[i]) EM122Pool[i]->triggerUpdate();
         if(EM220Pool[i]) EM220Pool[i]->triggerUpdate();
+    }
+
+    return;
+}
+
+
+void DeviceCollectionClass::triggerUpdateTCP(){
+    for(int i=0; i<MAX_ALLOWED_DEVICES; i++){
         if(EM750Pool[i]) EM750Pool[i]->triggerUpdate();
     }
 

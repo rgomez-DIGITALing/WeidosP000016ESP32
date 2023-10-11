@@ -11,7 +11,8 @@
 class DeviceCollectionClass{
     public:
         void init();
-        void triggerUpdate();
+        void triggerUpdateRTU();
+        void triggerUpdateTCP();
         void loopDevices();
         void sendDevicesProperties();
 
