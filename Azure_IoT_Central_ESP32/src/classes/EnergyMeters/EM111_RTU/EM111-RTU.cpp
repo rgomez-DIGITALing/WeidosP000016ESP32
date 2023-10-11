@@ -45,7 +45,6 @@ void EM111::stop(){
 }
 
 bool EM111::update(){
-  LogInfo("Let's request for batch 1. ID: %i  -  Address: %i  -  Num: %i", modbusId, REG_ADDRESS_BATCH_1, NUM_REGISTERS_BATCH_1);
   int response = ModbusRTUClient.requestFrom(modbusId, INPUT_REGISTERS, REG_ADDRESS_BATCH_1, NUM_REGISTERS_BATCH_1);    
   if(response != NUM_REGISTERS_BATCH_1)
   {
@@ -57,7 +56,6 @@ bool EM111::update(){
   }
   assignData();
   
-  LogInfo("Let's request for batch 1. Address: %i   -   Num: %i", REG_ADDRESS_BATCH_2, NUM_REGISTERS_BATCH_2);
   response = ModbusRTUClient.requestFrom(modbusId, INPUT_REGISTERS, REG_ADDRESS_BATCH_2, NUM_REGISTERS_BATCH_2);    
   if(response != NUM_REGISTERS_BATCH_2)
   {
