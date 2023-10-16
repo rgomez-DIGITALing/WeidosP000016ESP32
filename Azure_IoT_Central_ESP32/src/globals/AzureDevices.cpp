@@ -2,7 +2,7 @@
 #include "../classes/AzureIoTClass/mqttCallbacks.h"
 #include <Ethernet.h>
 #include <ArduinoBearSSL.h>
-
+#include "../iot_configs.h"
 #include "../classes/AzureIoTCollection/AzureIoTCollection.h"
 
 EthernetClient ethernetClient0(1);
@@ -60,23 +60,24 @@ void createObjects(){
     Azure3->setDataBuffer2(bufferPtr);
 
 
-    // BearSSLClient* bear_ssl_client4 = new BearSSLClient(ethernetClient4);
-    // MQTTClient* mqttClient4 = new MQTTClient(MQTT_CLIENT_BUFFER_SIZE);
-    // Azure4 = new AzureIoTDevice(mqttClient4, bear_ssl_client4);
-    // bufferPtr = new uint8_t[AZ_IOT_DATA_BUFFER_SIZE];
-    // Azure4->setDataBuffer(bufferPtr);
-    // bufferPtr = new uint8_t[DATA_BUFFER_SIZE];
-    // Azure4->setDataBuffer2(bufferPtr);
+    BearSSLClient* bear_ssl_client4 = new BearSSLClient(ethernetClient4);
+    MQTTClient* mqttClient4 = new MQTTClient(MQTT_CLIENT_BUFFER_SIZE);
+    Azure4 = new AzureIoTDevice(mqttClient4, bear_ssl_client4);
+    bufferPtr = new uint8_t[AZ_IOT_DATA_BUFFER_SIZE];
+    Azure4->setDataBuffer(bufferPtr);
+    bufferPtr = new uint8_t[DATA_BUFFER_SIZE];
+    Azure4->setDataBuffer2(bufferPtr);
 
-    // BearSSLClient* bear_ssl_client5 = new BearSSLClient(ethernetClient5);
-    // MQTTClient* mqttClient5 = new MQTTClient(MQTT_CLIENT_BUFFER_SIZE);
-    // Azure5 = new AzureIoTDevice(mqttClient5, bear_ssl_client5);
-    // bufferPtr = new uint8_t[AZ_IOT_DATA_BUFFER_SIZE];
-    // Azure5->setDataBuffer(bufferPtr);
-    // bufferPtr = new uint8_t[DATA_BUFFER_SIZE];
-    // Azure5->setDataBuffer2(bufferPtr);
+    BearSSLClient* bear_ssl_client5 = new BearSSLClient(ethernetClient5);
+    MQTTClient* mqttClient5 = new MQTTClient(MQTT_CLIENT_BUFFER_SIZE);
+    Azure5 = new AzureIoTDevice(mqttClient5, bear_ssl_client5);
+    bufferPtr = new uint8_t[AZ_IOT_DATA_BUFFER_SIZE];
+    Azure5->setDataBuffer(bufferPtr);
+    bufferPtr = new uint8_t[DATA_BUFFER_SIZE];
+    Azure5->setDataBuffer2(bufferPtr);
 }
 
+char* emptyModelId = "";
 char emModelId[60] = "dtmi:conexiones:EnergyMeter_6bm;1";
 char gwModelId[60] = "dtmi:conexionesSmartFactory:gateway_62;1";
 char gatewayId[50] = IOT_CONFIG_DEVICE_GATEWAY_ID;
@@ -87,7 +88,7 @@ void configureAzureDevices(){
     Azure0->usingSasToken(IOT_CONFIG_DEVICE_GATEWAY_KEY);
     Azure0->setDeviceId(IOT_CONFIG_DEVICE_GATEWAY_ID);
     Azure0->setDpsScopeId(scopeId);
-    Azure0->setModelId(gwModelId);
+    Azure0->setModelId(emptyModelId);
     Azure0->init();
     Azure0->setOnCommandReceived(gateway_on_command_request_received);
   
@@ -95,22 +96,22 @@ void configureAzureDevices(){
     Azure1->setDeviceId(IOT_CONFIG_DEVICE_1_ID);
     Azure1->setDpsScopeId(scopeId);
     Azure1->setGatewayId(gatewayId);
-    Azure1->setModelId(emModelId);
+    Azure1->setModelId(emptyModelId);
     Azure1->init();
 
     Azure2->usingSasToken(IOT_CONFIG_DEVICE_2_KEY);
     Azure2->setDeviceId(IOT_CONFIG_DEVICE_2_ID);
     Azure2->setDpsScopeId(scopeId);
     Azure2->setGatewayId(gatewayId);
-    Azure2->setModelId(emModelId);
+    Azure2->setModelId(emptyModelId);
     Azure2->init();
 
-    #ifndef BATCH_IT
+    
     Azure3->usingSasToken(IOT_CONFIG_DEVICE_3_KEY);
     Azure3->setDeviceId(IOT_CONFIG_DEVICE_3_ID);
     Azure3->setDpsScopeId(scopeId);
     Azure3->setGatewayId(gatewayId);
-    Azure3->setModelId(emModelId);
+    Azure3->setModelId(emptyModelId);
     Azure3->init();
 
 
@@ -118,27 +119,41 @@ void configureAzureDevices(){
     Azure4->setDeviceId(IOT_CONFIG_DEVICE_4_ID);
     Azure4->setDpsScopeId(scopeId);
     Azure4->setGatewayId(gatewayId);
-    Azure4->setModelId(emModelId);
+    Azure4->setModelId(emptyModelId);
     Azure4->init();
 
     Azure5->usingSasToken(IOT_CONFIG_DEVICE_5_KEY);
     Azure5->setDeviceId(IOT_CONFIG_DEVICE_5_ID);
     Azure5->setDpsScopeId(scopeId);
     Azure5->setGatewayId(gatewayId);
-    Azure5->setModelId(emModelId);
+    Azure5->setModelId(emptyModelId);
     Azure5->init();
 
-
-    #endif
 }
 
 
 void setAzureIoTCollectionDevices(){
     AzureIoTCollection.setAzureIoTDevice(Azure0, 0);
+
+    #if defined BATCH_GENERAL_ROBOT || defined BATCH_LINEA_EMPAQUETADO_AC_OFICINAS
     AzureIoTCollection.setAzureIoTDevice(Azure1, 1);
     AzureIoTCollection.setAzureIoTDevice(Azure2, 2);
     AzureIoTCollection.setAzureIoTDevice(Azure3, 3);
-    // AzureIoTCollection.setAzureIoTDevice(Azure4, 4);
-    //AzureIoTCollection.setAzureIoTDevice(Azure5, 5);
+    AzureIoTCollection.setAzureIoTDevice(Azure4, 4);
+    AzureIoTCollection.setAzureIoTDevice(Azure5, 5);
+    #endif
+
+
+    #ifdef BATCH_LETS_CONNECT
+    AzureIoTCollection.setAzureIoTDevice(Azure1, 1);
+    AzureIoTCollection.setAzureIoTDevice(Azure2, 2);
+    AzureIoTCollection.setAzureIoTDevice(Azure3, 3);
+    #endif
+
+    #ifdef BATCH_IT_SOPORTE
+    AzureIoTCollection.setAzureIoTDevice(Azure1, 1);
+    AzureIoTCollection.setAzureIoTDevice(Azure2, 2);
+    AzureIoTCollection.setAzureIoTDevice(Azure3, 3);
+    #endif
     return;
 }

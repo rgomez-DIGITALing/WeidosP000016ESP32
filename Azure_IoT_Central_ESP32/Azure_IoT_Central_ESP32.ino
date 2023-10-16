@@ -119,14 +119,21 @@ void setup()
   DataHubCollection.init();
   DeviceCollection.init();
   AzureIoTCollection.init();
-
+  Serial.println("Welcome1!");
   createObjects();
+  Serial.println("Welcome2!");
   configureAzureDevices();
+  Serial.println("Welcome3!");
   setAzureIoTCollectionDevices();
+  Serial.println("Welcome4!");
   setDataHubCollection();
+  Serial.println("Welcome5!");
   setDataHubsPayloadGenerators();
+  Serial.println("Welcome6!");
   setEnergyMeterProperties();
+  Serial.println("Welcome7!");
   configureDeviceCollection();
+  Serial.println("Welcome8!");
 
   esp_task_wdt_init(WDT_TIMEOUT, true); //enable panic so ESP32 restarts
   esp_task_wdt_add(NULL); //add current thread to WDT watch
