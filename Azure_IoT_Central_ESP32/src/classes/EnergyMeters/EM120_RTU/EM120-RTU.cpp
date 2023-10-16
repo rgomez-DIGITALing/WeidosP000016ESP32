@@ -7,7 +7,7 @@
 #define MODBUS_ADDRESS      1
 #define MODBUS_BAUDRATE     9600
 #define MODBUS_CONFIG       SERIAL_8N1
-#define MODBUS_TIMEOUT      5000
+#define MODBUS_TIMEOUT      600
 
 #define REG_ADDRESS_BATCH_1         0
 #define NUM_REGISTERS_BATCH_1       72

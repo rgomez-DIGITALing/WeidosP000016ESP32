@@ -7,12 +7,13 @@
 #define MODBUS_ADDRESS      1
 #define MODBUS_BAUDRATE     9600
 #define MODBUS_CONFIG       SERIAL_8N1
-#define MODBUS_TIMEOUT      5000
 
+#define MODBUS_TIMEOUT_BATCH_1      600
 #define REG_ADDRESS_BATCH_1         0
 #define NUM_REGISTERS_BATCH_1       72
 #define NUM_DATA_BATCH_1            NUM_REGISTERS_BATCH_1/2
 
+#define MODBUS_TIMEOUT_BATCH_2      100
 #define REG_ADDRESS_BATCH_2         342
 #define NUM_REGISTERS_BATCH_2       4
 #define NUM_DATA_BATCH_2            NUM_REGISTERS_BATCH_2/2
@@ -25,7 +26,6 @@ EM110::EM110(int modbusId, int ctPrimary, int ctSecondary) :  modbusId(modbusId)
 
 int EM110::begin(){
   RS485.setPins(RS485_TX, RS485_DE, RS485_RE);        //Set Weidos RS485 pins.
-  ModbusRTUClient.setTimeout(MODBUS_TIMEOUT);
   if(ModbusRTUClient.begin(MODBUS_BAUDRATE, MODBUS_CONFIG)){
     comError = COM_OK;
     return 1;
@@ -42,6 +42,7 @@ void EM110::stop(){
 }
 
 bool EM110::update(){
+  ModbusRTUClient.setTimeout(MODBUS_TIMEOUT_BATCH_1);
   int response = ModbusRTUClient.requestFrom(modbusId, INPUT_REGISTERS, REG_ADDRESS_BATCH_1, NUM_REGISTERS_BATCH_1);    
   if(response != NUM_REGISTERS_BATCH_1)
   {
@@ -53,7 +54,7 @@ bool EM110::update(){
   }
   assignData();
   
-
+  ModbusRTUClient.setTimeout(MODBUS_TIMEOUT_BATCH_2);
   response = ModbusRTUClient.requestFrom(modbusId, INPUT_REGISTERS, REG_ADDRESS_BATCH_2, NUM_REGISTERS_BATCH_2);    
   if(response != NUM_REGISTERS_BATCH_2)
   {

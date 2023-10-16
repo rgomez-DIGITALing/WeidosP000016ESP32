@@ -4,7 +4,7 @@
 
 
 #define MODBUS_ADDRESS      1
-#define MODBUS_TIMEOUT      500
+#define MODBUS_TIMEOUT      100
 
 
 #define REG_ADDRESS_BATCH_1         19000
