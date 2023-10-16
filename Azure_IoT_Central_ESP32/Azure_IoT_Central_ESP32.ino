@@ -140,6 +140,8 @@ static const unsigned long TCP_UPDATE_FREQUENCY = 60*1000;
 unsigned long prevNoTcpTime = 0;
 static const unsigned long NO_TCP_UPDATE_FREQUENCY = 60*1000;
 
+unsigned long prevTime = 0;
+static const unsigned long DELTA_TIME = 60*1000;
 
 bool  networkUp = false;
 bool  clockRunning = false;
