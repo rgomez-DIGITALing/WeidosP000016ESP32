@@ -135,7 +135,7 @@ void configureAzureDevices(){
 void setAzureIoTCollectionDevices(){
     AzureIoTCollection.setAzureIoTDevice(Azure0, 0);
 
-    #if defined BATCH_GENERAL_ROBOT || defined BATCH_LINEA_EMPAQUETADO_AC_OFICINAS
+    #if defined BATCH_GENERAL_ROBOT || defined BATCH_LINEA_EMPAQUETADO_AC_OFICINAS || defined BATCH_TEST
     AzureIoTCollection.setAzureIoTDevice(Azure1, 1);
     AzureIoTCollection.setAzureIoTDevice(Azure2, 2);
     AzureIoTCollection.setAzureIoTDevice(Azure3, 3);

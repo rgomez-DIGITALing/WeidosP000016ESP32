@@ -9,7 +9,7 @@
 
 
 
-#ifdef BATCH_GENERAL_ROBOT
+#if defined BATCH_GENERAL_ROBOT || defined BATCH_TEST
 static EthernetClient ethernetClientModbus(7);
 static ModbusTCPClient modbusTCPClient(ethernetClientModbus);
 
@@ -19,13 +19,13 @@ IPAddress ipTranselevador2(10, 88, 47, 243);        //Transelevador 2
 IPAddress ipTranselevador3(10, 88, 47, 244);        //Transelevador 3
 IPAddress ipRobot(10, 88, 47, 220);        //Robot
 
-EM750 generalEM(modbusTCPClient, ipGeneral);
+EA750 generalEA(modbusTCPClient, ipGeneral);
 EM750 transelevador1EM(modbusTCPClient, ipTranselevador1);
 EM750 transelevador2EM(modbusTCPClient, ipTranselevador2);
 EM750 transelevador3EM(modbusTCPClient, ipTranselevador3);
 EM750 robotEM(modbusTCPClient, ipRobot);
 
-EM750Manager general(generalEM, 1, MODBUS_NUMBER_TRIES);
+EA750Manager general(generalEA, 1, MODBUS_NUMBER_TRIES);
 EM750Manager transelevador1(transelevador1EM, 2, MODBUS_NUMBER_TRIES);
 EM750Manager transelevador2(transelevador2EM, 3, MODBUS_NUMBER_TRIES);
 EM750Manager transelevador3(transelevador3EM, 4, MODBUS_NUMBER_TRIES);
@@ -74,7 +74,7 @@ EM111Manager compresorCalidad(3);
 
 
 void configureDeviceCollection(){
-  #ifdef BATCH_GENERAL_ROBOT
+  #if defined BATCH_GENERAL_ROBOT || defined BATCH_TEST
   DeviceCollection.setEnergyMeter(general);
   DeviceCollection.setEnergyMeter(transelevador1);
   DeviceCollection.setEnergyMeter(transelevador2);
@@ -111,38 +111,39 @@ void configureDeviceCollection(){
 
 
 void setEnergyMeterProperties(){
-  #ifdef BATCH_GENERAL_ROBOT
-  EM750* energyMeter = nullptr;
-  energyMeter = general.getEnergyMeter();
-  energyMeter->setAsEA750();
-  energyMeter->setAsset(ASSET_GENERAL);
-  energyMeter->setIdentifier(IDENTIFIER_GENERAL);
-  energyMeter->setLocation1(LOCATION_NAVE_400);
-  energyMeter->setLocation2(LOCATION_CUADRO_ENTRADA);
+  #if defined BATCH_GENERAL_ROBOT || defined BATCH_TEST
+  EA750* ea750 = nullptr;
+  ea750 = general.getEnergyMeter();
+  ea750->setAsEA750();
+  ea750->setAsset(ASSET_GENERAL);
+  ea750->setIdentifier(IDENTIFIER_GENERAL);
+  ea750->setLocation1(LOCATION_NAVE_400);
+  ea750->setLocation2(LOCATION_CUADRO_ENTRADA);
 
-  energyMeter = transelevador1.getEnergyMeter();
-  energyMeter->setAsset(ASSET_TRANSELEVADOR_1);
-  energyMeter->setIdentifier(IDENTIFIER_TRANSELEVADOR_1);
-  energyMeter->setLocation1(LOCATION_NAVE_400);
-  energyMeter->setLocation2(LOCATION_CUADRO_ALMACEN);
+  EM750* em750 = nullptr;
+  em750 = transelevador1.getEnergyMeter();
+  em750->setAsset(ASSET_TRANSELEVADOR_1);
+  em750->setIdentifier(IDENTIFIER_TRANSELEVADOR_1);
+  em750->setLocation1(LOCATION_NAVE_400);
+  em750->setLocation2(LOCATION_CUADRO_ALMACEN);
 
-  energyMeter = transelevador2.getEnergyMeter();
-  energyMeter->setAsset(ASSET_TRANSELEVADOR_2);
-  energyMeter->setIdentifier(IDENTIFIER_TRANSELEVADOR_2);
-  energyMeter->setLocation1(LOCATION_NAVE_400);
-  energyMeter->setLocation2(LOCATION_CUADRO_ALMACEN);
+  em750 = transelevador2.getEnergyMeter();
+  em750->setAsset(ASSET_TRANSELEVADOR_2);
+  em750->setIdentifier(IDENTIFIER_TRANSELEVADOR_2);
+  em750->setLocation1(LOCATION_NAVE_400);
+  em750->setLocation2(LOCATION_CUADRO_ALMACEN);
 
-  energyMeter = transelevador3.getEnergyMeter();
-  energyMeter->setAsset(ASSET_TRANSELEVADOR_3);
-  energyMeter->setIdentifier(IDENTIFIER_TRANSELEVADOR_3);
-  energyMeter->setLocation1(LOCATION_NAVE_400);
-  energyMeter->setLocation2(LOCATION_CUADRO_ALMACEN);
+  em750 = transelevador3.getEnergyMeter();
+  em750->setAsset(ASSET_TRANSELEVADOR_3);
+  em750->setIdentifier(IDENTIFIER_TRANSELEVADOR_3);
+  em750->setLocation1(LOCATION_NAVE_400);
+  em750->setLocation2(LOCATION_CUADRO_ALMACEN);
 
-  energyMeter = robot.getEnergyMeter();
-  energyMeter->setAsset(ASSET_ROBOT);
-  energyMeter->setIdentifier(IDENTIFIER_ROBOT);
-  energyMeter->setLocation1(LOCATION_NAVE_400);
-  energyMeter->setLocation2(LOCATION_CUADRO_ALMACEN);
+  em750 = robot.getEnergyMeter();
+  em750->setAsset(ASSET_ROBOT);
+  em750->setIdentifier(IDENTIFIER_ROBOT);
+  em750->setLocation1(LOCATION_NAVE_400);
+  em750->setLocation2(LOCATION_CUADRO_ALMACEN);
   #endif
 
 

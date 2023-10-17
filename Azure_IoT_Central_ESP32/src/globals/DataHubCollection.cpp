@@ -6,7 +6,7 @@
 DataHub<WeidosManagerData_t, WEIDOS_METADATA_RING_BUFFER_SIZE> weidosDataHub;
 
 
-#if defined BATCH_GENERAL_ROBOT || defined BATCH_LINEA_EMPAQUETADO_AC_OFICINAS 
+#if defined BATCH_GENERAL_ROBOT || defined BATCH_LINEA_EMPAQUETADO_AC_OFICINAS || defined BATCH_TEST 
 DataHub<em3phManagerData_t, ENERGY_METER_RING_BUFFER_SIZE> emDataHub1;
 DataHub<em3phManagerData_t, ENERGY_METER_RING_BUFFER_SIZE> emDataHub2;
 DataHub<em3phManagerData_t, ENERGY_METER_RING_BUFFER_SIZE> emDataHub3;
@@ -31,7 +31,7 @@ void setDataHubCollection(){
     DataHubCollection.setDataHub(weidosDataHub);
 
 
-    #if defined BATCH_GENERAL_ROBOT || defined BATCH_LINEA_EMPAQUETADO_AC_OFICINAS
+    #if defined BATCH_GENERAL_ROBOT || defined BATCH_LINEA_EMPAQUETADO_AC_OFICINAS  || defined BATCH_TEST
     DataHubCollection.setDataHub(emDataHub1, 1);
     DataHubCollection.setDataHub(emDataHub2, 2);
     DataHubCollection.setDataHub(emDataHub3, 3);
@@ -59,7 +59,7 @@ void setDataHubCollection(){
 void setDataHubsPayloadGenerators(){
     weidosDataHub.setPayloadGenerator(weidosESP32_generete_payload);
 
-    #if defined BATCH_GENERAL_ROBOT || defined BATCH_LINEA_EMPAQUETADO_AC_OFICINAS
+    #if defined BATCH_GENERAL_ROBOT || defined BATCH_LINEA_EMPAQUETADO_AC_OFICINAS || defined BATCH_TEST
     emDataHub1.setPayloadGenerator(em3ph_generete_payload);
     emDataHub2.setPayloadGenerator(em3ph_generete_payload);
     emDataHub3.setPayloadGenerator(em3ph_generete_payload);

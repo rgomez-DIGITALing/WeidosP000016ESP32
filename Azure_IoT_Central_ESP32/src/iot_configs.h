@@ -5,7 +5,8 @@
 //#define BATCH_GENERAL_ROBOT
 //#define BATCH_LINEA_EMPAQUETADO_AC_OFICINAS
 //#define BATCH_LETS_CONNECT
-#define BATCH_IT_SOPORTE
+//#define BATCH_IT_SOPORTE
+#define BATCH_TEST
 
 
 
@@ -52,6 +53,9 @@
 
 // Azure IoT Central
 #define DPS_ID_SCOPE "0ne00A56BD4"
+#ifdef BATCH_TEST
+#define DPS_ID_SCOPE "0ne00B219C5"
+#endif
 
 
 #ifdef BATCH_GENERAL_ROBOT
@@ -119,6 +123,23 @@
 #define IOT_CONFIG_DEVICE_3_KEY "qxI3X4O8KX36BbVoCptJ12BXzU8dgmFSbBFbjL+VeOU="          //Compresor Soporte
 #define IOT_CONFIG_DEVICE_4_KEY "unusedunusedunusedunusedunusedunusedunusedun"          //Unusedaa
 #define IOT_CONFIG_DEVICE_5_KEY "unusedunusedunusedunusedunusedunusedunusedun"          //Unused
+#endif
+
+
+#ifdef BATCH_TEST
+#define IOT_CONFIG_DEVICE_GATEWAY_ID "2owqp9cpc1k"     //Gateway Test
+#define IOT_CONFIG_DEVICE_1_ID "lqvsokgzkb"           //Test 1
+#define IOT_CONFIG_DEVICE_2_ID "16wl1akgi3n"           //Test 2
+#define IOT_CONFIG_DEVICE_3_ID "qogxopvz8v"           //Test 3
+#define IOT_CONFIG_DEVICE_4_ID "2abmdx9g230"           //Test 4
+#define IOT_CONFIG_DEVICE_5_ID "2n7f68p9bg2"           //Test 5
+
+#define IOT_CONFIG_DEVICE_GATEWAY_KEY "r3LfhSfYatuGI6OVV67ZF2ZONQ/WSimgM0grX3uZ7pM="    //Gateway Test
+#define IOT_CONFIG_DEVICE_1_KEY "m50YTY6P2EeQ9jxBadh6V72t/kAmNTzTEedlFQUA7Co="          //Test 1
+#define IOT_CONFIG_DEVICE_2_KEY "ROuQeq+SJHEPVwh/yBxrehvIJw4R6sZ9mqbY9nMzprY="          //Test 2
+#define IOT_CONFIG_DEVICE_3_KEY "ywb9fgU7ILQhne6U79SD/x5azpz9AZXtcGAuqS/SlE8="     //Test 3
+#define IOT_CONFIG_DEVICE_4_KEY "X/u+62h6n50qJrlZP91m0aVmeMWX/ygmoiKOuwfJH+A="           //Test 4
+#define IOT_CONFIG_DEVICE_5_KEY "vLBPEJYxxO52B7koz0+xFTWPfP1o7vkD7qzVKuwSDYI="           //Test 5
 #endif
 
 
