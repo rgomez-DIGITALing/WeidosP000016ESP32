@@ -3,10 +3,8 @@
 #include <ArduinoModbus.h>
 #include <LogModule.h>
 
-float glob1, glob2, glob3;  //DEBUG variables. PLEASE DELETE
-float debug1, debug2, debug3;
 
-#define MODBUS_ADDRESS      1
+
 #define MODBUS_BAUDRATE     9600
 #define MODBUS_CONFIG       SERIAL_8N1
 

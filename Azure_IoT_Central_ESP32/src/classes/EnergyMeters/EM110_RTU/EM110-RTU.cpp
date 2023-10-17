@@ -3,8 +3,6 @@
 #include <ArduinoModbus.h>
 
 
-
-#define MODBUS_ADDRESS      1
 #define MODBUS_BAUDRATE     9600
 #define MODBUS_CONFIG       SERIAL_8N1
 
