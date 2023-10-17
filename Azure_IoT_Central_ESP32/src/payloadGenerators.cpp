@@ -363,16 +363,150 @@ int em750_generete_properties(az_iot_hub_client const* hub_client,
   char* asset = energyMeter->getAsset();
   char* location1 = energyMeter->getLocation1();
   char* location2 = energyMeter->getLocation2();
-  bool isEA750Type = energyMeter->isEA750();
   char* model = EM750_MODEL_NAME;
   char* partNumber = EM750_PART_NUMBER;
   IPAddress ipAddress = energyMeter->getIpAddress();
 
-  if(isEA750Type){
-    model = EA750_MODEL_NAME;
-    partNumber = EA750_PART_NUMBER;
+
+  char ipAddressArray[16];
+  ipAddress.toString().toCharArray(ipAddressArray, 16);
+
+
+  rc = az_json_writer_append_property_name(&jw, az_span_create_from_str(EM_IDENTIFIER_PROPERTY_NAME));
+  EXIT_IF_AZ_FAILED2(rc, RESULT_ERROR, F("Failed adding EM_BRAND_PROPERTY_NAME to payload."));
+  rc = az_json_writer_append_string(&jw, az_span_create_from_str(identifier));
+  EXIT_IF_AZ_FAILED2(rc, RESULT_ERROR, F("Failed adding EM_BRAND_PROPERTY_NAME to payload. "));
+
+  rc = az_json_writer_append_property_name(&jw, az_span_create_from_str(EM_ASSET_PROPERTY_NAME));
+  EXIT_IF_AZ_FAILED2(rc, RESULT_ERROR, F("Failed adding EM_BRAND_PROPERTY_NAME to payload."));
+  rc = az_json_writer_append_string(&jw, az_span_create_from_str(asset));
+  EXIT_IF_AZ_FAILED2(rc, RESULT_ERROR, F("Failed adding EM_BRAND_PROPERTY_NAME to payload. "));
+
+  rc = az_json_writer_append_property_name(&jw, az_span_create_from_str(EM_LOCATION_1_PROPERTY_NAME));
+  EXIT_IF_AZ_FAILED2(rc, RESULT_ERROR, F("Failed adding EM_BRAND_PROPERTY_NAME to payload."));
+  rc = az_json_writer_append_string(&jw, az_span_create_from_str(location1));
+  EXIT_IF_AZ_FAILED2(rc, RESULT_ERROR, F("Failed adding EM_BRAND_PROPERTY_NAME to payload. "));
+
+  rc = az_json_writer_append_property_name(&jw, az_span_create_from_str(EM_LOCATION_2_PROPERTY_NAME));
+  EXIT_IF_AZ_FAILED2(rc, RESULT_ERROR, F("Failed adding EM_BRAND_PROPERTY_NAME to payload."));
+  rc = az_json_writer_append_string(&jw, az_span_create_from_str(location2));
+  EXIT_IF_AZ_FAILED2(rc, RESULT_ERROR, F("Failed adding EM_BRAND_PROPERTY_NAME to payload. "));
+
+
+  rc = az_json_writer_append_property_name(&jw, az_span_create_from_str(EM_BRAND_PROPERTY_NAME));
+  EXIT_IF_AZ_FAILED2(rc, RESULT_ERROR, F("Failed adding EM_BRAND_PROPERTY_NAME to payload."));
+  rc = az_json_writer_append_string(&jw, az_span_create_from_str(WEIDMULLER_BRAND));
+  EXIT_IF_AZ_FAILED2(rc, RESULT_ERROR, F("Failed adding EM_BRAND_PROPERTY_NAME to payload. "));
+
+  rc = az_json_writer_append_property_name(&jw, az_span_create_from_str(EM_NUM_PHASES_PROPERTY_NAME));
+  EXIT_IF_AZ_FAILED2(rc, RESULT_ERROR, F("Failed adding EM_NUMPHASES_PROPERTY_NAME to payload."));
+  rc = az_json_writer_append_string(&jw, az_span_create_from_str(EM3PHASES_NUM_PHASES));
+  EXIT_IF_AZ_FAILED2(rc, RESULT_ERROR, F("Failed adding EM_NUMPHASES_PROPERTY_NAME to payload. "));
+
+  rc = az_json_writer_append_property_name(&jw, az_span_create_from_str(EM_MODEL_PROPERTY_NAME));
+  EXIT_IF_AZ_FAILED2(rc, RESULT_ERROR, F("Failed adding EM_MODEL_PROPERTY_NAME to payload."));
+  rc = az_json_writer_append_string(&jw, az_span_create_from_str(EM750_MODEL_NAME));
+  EXIT_IF_AZ_FAILED2(rc, RESULT_ERROR, F("Failed adding EM_MODEL_PROPERTY_NAME to payload. "));
+
+  rc = az_json_writer_append_property_name(&jw, az_span_create_from_str(EM_PART_NUMBER_PROPERTY_NAME));
+  EXIT_IF_AZ_FAILED2(rc, RESULT_ERROR, F("Failed adding EM_PART_NUMBER_PROPERTY_NAME to payload."));
+  rc = az_json_writer_append_string(&jw, az_span_create_from_str(EM750_PART_NUMBER));
+  EXIT_IF_AZ_FAILED2(rc, RESULT_ERROR, F("Failed adding EM_PART_NUMBER_PROPERTY_NAME to payload. "));
+
+  rc = az_json_writer_append_property_name(&jw, az_span_create_from_str(EM_COM_TYPE_PROPERTY_NAME));
+  EXIT_IF_AZ_FAILED2(rc, RESULT_ERROR, F("Failed adding EM_COM_TYPE_PROPERTY_NAME to payload."));
+  rc = az_json_writer_append_string(&jw, az_span_create_from_str(TCP_COM_TYPE));
+  EXIT_IF_AZ_FAILED2(rc, RESULT_ERROR, F("Failed adding EM_COM_TYPE_PROPERTY_NAME to payload. "));
+
+  rc = az_json_writer_append_property_name(&jw, az_span_create_from_str(EM_IP_ADDRESS_PROPERTY_NAME));
+  EXIT_IF_AZ_FAILED2(rc, RESULT_ERROR, F("Failed adding EM_IP_ADDRESS_PROPERTY_NAME to payload."));
+  rc = az_json_writer_append_string(&jw, az_span_create_from_str(ipAddressArray));
+  EXIT_IF_AZ_FAILED2(rc, RESULT_ERROR, F("Failed adding EM_IP_ADDRESS_PROPERTY_NAME to payload. "));
+
+  rc = az_json_writer_append_property_name(&jw, az_span_create_from_str(EM_TCP_PORT_PROPERTY_NAME));
+  EXIT_IF_AZ_FAILED2(rc, RESULT_ERROR, F("Failed adding EM_TCP_PORT_PROPERTY_NAME to payload."));
+  rc = az_json_writer_append_string(&jw, az_span_create_from_str(DEFAULT_TCP_PORT));
+  EXIT_IF_AZ_FAILED2(rc, RESULT_ERROR, F("Failed adding EM_TCP_PORT_PROPERTY_NAME to payload. "));
+
+  rc = az_json_writer_append_property_name(&jw, az_span_create_from_str(EM_MODBUS_ADDRESS_PROPERTY_NAME));
+  EXIT_IF_AZ_FAILED2(rc, RESULT_ERROR, F("Failed adding EM_MODBUS_ADDRESS_PROPERTY_NAME to payload."));
+  rc = az_json_writer_append_string(&jw, az_span_create_from_str("1"));
+  EXIT_IF_AZ_FAILED2(rc, RESULT_ERROR, F("Failed adding EM_MODBUS_ADDRESS_PROPERTY_NAME to payload. "));
+
+  rc = az_json_writer_append_property_name(&jw, az_span_create_from_str(EM_RTU_BAUDRATE_PROPERTY_NAME));
+  EXIT_IF_AZ_FAILED2(rc, RESULT_ERROR, F("Failed adding EM_RTU_BAUDRATE_PROPERTY_NAME to payload."));
+  rc = az_json_writer_append_string(&jw, az_span_create_from_str(""));
+  EXIT_IF_AZ_FAILED2(rc, RESULT_ERROR, F("Failed adding EM_RTU_BAUDRATE_PROPERTY_NAME to payload. "));
+
+  rc = az_json_writer_append_property_name(&jw, az_span_create_from_str(EM_RTU_PARITY_PROPERTY_NAME));
+  EXIT_IF_AZ_FAILED2(rc, RESULT_ERROR, F("Failed adding EM_RTU_PARITY_PROPERTY_NAME to payload."));
+  rc = az_json_writer_append_string(&jw, az_span_create_from_str(""));
+  EXIT_IF_AZ_FAILED2(rc, RESULT_ERROR, F("Failed adding EM_RTU_PARITY_PROPERTY_NAME to payload. "));
+
+  rc = az_json_writer_append_property_name(&jw, az_span_create_from_str(EM_RTU_STOP_BITS_PROPERTY_NAME));
+  EXIT_IF_AZ_FAILED2(rc, RESULT_ERROR, F("Failed adding EM_RTU_STOP_BITS_PROPERTY_NAME to payload."));
+  rc = az_json_writer_append_string(&jw, az_span_create_from_str(""));
+  EXIT_IF_AZ_FAILED2(rc, RESULT_ERROR, F("Failed adding EM_RTU_STOP_BITS_PROPERTY_NAME to payload. "));
+
+  rc = az_json_writer_append_property_name(&jw, az_span_create_from_str(EM_MEASUREMENT_METHOD_PROPERY_NAME));
+  EXIT_IF_AZ_FAILED2(rc, RESULT_ERROR, F("Failed adding EM_RTU_STOP_BITS_PROPERTY_NAME to payload."));
+  rc = az_json_writer_append_string(&jw, az_span_create_from_str(EM_DIRECT_METHOD));
+  EXIT_IF_AZ_FAILED2(rc, RESULT_ERROR, F("Failed adding EM_RTU_STOP_BITS_PROPERTY_NAME to payload. "));
+
+
+
+  rc = az_iot_hub_client_properties_writer_end_component(hub_client, &jw);
+  EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed closing component object.");
+
+  rc = az_json_writer_append_end_object(&jw);
+  EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed closing telemetry json payload.");
+
+  payload_buffer_span = az_json_writer_get_bytes_used_in_destination(&jw);
+
+  if ((payload_buffer_size - az_span_size(payload_buffer_span)) < 1)
+  {
+    LogError("Insufficient space for telemetry payload null terminator.");
+    return RESULT_ERROR;
   }
 
+  payload_buffer[az_span_size(payload_buffer_span)] = null_terminator;
+  *payload_buffer_length = az_span_size(payload_buffer_span);
+
+  return RESULT_OK;
+}
+
+
+int ea750_generete_properties(az_iot_hub_client const* hub_client,
+    uint8_t* payload_buffer,
+    size_t payload_buffer_size,
+    size_t* payload_buffer_length, EA750* energyMeter){
+      
+  az_json_writer jw;
+  az_result rc;
+  az_span payload_buffer_span = az_span_create(payload_buffer, payload_buffer_size);
+  az_span json_span;
+
+
+  rc = az_json_writer_init(&jw, payload_buffer_span, NULL);
+  EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed initializing json writer for telemetry.");
+
+  rc = az_json_writer_append_begin_object(&jw);
+  EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed setting telemetry json root.");
+
+  rc = az_iot_hub_client_properties_writer_begin_component(
+      hub_client, &jw, az_span_create_from_str(SAMPLE_DEVICE_INFORMATION_NAME));
+  EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed writting component name.");
+
+
+  char* identifier = energyMeter->getIdentifier();
+  char* asset = energyMeter->getAsset();
+  char* location1 = energyMeter->getLocation1();
+  char* location2 = energyMeter->getLocation2();
+  char* model = EA750_MODEL_NAME;
+  char* partNumber = EA750_PART_NUMBER;
+  IPAddress ipAddress = energyMeter->getIpAddress();
+
+ 
   char ipAddressArray[16];
   ipAddress.toString().toCharArray(ipAddressArray, 16);
 

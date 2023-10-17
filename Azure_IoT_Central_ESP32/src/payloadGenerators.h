@@ -37,6 +37,11 @@ int em750_generete_properties(az_iot_hub_client const* hub_client,
     size_t payload_buffer_size,
     size_t* payload_buffer_length, EM750* energyMeter);
 
+int ea750_generete_properties(az_iot_hub_client const* hub_client,
+    uint8_t* payload_buffer,
+    size_t payload_buffer_size,
+    size_t* payload_buffer_length, EA750* energyMeter);
+
 
 int em110_generete_properties(az_iot_hub_client const* hub_client,
     uint8_t* payload_buffer,

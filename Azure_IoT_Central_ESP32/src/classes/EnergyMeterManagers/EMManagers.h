@@ -7,3 +7,4 @@
 #include "EM120Manager.h"
 #include "EM220Manager.h"
 #include "EM750Manager.h"
+#include "EA750Manager.h"

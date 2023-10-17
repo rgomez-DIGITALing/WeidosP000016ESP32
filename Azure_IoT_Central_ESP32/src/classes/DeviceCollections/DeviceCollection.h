@@ -41,6 +41,11 @@ class DeviceCollectionClass{
                 int slot = em.getDeviceId();
                 EM750Pool[slot] = &em;
             }
+        
+        void setEnergyMeter(EA750Manager& em){ 
+                int slot = em.getDeviceId();
+                EA750Pool[slot] = &em;
+            }
 
     private:
         EM110Manager* EM110Pool[MAX_ALLOWED_DEVICES];
@@ -49,6 +54,7 @@ class DeviceCollectionClass{
         EM122Manager* EM122Pool[MAX_ALLOWED_DEVICES];
         EM220Manager* EM220Pool[MAX_ALLOWED_DEVICES];
         EM750Manager* EM750Pool[MAX_ALLOWED_DEVICES];
+        EA750Manager* EA750Pool[MAX_ALLOWED_DEVICES];
 };
 
 extern DeviceCollectionClass DeviceCollection;

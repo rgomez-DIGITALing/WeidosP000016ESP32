@@ -4,12 +4,13 @@
 
 void DeviceCollectionClass::init(){
     for(int i=0; i<MAX_ALLOWED_DEVICES; i++){
-        EM750Pool[i] = nullptr;
         EM110Pool[i] = nullptr;
         EM111Pool[i] = nullptr;
         EM120Pool[i] = nullptr;
         EM122Pool[i] = nullptr;
         EM220Pool[i] = nullptr;
+        EM750Pool[i] = nullptr;
+        EA750Pool[i] = nullptr;
     }
 
     return;
@@ -41,6 +42,10 @@ void DeviceCollectionClass::loopDevices(){
         if(EM750Pool[i]){
             if(EM750Pool[i]->loop() != ENERGY_METER_IDLE) return;
         }
+
+        if(EA750Pool[i]){
+            if(EA750Pool[i]->loop() != ENERGY_METER_IDLE) return;
+        }
     }
 
     return;
@@ -63,6 +68,7 @@ void DeviceCollectionClass::triggerUpdateRTU(){
 void DeviceCollectionClass::triggerUpdateTCP(){
     for(int i=0; i<MAX_ALLOWED_DEVICES; i++){
         if(EM750Pool[i]) EM750Pool[i]->triggerUpdate();
+        if(EA750Pool[i]) EA750Pool[i]->triggerUpdate();
     }
 
     return;
@@ -77,6 +83,7 @@ void DeviceCollectionClass::sendDevicesProperties(){
         if(EM122Pool[i]) EM122Pool[i]->sendProperties();
         if(EM220Pool[i]) EM220Pool[i]->sendProperties();
         if(EM750Pool[i]) EM750Pool[i]->sendProperties();
+        if(EA750Pool[i]) EA750Pool[i]->sendProperties();
     }
 
     return;

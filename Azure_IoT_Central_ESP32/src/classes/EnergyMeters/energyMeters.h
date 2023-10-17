@@ -6,6 +6,7 @@
 #include "EM122_RTU/EM122-RTU.h"
 #include "EM220_RTU/EM220-RTU.h"
 #include "EM750_TCP/EM750-TCP.h"
+#include "EA750_TCP/EA750-TCP.h"
 
 #include "EMDataDefinitions.h"
 #include "em_telemetryDefinition.h"
