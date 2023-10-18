@@ -165,6 +165,9 @@ void EM750::assignData2(){
     powerFactorL2N = getNextData();
     powerFactorL3N = getNextData();
     powerFactorTotal = getNextData();
+    getNextData();
+    getNextData();
+    getNextData();
     THDVoltsL1L2 = getNextData();
     THDVoltsL2L3 = getNextData();
     THDVoltsL1L3 = getNextData();
