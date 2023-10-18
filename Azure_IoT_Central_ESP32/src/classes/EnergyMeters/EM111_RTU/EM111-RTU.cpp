@@ -1,8 +1,6 @@
 #include "EM111-RTU.h"
 #include <ArduinoRS485.h>
 #include <ArduinoModbus.h>
-#include <LogModule.h>
-
 
 
 #define MODBUS_BAUDRATE     9600

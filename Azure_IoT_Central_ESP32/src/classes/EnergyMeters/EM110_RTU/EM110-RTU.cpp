@@ -2,7 +2,6 @@
 #include <ArduinoRS485.h>
 #include <ArduinoModbus.h>
 
-
 #define MODBUS_BAUDRATE     9600
 #define MODBUS_CONFIG       SERIAL_8N1
 

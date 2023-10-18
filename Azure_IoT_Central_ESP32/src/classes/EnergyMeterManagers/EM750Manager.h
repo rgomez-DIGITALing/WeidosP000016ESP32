@@ -1,12 +1,7 @@
 #pragma once
 
-
-
 #include "../EnergyMeters/energyMeters.h"
 #include "EMMDataDefinitions.h"
-
-
-
 
 
 class EM750Manager{

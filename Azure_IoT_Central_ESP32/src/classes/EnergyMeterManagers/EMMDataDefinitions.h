@@ -1,7 +1,5 @@
 #pragma once
-#include <cstdint>
 #include "../EnergyMeters/energyMeters.h"
-//#include "EMManagers.h"
 
 
 typedef struct em1phManagerData_struct_t{

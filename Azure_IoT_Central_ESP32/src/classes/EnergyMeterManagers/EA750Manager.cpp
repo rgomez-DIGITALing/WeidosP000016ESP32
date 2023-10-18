@@ -1,12 +1,11 @@
-//#include "tasks.h"
-#include "EMManagers.h"
-#include <Ethernet.h>
+#include "EA750Manager.h"
 #include <LogModule.h>
 #include <clockModule.h>
 
-#include "../../globals/AzureDevices.h"
+
+#include "../../payloadGenerators.h"
 #include "../DataHubCollection/DataHubCollection.h"
-#include "../../globals/AzureDevices.h"
+#include "../AzureIoTCollection/AzureIoTCollection.h"
 
 
 
@@ -66,7 +65,6 @@ EnergyMeterUpdateState_t EA750Manager::loop(){
 }
 
 bool EA750Manager::sendProperties(){
-  //AzureIoTDevice* azureDevice = AzureDeviceCollection.getAzureIoTDevice(deviceId);
   AzureIoTDevice* azureDevice = AzureIoTCollection[deviceId];
 
   if(propertiesSent) return propertiesSent;

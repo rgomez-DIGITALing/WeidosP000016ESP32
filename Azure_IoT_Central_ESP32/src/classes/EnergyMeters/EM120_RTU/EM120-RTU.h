@@ -1,6 +1,6 @@
 #pragma once
-#include <ArduinoModbus.h>
 #include "../EMDataDefinitions.h"
+
 
 
 class EM120{

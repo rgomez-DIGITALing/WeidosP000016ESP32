@@ -4,7 +4,6 @@
 
 
 
-
 class EM750{
   public:
     EM750(ModbusTCPClient& client, IPAddress ipAddress);

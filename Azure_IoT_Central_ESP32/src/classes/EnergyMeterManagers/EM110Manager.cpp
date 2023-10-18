@@ -1,12 +1,12 @@
 #include "EM110Manager.h"
-
-//#include "DataHub.h"
-//#include "../../AzureDevices.h"
-#include "../../payloadGenerators.h"
 #include <LogModule.h>
 #include <clockModule.h>
+
+
+#include "../../payloadGenerators.h"
 #include "../DataHubCollection/DataHubCollection.h"
-//#include "../../globals/AzureDevices.h"
+#include "../AzureIoTCollection/AzureIoTCollection.h"
+
 
 
 EM110Manager::EM110Manager(int deviceId, int ctPrimary, int ctSecondary, uint8_t maxTries) : 
@@ -85,7 +85,6 @@ EnergyMeterUpdateState_t EM110Manager::loop(){
 
 
 bool EM110Manager::sendProperties(){
-  //AzureIoTDevice* azureDevice = AzureDeviceCollection.getAzureIoTDevice(deviceId);
   AzureIoTDevice* azureDevice = AzureIoTCollection[deviceId];
   if(!propertiesSent){
     if(azureDevice->getStatus() == azure_iot_connected){
@@ -93,7 +92,6 @@ bool EM110Manager::sendProperties(){
       uint8_t* payload_buffer = azureDevice->getDataBuffer2();
       azure_iot_t* azureIoT = azureDevice->getAzureIoT();
       az_iot_hub_client const* iotHubClient = &azureIoT->iot_hub_client;
-      //em750_generete_payload(payload_buffer, AZ_IOT_DATA_BUFFER_SIZE, &payload_buffer_length, currentPayload);
       em110_generete_properties(iotHubClient, payload_buffer, AZ_IOT_DATA_BUFFER_SIZE, &payload_buffer_length, em110);
       int error = azureDevice->sendProperties(az_span_create(payload_buffer, payload_buffer_length));
       if(!error) propertiesSent = true;

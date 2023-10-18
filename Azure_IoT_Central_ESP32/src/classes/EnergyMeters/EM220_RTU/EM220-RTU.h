@@ -1,8 +1,8 @@
 #pragma once
-#include <ArduinoModbus.h>
 #include "../EMDataDefinitions.h"
 
 #define NUM_TOTAL_DATA 60
+
 
 
 class EM220{
