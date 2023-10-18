@@ -114,7 +114,6 @@ void setEnergyMeterProperties(){
   #if defined BATCH_GENERAL_ROBOT || defined BATCH_TEST
   EA750* ea750 = nullptr;
   ea750 = general.getEnergyMeter();
-  ea750->setAsEA750();
   ea750->setAsset(ASSET_GENERAL);
   ea750->setIdentifier(IDENTIFIER_GENERAL);
   ea750->setLocation1(LOCATION_NAVE_400);

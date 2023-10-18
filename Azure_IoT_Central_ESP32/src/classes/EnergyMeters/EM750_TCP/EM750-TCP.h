@@ -1,31 +1,6 @@
 #pragma once
 #include <ArduinoModbus.h>
 #include "../EMDataDefinitions.h"
-//#include "../em3ph_telemetryDefinition.h"
-//#include "../EM750_propertiesDefinition.h"
-
-#define LOG(x) Serial.println(x)
-#define LOG2(x) Serial.print(x)
-
-#define ETHERNET_TIMEOUT            60000
-#define ETHERNET_RESPONSE_TIMEOUT   4000
-
-#define MODBUS_BEGIN_TRIES      3
-#define MODBUS_REQUEST_TRIES    3
-
-#define MODBUS_ADDRESS      1
-#define MODBUS_TIMEOUT      5000
-#define REG_ADDRESS         19000
-#define NUM_REGISTERS       122
-#define NUM_DATA            NUM_REGISTERS/2
-
-#define REG_ADDRESS2         828
-#define NUM_REGISTERS2       20
-#define NUM_DATA2            NUM_REGISTERS2/2
-
-#define REG_ADDRESS3         10085
-#define NUM_REGISTERS3       2
-#define NUM_DATA3            NUM_REGISTERS3/2
 
 
 
@@ -62,9 +37,6 @@ class EM750{
     void copyData(float* buffer, int bufferSize);
     void getData(em3phData_t& payload);
     float* getData();
-
-    void setAsEA750(){ isEA750Type = true; }
-    bool isEA750(){ return isEA750Type; }
 
     void setIdentifier(char* identifier){ this->identifier = identifier; }
     void setAsset(char* asset){ this->asset = asset; }
@@ -114,7 +86,6 @@ class EM750{
     char* asset;
     char* location1;
     char* location2;
-    bool isEA750Type = false;
 
     COM_error_t comError;
     
