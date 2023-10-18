@@ -30,66 +30,32 @@
  * `iot_configs.h` file.
  */
 
-/* --- Dependencies --- */
-// C99 libraries
-//#include <cstdarg>
-//#include <cstdlib>
-//#include <string.h>
-//#include <time.h>
-
-// For hmac SHA256 encryption
-//#include <mbedtls/base64.h>
-//#include <mbedtls/md.h>
-//#include <mbedtls/sha256.h>
 
 #include <esp_task_wdt.h>
 
 #define WDT_TIMEOUT 2*60 //in seconds
 
 #define ARDUINO
-// Libraries for MQTT client and WiFi connection
-//#include <WiFi.h>
-//#include <ArduinoBearSSL.h>
-//#include <ArduinoMqttClient.h>
-//#include <MQTTClient.h>
 
 
 // For hmac SHA256 encryption
 #include <ECCX08.h>
 
-
-//#include <Ethernet.h>
-
-// Azure IoT SDK for C includes
-//#include <az_core.h>
-//#include <az_iot.h>
-//#include <azure_ca.h>
-
 // Additional sample headers
 #include <clockModule.h>
 #include <LogModule.h>
 #include <EthernetModule.h>
-//#include "src/classes/AzureIoTClass/AzureIoTClass.h"
-//#include "./tasks/energyMeterTask.h"
+
 #include "src/globals/AzureDevices.h"
 #include "src/globals/DataHubCollection.h"
 #include "src/globals/energyMeters.h"
 
-//#include "src/classes/WeidosManager/WeidosManager.h"
-//#include "src/classes/DataHub/DataHub.h"
-//#include "src/classes/WeidosESP32Class/WeidosESP32Class.h"
 #include "src/classes/DeviceCollections/DeviceCollection.h"
 #include "src/classes/DataHubCollection/DataHubCollection.h"
 #include "src/classes/AzureIoTCollection/AzureIoTCollection.h"
 
-//#include "Azure_IoT_PnP_Template.h"
-
-//#include "src/iot_configs.h"
-
-//#include "src/classes/DataHub/DataHub.h"
 
 #include <ArduinoBearSSL.h>
-//#include "src/payloadGenerators.h"
 
 
 
@@ -133,6 +99,9 @@ void setup()
   LogInfo("Let's go to the looP function");
 }
 
+
+
+
 unsigned long prevTcpTime = 0;
 static const unsigned long TCP_UPDATE_FREQUENCY = 60*1000;
 
@@ -145,6 +114,7 @@ static const unsigned long DELTA_TIME = 60*1000;
 bool  networkUp = false;
 bool  clockRunning = false;
 int prevLinkStatus = LinkON;
+
 
 void loop()
 {

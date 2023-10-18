@@ -1,7 +1,5 @@
 #include "payloadGenerators.h"
-//#include "classes/EM750/EM750.h"
 #include <LogModule.h>
-//#include "classes/WeidosESP32Class/WeidosESP32Class.h"
 #include <RTClib.h>
 
 #include <az_core.h>

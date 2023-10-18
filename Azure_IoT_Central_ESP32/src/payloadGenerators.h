@@ -1,20 +1,10 @@
 #pragma once
 
-//#include "DataHub.h"
-//#include "EM750.h"
-//#include "classes/WeidosESP32Class/WeidosESP32Class.h"
-
 #include <az_core.h>
 #include <az_iot.h>
 
-//#include "classes/EnergyMeterManager/energyMeterManager.h"
 #include "classes/WeidosManager/WeidosManager.h"
 #include "classes/EnergyMeterManagers/EMManagers.h"
-
-
-// int em750_generete_payload(uint8_t* payload_buffer,
-//     size_t payload_buffer_size,
-//     size_t* payload_buffer_length, energyMeterManagerData_t& data);
 
 
 int em1ph_generete_payload(uint8_t* payload_buffer,
