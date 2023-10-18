@@ -1,8 +1,8 @@
 #include "energyMeters.h"
-#include "generalProperties.h"
-#include "../classes/DeviceCollections/DeviceCollection.h"
-//#include "../iot_configs.h"
 #include <Ethernet.h>
+#include "generalProperties.h"
+#include "../collections/DeviceCollections/DeviceCollection.h"
+#include "azure_parameters.h"
 
 
 #define MODBUS_NUMBER_TRIES 5

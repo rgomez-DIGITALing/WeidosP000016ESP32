@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../classes/AzureIoTClass/AzureIoTClass.h"
+//#include "../classes/AzureIoTClass/AzureIoTClass.h"
 
 
 void createObjects();

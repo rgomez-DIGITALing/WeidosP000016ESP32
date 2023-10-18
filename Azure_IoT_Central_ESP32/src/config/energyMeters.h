@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../classes/EnergyMeterManagerS/EMManagers.h"
+#include "../managers/EnergyMeterManagers/EMManagers.h"
 
 void configureDeviceCollection();
 void setEnergyMeterProperties();

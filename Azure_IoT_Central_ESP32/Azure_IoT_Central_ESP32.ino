@@ -50,13 +50,12 @@
 #include "src/config/DataHubCollection.h"
 #include "src/config/energyMeters.h"
 
-#include "src/classes/DeviceCollections/DeviceCollection.h"
-#include "src/classes/DataHubCollection/DataHubCollection.h"
-#include "src/classes/AzureIoTCollection/AzureIoTCollection.h"
+#include "src/collections/DeviceCollections/DeviceCollection.h"
+#include "src/collections/DataHubCollection/DataHubCollection.h"
+#include "src/collections/AzureIoTCollection/AzureIoTCollection.h"
 
 
 #include <ArduinoBearSSL.h>
-
 
 
 
@@ -77,7 +76,7 @@ void setup()
   set_logging_function(logging_function);
   set_logging_function_2(logging_function_2);
   Serial.println("Welcome!");
-  
+
   EthernetModule.init();
   systemClock.begin();
   ArduinoBearSSL.onGetTime(get_time); // Required for server trusted root validation.

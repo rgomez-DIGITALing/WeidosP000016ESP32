@@ -4,7 +4,7 @@
 #include <LogModule.h>
 
 #include "../../payloadGenerators.h"
-#include "../AzureIoTCollection/AzureIoTCollection.h"
+#include "../../collections/AzureIoTCollection/AzureIoTCollection.h"
 
 
 

@@ -3,8 +3,7 @@
 #include <az_core.h>
 #include <az_iot.h>
 
-#include "classes/WeidosManager/WeidosManager.h"
-#include "classes/EnergyMeterManagers/EMManagers.h"
+#include "managers/managers.h"
 
 
 int em1ph_generete_payload(uint8_t* payload_buffer,

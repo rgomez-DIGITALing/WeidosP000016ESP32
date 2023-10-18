@@ -1,6 +1,6 @@
 #include "DataHubCollection.h"
-//#include "../iot_configs.h"
-#include "../classes/DataHubCollection/DataHubCollection.h"
+#include "azure_parameters.h"
+#include "../collections/DataHubCollection/DataHubCollection.h"
 
 
 DataHub<WeidosManagerData_t, WEIDOS_METADATA_RING_BUFFER_SIZE> weidosDataHub;

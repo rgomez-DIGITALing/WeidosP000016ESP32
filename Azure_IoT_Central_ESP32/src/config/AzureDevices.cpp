@@ -4,7 +4,7 @@
 
 #include "azure_parameters.h"
 #include "../classes/AzureIoTClass/mqttCallbacks.h"
-#include "../classes/AzureIoTCollection/AzureIoTCollection.h"
+#include "../collections/AzureIoTCollection/AzureIoTCollection.h"
 
 EthernetClient ethernetClient0(1);
 EthernetClient ethernetClient1(2);
