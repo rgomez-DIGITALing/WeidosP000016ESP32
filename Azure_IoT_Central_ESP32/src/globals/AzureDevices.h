@@ -1,3 +1,5 @@
+#pragma once
+
 #include "../classes/AzureIoTClass/AzureIoTClass.h"
 
 
