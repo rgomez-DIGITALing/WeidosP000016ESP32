@@ -1,9 +1,9 @@
 #include "WeidosManager.h"
-//#include "../DataHub/DataHub.h"
-#include "../../globals/DataHubCollection.h"
-#include "../DataHubCollection/DataHubCollection.h"
 #include <clockModule.h>
 #include <LogModule.h>
+
+//#include "../../globals/DataHubCollection.h"
+#include "../DataHubCollection/DataHubCollection.h"
 
 
 

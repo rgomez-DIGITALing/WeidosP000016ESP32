@@ -4,7 +4,6 @@
 #include <LogModule.h>
 
 #include "../../payloadGenerators.h"
-//#include "../../globals/AzureDevices.h"
 #include "../AzureIoTCollection/AzureIoTCollection.h"
 
 
@@ -67,7 +66,6 @@ void DataHub<T,N>::loop(){
     uint8_t deviceId = 0;
     switch(state){
         case GET_DATA_FROM_FIFO:
-            //LOG("case: GET_DATA_FROM_FIFO");
             if(dataBuffer.pop(currentPayload)){
                 state = MOVE_MESSAGE;
                 deviceId = currentPayload.deviceId;
@@ -83,7 +81,6 @@ void DataHub<T,N>::loop(){
                 size_t payload_buffer_length = 0;
                 uint8_t* payload_buffer = AzureIoTCollection[deviceId]->getDataBuffer2();
 
-                //em750_generete_payload(payload_buffer, AZ_IOT_DATA_BUFFER_SIZE, &payload_buffer_length, currentPayload);
                 generatePayload(payload_buffer, AZ_IOT_DATA_BUFFER_SIZE, &payload_buffer_length, currentPayload);
                 
                 int error = AzureIoTCollection[deviceId]->sendMessage(az_span_create(payload_buffer, payload_buffer_length));
