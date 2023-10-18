@@ -1,8 +1,9 @@
 #include "AzureDevices.h"
-#include "../classes/AzureIoTClass/mqttCallbacks.h"
 #include <Ethernet.h>
 #include <ArduinoBearSSL.h>
-#include "../iot_configs.h"
+
+#include "azure_parameters.h"
+#include "../classes/AzureIoTClass/mqttCallbacks.h"
 #include "../classes/AzureIoTCollection/AzureIoTCollection.h"
 
 EthernetClient ethernetClient0(1);
@@ -41,7 +42,6 @@ void createObjects(){
     Azure1->setDataBuffer2(bufferPtr);
 
 
-
     BearSSLClient* bear_ssl_client2 = new BearSSLClient(ethernetClient2);
     MQTTClient* mqttClient2 = new MQTTClient(MQTT_CLIENT_BUFFER_SIZE);
     Azure2 = new AzureIoTDevice(mqttClient2, bear_ssl_client2);
@@ -76,6 +76,7 @@ void createObjects(){
     bufferPtr = new uint8_t[DATA_BUFFER_SIZE];
     Azure5->setDataBuffer2(bufferPtr);
 }
+
 
 char* emptyModelId = "";
 char emModelId[60] = "dtmi:conexiones:EnergyMeter_6bm;1";

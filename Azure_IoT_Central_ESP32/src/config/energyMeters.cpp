@@ -1,7 +1,7 @@
 #include "energyMeters.h"
 #include "generalProperties.h"
 #include "../classes/DeviceCollections/DeviceCollection.h"
-#include "../iot_configs.h"
+//#include "../iot_configs.h"
 #include <Ethernet.h>
 
 

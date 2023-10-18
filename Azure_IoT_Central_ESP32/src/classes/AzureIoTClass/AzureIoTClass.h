@@ -1,10 +1,9 @@
 #pragma once
 
-//#define MQTT_HAS_FUNCTIONAL false
 #include "AzureIoT_definitions.h"
 #include <MQTTClient.h>
 #include <Client.h>
-#include "../../iot_configs.h"
+#include "../../config/azure_parameters.h"
 
 enum securityType_t{
     UNDEFINED,

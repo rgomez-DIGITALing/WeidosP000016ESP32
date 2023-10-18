@@ -46,9 +46,9 @@
 #include <LogModule.h>
 #include <EthernetModule.h>
 
-#include "src/globals/AzureDevices.h"
-#include "src/globals/DataHubCollection.h"
-#include "src/globals/energyMeters.h"
+#include "src/config/AzureDevices.h"
+#include "src/config/DataHubCollection.h"
+#include "src/config/energyMeters.h"
 
 #include "src/classes/DeviceCollections/DeviceCollection.h"
 #include "src/classes/DataHubCollection/DataHubCollection.h"
