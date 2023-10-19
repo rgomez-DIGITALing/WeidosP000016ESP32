@@ -27,6 +27,7 @@
 #define LOCATION_PLANTA_2_TERRAZA "Planta 2 (terraza)"
 #define LOCATION_PLANTA_MENOS_1_EXTERIOR "Planta -1 (exterior)"
 #define LOCATION_DIRECTO_COMPRESOR "Directo al lado compresor"
+#define LOCATION_CUADRO_LETS_CONNECT "Cuadro Let's Connect"
 
 
 #define ASSET_MODULA_4 "Modula 4"
