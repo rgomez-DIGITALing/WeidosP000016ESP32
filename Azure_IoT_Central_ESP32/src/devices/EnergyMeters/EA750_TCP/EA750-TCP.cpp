@@ -39,18 +39,6 @@ void EA750::stop(){
 }
 
 int EA750::update(){
-    comError = COM_OK;
-    Serial.print(COM_OK);
-    Serial.print(", ");
-    Serial.print(COM_BATCH_1_ERROR);
-    Serial.print(", ");
-    Serial.print(COM_BATCH_2_ERROR);
-    Serial.print(", ");
-    Serial.print(COM_BATCH_3_ERROR);
-    Serial.print(", ");
-    Serial.println(COM_BATCH_4_ERROR);
-   
-
     int response = _client.requestFrom(MODBUS_ADDRESS, INPUT_REGISTERS, REG_ADDRESS_BATCH_1, NUM_REGISTERS_BATCH_1);
     if(response != NUM_REGISTERS_BATCH_1)
     {   
