@@ -44,7 +44,89 @@ static const uint8_t null_terminator = '\0';
 #define DOUBLE_DECIMAL_PLACE_DIGITS 2
 #define TRIPLE_DECIMAL_PLACE_DIGITS 3
 #define SAMPLE_DEVICE_INFORMATION_NAME "deviceInformation"
+
 static const double ERROR_DOUBLE = (double)999999999999999;
+
+
+
+
+
+int flowMeter_generete_payload(uint8_t* payload_buffer,
+    size_t payload_buffer_size,
+    size_t* payload_buffer_length, flowMeterManagerData_t& fmData){
+      az_json_writer jw;
+    az_result rc;
+    az_span payload_buffer_span = az_span_create(payload_buffer, payload_buffer_size);
+    az_span json_span;
+
+    unsigned long timestamp = fmData.timestamp;
+    flowMeterData_t data = fmData.payload;
+
+    rc = az_json_writer_init(&jw, payload_buffer_span, NULL);
+    EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed initializing json writer for telemetry.");
+
+    rc = az_json_writer_append_begin_object(&jw);
+    EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed setting telemetry json root.");
+
+
+
+    rc = az_json_writer_append_property_name(&jw, az_span_create_from_str(FM_TELEMETRY_PROP_NAME_TOTAL_CONSUMPTION));
+    EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding %s property name to telemetry payload.", FM_TELEMETRY_PROP_NAME_TOTAL_CONSUMPTION);
+    rc = az_json_writer_append_double(&jw, data.totalConsumption, TRIPLE_DECIMAL_PLACE_DIGITS);
+    EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding %s property value to telemetry payload.", FM_TELEMETRY_PROP_NAME_TOTAL_CONSUMPTION);
+
+    rc = az_json_writer_append_property_name(&jw, az_span_create_from_str(FM_TELEMETRY_PROP_NAME_PERIOD_CONSUMPTION));
+    EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding %s property name to telemetry payload.", FM_TELEMETRY_PROP_NAME_PERIOD_CONSUMPTION);
+    rc = az_json_writer_append_double(&jw, data.periodConsumption, TRIPLE_DECIMAL_PLACE_DIGITS);
+    EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding %s property value to telemetry payload.", FM_TELEMETRY_PROP_NAME_PERIOD_CONSUMPTION);
+
+    rc = az_json_writer_append_property_name(&jw, az_span_create_from_str(FM_TELEMETRY_PROP_NAME_AVERAGE_FLOW));
+    EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding %s property name to telemetry payload.", FM_TELEMETRY_PROP_NAME_AVERAGE_FLOW);
+    rc = az_json_writer_append_double(&jw, data.averageFlow, TRIPLE_DECIMAL_PLACE_DIGITS);
+    EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding %s property value to telemetry payload.", FM_TELEMETRY_PROP_NAME_AVERAGE_FLOW);
+
+    rc = az_json_writer_append_property_name(&jw, az_span_create_from_str(FM_TELEMETRY_PROP_NAME_INITIAL_TIME));
+    EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding %s property name to telemetry payload.", FM_TELEMETRY_PROP_NAME_INITIAL_TIME);
+    rc = az_json_writer_append_int32(&jw, data.t0);
+    EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding %s property value to telemetry payload.", FM_TELEMETRY_PROP_NAME_INITIAL_TIME);
+
+    rc = az_json_writer_append_property_name(&jw, az_span_create_from_str(FM_TELEMETRY_PROP_NAME_FINAL_TIME));
+    EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding %s property name to telemetry payload.", FM_TELEMETRY_PROP_NAME_FINAL_TIME);
+    rc = az_json_writer_append_int32(&jw, data.tf);
+    EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding %s property value to telemetry payload.", FM_TELEMETRY_PROP_NAME_FINAL_TIME);
+
+    rc = az_json_writer_append_property_name(&jw, az_span_create_from_str(FM_TELEMETRY_PROP_NAME_ERROR_STATE));
+    EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding timestamp property name to telemetry payload.");
+    rc = az_json_writer_append_int32(&jw, data.error);
+    EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding timestamp property value to telemetry payload. ");
+
+    rc = az_json_writer_append_property_name(&jw, AZ_SPAN_FROM_STR(WEIDOS_TELEMETRY_PROP_NAME_TIMESTAMP));
+    EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding timestamp property name to telemetry payload.");
+    DateTime date = DateTime(timestamp);
+    char dateFormat[] = "YYYY-MM-DDThh:mm:ss.000Z";
+    date.toString(dateFormat);
+    rc = az_json_writer_append_string(&jw, az_span_create_from_str(dateFormat));
+    EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding timestamp property value to telemetry payload. ");
+
+
+
+    rc = az_json_writer_append_end_object(&jw);
+    EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed closing telemetry json payload.");
+
+    payload_buffer_span = az_json_writer_get_bytes_used_in_destination(&jw);
+
+    if ((payload_buffer_size - az_span_size(payload_buffer_span)) < 1)
+    {
+      LogError("Insufficient space for telemetry payload null terminator.");
+      return RESULT_ERROR;
+    }
+
+    payload_buffer[az_span_size(payload_buffer_span)] = null_terminator;
+    *payload_buffer_length = az_span_size(payload_buffer_span);
+  
+  return RESULT_OK;
+}
+
 
 
 int em1ph_generete_payload(uint8_t* payload_buffer,

@@ -7,6 +7,8 @@ void DataHubCollectionClass::init(){
     for(int i=0; i<MAX_DATA_HUBS_ALLOWED; i++){
         em1phDataHubPool[i] = nullptr;
         em3phDataHubPool[i] = nullptr;
+        flowMeterDataHubPool[i] = nullptr;
+        
     }
 }
 
@@ -23,15 +25,16 @@ void DataHubCollectionClass::push(em3phManagerData_t data, int slot){
     if(em3phDataHubPool[slot]) em3phDataHubPool[slot]->push(data);
 }
 
+void DataHubCollectionClass::push(flowMeterManagerData_t data, int slot){
+    if(flowMeterDataHubPool[slot]) flowMeterDataHubPool[slot]->push(data);
+}
+
 void DataHubCollectionClass::loop(){
     weidosDataHub->loop();
     for(int i=0; i<MAX_DATA_HUBS_ALLOWED; i++){
-        if(em1phDataHubPool[i]){
-            // Serial.print("Looping for em1phDataHUB: ");
-            // Serial.println(i);
-            em1phDataHubPool[i]->loop();
-        } 
+        if(em1phDataHubPool[i]) em1phDataHubPool[i]->loop();
         if(em3phDataHubPool[i]) em3phDataHubPool[i]->loop();
+        if(flowMeterDataHubPool[i]) flowMeterDataHubPool[i]->loop();
     }
 }
 
@@ -46,6 +49,10 @@ void DataHubCollectionClass::setDataHub(DataHub<em1phManagerData_t, ENERGY_METER
 
 void DataHubCollectionClass::setDataHub(DataHub<em3phManagerData_t, ENERGY_METER_RING_BUFFER_SIZE>& dataHub, int slot){ 
     em3phDataHubPool[slot] = &dataHub;
+}
+
+void DataHubCollectionClass::setDataHub(DataHub<flowMeterManagerData_t, ENERGY_METER_RING_BUFFER_SIZE>& dataHub, int slot){ 
+    flowMeterDataHubPool[slot] = &dataHub;
 }
 
 

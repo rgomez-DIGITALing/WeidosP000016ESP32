@@ -6,6 +6,11 @@
 #include "managers/managers.h"
 
 
+int flowMeter_generete_payload(uint8_t* payload_buffer,
+    size_t payload_buffer_size,
+    size_t* payload_buffer_length, flowMeterManagerData_t& data);
+
+
 int em1ph_generete_payload(uint8_t* payload_buffer,
     size_t payload_buffer_size,
     size_t* payload_buffer_length, em1phManagerData_t& data);

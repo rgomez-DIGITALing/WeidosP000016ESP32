@@ -11,6 +11,7 @@ void DeviceCollectionClass::init(){
         EM220Pool[i] = nullptr;
         EM750Pool[i] = nullptr;
         EA750Pool[i] = nullptr;
+        PulseMeterPool[i] = nullptr;
     }
 
     return;
@@ -18,6 +19,21 @@ void DeviceCollectionClass::init(){
 
 
 void DeviceCollectionClass::loopDevices(){
+    for(int i=0; i<MAX_ALLOWED_DEVICES; i++){
+        if(EM750Pool[i]){
+            if(EM750Pool[i]->loop() != ENERGY_METER_IDLE) return;
+        }
+
+        if(EA750Pool[i]){
+            if(EA750Pool[i]->loop() != ENERGY_METER_IDLE) return;
+        }
+    }
+
+    return;
+}
+
+
+void DeviceCollectionClass::loopDevicesNoNetwork(){
     for(int i=0; i<MAX_ALLOWED_DEVICES; i++){
         if(EM110Pool[i]){
             if(EM110Pool[i]->loop() != ENERGY_METER_IDLE) return;
@@ -39,12 +55,8 @@ void DeviceCollectionClass::loopDevices(){
             if(EM220Pool[i]->loop() != ENERGY_METER_IDLE) return;
         }
 
-        if(EM750Pool[i]){
-            if(EM750Pool[i]->loop() != ENERGY_METER_IDLE) return;
-        }
-
-        if(EA750Pool[i]){
-            if(EA750Pool[i]->loop() != ENERGY_METER_IDLE) return;
+        if(PulseMeterPool[i]){
+            if(PulseMeterPool[i]->loop() != ENERGY_METER_IDLE) return;
         }
     }
 
@@ -59,6 +71,7 @@ void DeviceCollectionClass::triggerUpdateRTU(){
         if(EM120Pool[i]) EM120Pool[i]->triggerUpdate();
         if(EM122Pool[i]) EM122Pool[i]->triggerUpdate();
         if(EM220Pool[i]) EM220Pool[i]->triggerUpdate();
+        if(PulseMeterPool[i]) PulseMeterPool[i]->triggerUpdate();
     }
 
     return;
@@ -84,6 +97,16 @@ void DeviceCollectionClass::sendDevicesProperties(){
         if(EM220Pool[i]) EM220Pool[i]->sendProperties();
         if(EM750Pool[i]) EM750Pool[i]->sendProperties();
         if(EA750Pool[i]) EA750Pool[i]->sendProperties();
+        if(PulseMeterPool[i]) PulseMeterPool[i]->sendProperties();
+    }
+
+    return;
+}
+
+
+void DeviceCollectionClass::beginPulseMeters(){
+    for(int i=0; i<MAX_ALLOWED_DEVICES; i++){
+        if(PulseMeterPool[i]) PulseMeterPool[i]->begin();
     }
 
     return;
