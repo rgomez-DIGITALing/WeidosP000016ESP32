@@ -84,25 +84,25 @@ void configureDeviceCollection(){
 
 
   #ifdef BATCH_LINEA_EMPAQUETADO_AC_OFICINAS
-  DeviceCollection.setEnergyMeter(lineaEmpaquetado);
-  DeviceCollection.setEnergyMeter(modula4);
-  DeviceCollection.setEnergyMeter(modula11);
-  DeviceCollection.setEnergyMeter(compresorAireComprimido);
-  DeviceCollection.setEnergyMeter(acOficinas);
+  DeviceCollection.setDevice(lineaEmpaquetado);
+  DeviceCollection.setDevice(modula4);
+  DeviceCollection.setDevice(modula11);
+  DeviceCollection.setDevice(compresorAireComprimido);
+  DeviceCollection.setDevice(acOficinas);
   #endif
 
 
   #ifdef BATCH_LETS_CONNECT
-  DeviceCollection.setEnergyMeter(compresorLetsConnect);
-  DeviceCollection.setEnergyMeter(compresorMontaje);
-  DeviceCollection.setEnergyMeter(compresorCalidad);
+  DeviceCollection.setDevice(compresorLetsConnect);
+  DeviceCollection.setDevice(compresorMontaje);
+  DeviceCollection.setDevice(compresorCalidad);
   #endif
 
 
   #ifdef BATCH_IT_SOPORTE
-  DeviceCollection.setEnergyMeter(compresorIT1);
-  DeviceCollection.setEnergyMeter(compresorIT2);
-  DeviceCollection.setEnergyMeter(compresorSoporte);
+  DeviceCollection.setDevice(compresorIT1);
+  DeviceCollection.setDevice(compresorIT2);
+  DeviceCollection.setDevice(compresorSoporte);
   #endif
 
 }
