@@ -17,41 +17,17 @@ class DeviceCollectionClass{
         void loopDevices();
         void loopDevicesNoNetwork();
         void sendDevicesProperties();
-        void beginPulseMeters();
 
-        
-        void setEnergyMeter(EM110Manager& em){ 
-                int slot = em.getDeviceId();
-                EM110Pool[slot] = &em;
-            }
-        void setEnergyMeter(EM111Manager& em){
-                int slot = em.getDeviceId();
-                EM111Pool[slot] = &em;
-            }
-        void setEnergyMeter(EM120Manager& em){
-                int slot = em.getDeviceId();
-                EM120Pool[slot] = &em;
-            }
-        void setEnergyMeter(EM122Manager& em){
-                int slot = em.getDeviceId();
-                EM122Pool[slot] = &em;
-            }
-        void setEnergyMeter(EM220Manager& em){
-                int slot = em.getDeviceId();
-                EM220Pool[slot] = &em;
-            }
-        void setEnergyMeter(EM750Manager& em){
-                int slot = em.getDeviceId();
-                EM750Pool[slot] = &em;
-            }
-        void setEnergyMeter(EA750Manager& em){
-                int slot = em.getDeviceId();
-                EA750Pool[slot] = &em;
-            }
-        void setEnergyMeter(PulseMeterManager& pulseMeter){
-                int slot = pulseMeter.getDeviceId();
-                PulseMeterPool[slot] = &pulseMeter;
-            }
+
+        void setDevice(EM110Manager& em);
+        void setDevice(EM111Manager& em);
+        void setDevice(EM120Manager& em);
+        void setDevice(EM122Manager& em);
+        void setDevice(EM220Manager& em);
+        void setDevice(EM750Manager& em);
+        void setDevice(EA750Manager& em);
+        void setDevice(PulseMeterManager& pulseMeter);
+        void setDevice(AnalogMeterManager& analogMeter);
 
     private:
         EM110Manager* EM110Pool[MAX_ALLOWED_DEVICES];
@@ -62,6 +38,7 @@ class DeviceCollectionClass{
         EM750Manager* EM750Pool[MAX_ALLOWED_DEVICES];
         EA750Manager* EA750Pool[MAX_ALLOWED_DEVICES];
         PulseMeterManager* PulseMeterPool[MAX_ALLOWED_DEVICES];
+        AnalogMeterManager* AnalogMeterPool[MAX_ALLOWED_DEVICES];
 };
 
 extern DeviceCollectionClass DeviceCollection;

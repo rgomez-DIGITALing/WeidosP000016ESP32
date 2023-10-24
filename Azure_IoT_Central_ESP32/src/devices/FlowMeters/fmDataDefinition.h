@@ -4,7 +4,8 @@
 
 typedef enum flowMeterError_enum_t{
     FM_NO_ERROR,
-    FM_DEVIDE_BY_ZERO_ERROR
+    FM_DEVIDE_BY_ZERO_ERROR,
+    FM_VOLTAGE_ERROR
 } flowMeterError_t;
 
 

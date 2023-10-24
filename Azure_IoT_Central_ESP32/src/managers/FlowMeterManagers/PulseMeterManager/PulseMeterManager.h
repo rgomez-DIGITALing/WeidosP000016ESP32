@@ -1,7 +1,7 @@
 #pragma once
 
-#include "../../devices/FlowMeters/PulseMeter/PulseMeter.h"
-#include "PulseMeterDataDefinitions.h"
+#include "../../../devices/FlowMeters/PulseMeter/PulseMeter.h"
+#include "../PulseMeterDataDefinitions.h"
 
 class PulseMeterManager{
     public:
@@ -9,8 +9,8 @@ class PulseMeterManager{
         ~PulseMeterManager();
         void begin(){ pulseMeter->begin(); }
         int getDeviceId(){ return deviceId; }
-        void triggerUpdate(){ state = UPDATE_PULSE_METER; }
-        PulseMeterUpdateState_t loop();
+        void triggerUpdate();
+        FlowMeterUpdateState_t loop();
         bool sendProperties(){ return true; }
         void setDeviceId(int id){ deviceId = id; }
         int getDeviceId() const { return deviceId; }
@@ -19,6 +19,6 @@ class PulseMeterManager{
     private:
         PulseMeter* pulseMeter;
         int deviceId;
-        PulseMeterUpdateState_t state = PULSE_METER_IDLE;
+        FlowMeterUpdateState_t state = FLOW_METER_BEGIN;
 
 };

@@ -11,7 +11,7 @@ class PulseMeter{
         /**
          * Attach the interrupt and begin time and counter.
          */
-        void begin();
+        bool begin();
 
 
         void getData(flowMeterData_t& payload);

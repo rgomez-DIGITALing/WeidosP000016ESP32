@@ -1,6 +1,6 @@
 #include "PulseMeterManager.h"
 #include <ClockModule.h>
-#include "../../collections/DataHubCollection/DataHubCollection.h"
+#include "../../../collections/DataHubCollection/DataHubCollection.h"
 
 
 PulseMeterManager::PulseMeterManager(int deviceId, int interruptPin, float convertionFactor) : deviceId(deviceId){
@@ -12,14 +12,22 @@ PulseMeterManager::~PulseMeterManager(){
   delete pulseMeter;
 }
 
+void PulseMeterManager::triggerUpdate(){ 
+  if(state == FLOW_METER_BEGIN) return;  
+  state = UPDATE_FLOW_METER;
+  return;
+}
 
-
-PulseMeterUpdateState_t PulseMeterManager::loop(){
+FlowMeterUpdateState_t PulseMeterManager::loop(){
     switch(state){
-      case PULSE_METER_IDLE:
+      case FLOW_METER_BEGIN:
+        if(pulseMeter->begin()) state = FLOW_METER_IDLE;
+        break;
+        
+      case FLOW_METER_IDLE:
         break;
 
-      case UPDATE_PULSE_METER:
+      case UPDATE_FLOW_METER:
         flowMeterManagerData_t msg;
         msg.deviceId = deviceId;
         msg.timestamp = systemClock.getEpochTime();
@@ -27,7 +35,7 @@ PulseMeterUpdateState_t PulseMeterManager::loop(){
         pulseMeter->getData(msg.payload);
         LogInfo("Pushing data for device ID: %i", deviceId);
         DataHubCollection.push(msg, deviceId);
-        state = PULSE_METER_IDLE;
+        state = FLOW_METER_IDLE;
         break;
     }
     return state;

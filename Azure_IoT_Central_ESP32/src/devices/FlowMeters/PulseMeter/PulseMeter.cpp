@@ -20,12 +20,12 @@ PulseMeter::PulseMeter(int deviceId, int pinNumber, float convertionFactor) : de
 
 
 
-void PulseMeter::begin(){
+bool PulseMeter::begin(){
     pinMode(interruptPin, INPUT_PULLUP); // input from wind meters rain gauge sensor
     _t0 = systemClock.getEpochTime();
     attachInterrupt(digitalPinToInterrupt(interruptPin), std::bind(&PulseMeter::counterISR,this), FALLING);
-
-    return;
+    if(_t0) return true;
+    return false;
 }
 
 

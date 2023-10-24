@@ -12,6 +12,7 @@ void DeviceCollectionClass::init(){
         EM750Pool[i] = nullptr;
         EA750Pool[i] = nullptr;
         PulseMeterPool[i] = nullptr;
+        AnalogMeterPool[i] = nullptr;
     }
 
     return;
@@ -55,9 +56,8 @@ void DeviceCollectionClass::loopDevicesNoNetwork(){
             if(EM220Pool[i]->loop() != ENERGY_METER_IDLE) return;
         }
 
-        if(PulseMeterPool[i]){
-            if(PulseMeterPool[i]->loop() != ENERGY_METER_IDLE) return;
-        }
+        if(PulseMeterPool[i]) PulseMeterPool[i]->loop();
+        if(AnalogMeterPool[i]) AnalogMeterPool[i]->loop();
     }
 
     return;
@@ -72,6 +72,7 @@ void DeviceCollectionClass::triggerUpdateRTU(){
         if(EM122Pool[i]) EM122Pool[i]->triggerUpdate();
         if(EM220Pool[i]) EM220Pool[i]->triggerUpdate();
         if(PulseMeterPool[i]) PulseMeterPool[i]->triggerUpdate();
+        if(AnalogMeterPool[i]) AnalogMeterPool[i]->triggerUpdate();
     }
 
     return;
@@ -98,18 +99,66 @@ void DeviceCollectionClass::sendDevicesProperties(){
         if(EM750Pool[i]) EM750Pool[i]->sendProperties();
         if(EA750Pool[i]) EA750Pool[i]->sendProperties();
         if(PulseMeterPool[i]) PulseMeterPool[i]->sendProperties();
+        if(AnalogMeterPool[i]) AnalogMeterPool[i]->sendProperties();
     }
 
     return;
 }
 
 
-void DeviceCollectionClass::beginPulseMeters(){
-    for(int i=0; i<MAX_ALLOWED_DEVICES; i++){
-        if(PulseMeterPool[i]) PulseMeterPool[i]->begin();
-    }
+void DeviceCollectionClass::setDevice(EM110Manager& em){ 
+    int slot = em.getDeviceId();
+    EM110Pool[slot] = &em;
+}
 
-    return;
+
+void DeviceCollectionClass::setDevice(EM111Manager& em){
+    int slot = em.getDeviceId();
+    EM111Pool[slot] = &em;
+}
+
+
+void DeviceCollectionClass::setDevice(EM120Manager& em){
+    int slot = em.getDeviceId();
+    EM120Pool[slot] = &em;
+}
+
+
+void DeviceCollectionClass::setDevice(EM122Manager& em){
+    int slot = em.getDeviceId();
+    EM122Pool[slot] = &em;
+}
+
+
+void DeviceCollectionClass::setDevice(EM220Manager& em){
+    int slot = em.getDeviceId();
+    EM220Pool[slot] = &em;
+}
+
+
+void DeviceCollectionClass::setDevice(EM750Manager& em){
+    int slot = em.getDeviceId();
+    EM750Pool[slot] = &em;
+}
+
+
+void DeviceCollectionClass::setDevice(EA750Manager& em){
+    int slot = em.getDeviceId();
+    EA750Pool[slot] = &em;
+}
+
+
+void DeviceCollectionClass::setDevice(PulseMeterManager& pulseMeter){
+    int slot = pulseMeter.getDeviceId();
+    PulseMeterPool[slot] = &pulseMeter;
+}
+
+
+void DeviceCollectionClass::setDevice(AnalogMeterManager& analogMeter){
+    int slot = analogMeter.getDeviceId();
+    Serial.print("Setting analog meter in slot: ");
+    Serial.println(slot);
+    AnalogMeterPool[slot] = &analogMeter;
 }
 
 
