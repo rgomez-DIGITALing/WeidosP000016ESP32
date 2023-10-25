@@ -58,10 +58,10 @@ EM750Manager acOficinas(acOficinasEM, 5, MODBUS_NUMBER_TRIES);
 
 
 #ifdef BATCH_IT_SOPORTE
-EM110Manager compresorIT1(1);
-EM110Manager compresorIT2(2);
+EM110Manager compresorIT1(1, 50, 1);
+EM110Manager compresorIT2(2, 50, 1);
 EM111Manager compresorSoporte(3);
-EM120Manager ascensor(4);
+EM120Manager ascensor(4, 50, 1);
 #endif
 
 #ifdef BATCH_LETS_CONNECT
