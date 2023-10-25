@@ -58,9 +58,10 @@ EM750Manager acOficinas(acOficinasEM, 5, MODBUS_NUMBER_TRIES);
 
 
 #ifdef BATCH_IT_SOPORTE
-EM111Manager compresorIT1(1);
-EM111Manager compresorIT2(2);
+EM110Manager compresorIT1(1);
+EM110Manager compresorIT2(2);
 EM111Manager compresorSoporte(3);
+EM120Manager ascensor(4);
 #endif
 
 #ifdef BATCH_LETS_CONNECT
@@ -103,6 +104,7 @@ void configureDeviceCollection(){
   DeviceCollection.setDevice(compresorIT1);
   DeviceCollection.setDevice(compresorIT2);
   DeviceCollection.setDevice(compresorSoporte);
+  DeviceCollection.setDevice(ascensor);
   #endif
 
 }
@@ -202,32 +204,36 @@ void setEnergyMeterProperties(){
   em111->setLocation1(LOCATION_NAVE_400);
   em111->setLocation2(LOCATION_DIRECTO_COMPRESOR);
   #endif
-  
+
 
   #ifdef BATCH_IT_SOPORTE
+  EM110* em110 = nullptr;
+  em110 = compresorIT1.getEnergyMeter();
+  em110->setAsset(ASSET_COMPRESOR_LETS_CONNECT);
+  em110->setIdentifier(IDENTIFIER_COMPRESOR_LETS_CONNECT);
+  em110->setLocation1(LOCATION_NAVE_400);
+  em110->setLocation2(LOCATION_DIRECTO_COMPRESOR);
+
+
+  em110 = compresorIT2.getEnergyMeter();
+  em110->setAsset(ASSET_COMPRESOR_MONTAJE);
+  em110->setIdentifier(IDENTIFIER_COMPRESOR_MONTAJE);
+  em110->setLocation1(LOCATION_NAVE_400);
+  em110->setLocation2(LOCATION_DIRECTO_COMPRESOR);
+
   EM111* em111 = nullptr;
-  em111 = compresorIT1.getEnergyMeter();
-  em111->setAsset(ASSET_COMPRESOR_LETS_CONNECT);
-  em111->setIdentifier(IDENTIFIER_COMPRESOR_LETS_CONNECT);
-  em111->setLocation1(LOCATION_NAVE_400);
-  em111->setLocation2(LOCATION_DIRECTO_COMPRESOR);
-
-
-  em111 = compresorIT2.getEnergyMeter();
-  em111->setAsset(ASSET_COMPRESOR_MONTAJE);
-  em111->setIdentifier(IDENTIFIER_COMPRESOR_MONTAJE);
-  em111->setLocation1(LOCATION_NAVE_400);
-  em111->setLocation2(LOCATION_DIRECTO_COMPRESOR);
-
-
   em111 = compresorSoporte.getEnergyMeter();
   em111->setAsset(ASSET_COMPRESOR_CALIDAD);
   em111->setIdentifier(IDENTIFIER_COMPRESOR_CALIDAD);
   em111->setLocation1(LOCATION_NAVE_400);
   em111->setLocation2(LOCATION_DIRECTO_COMPRESOR);
+
+
+  EM120* em120 = nullptr;
+  em120 = ascensor.getEnergyMeter();
+  em120->setAsset(ASSET_ASCENSOR);
+  em120->setIdentifier(IDENTIFIER_ASCENSOR);
+  em120->setLocation1(LOCATION_NAVE_400);
+  em120->setLocation2(LOCATION_DIRECTO_COMPRESOR);
   #endif
 }
-
-
-
-

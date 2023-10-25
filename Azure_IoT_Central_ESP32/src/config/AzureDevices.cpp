@@ -155,6 +155,7 @@ void setAzureIoTCollectionDevices(){
     AzureIoTCollection.setAzureIoTDevice(Azure1, 1);
     AzureIoTCollection.setAzureIoTDevice(Azure2, 2);
     AzureIoTCollection.setAzureIoTDevice(Azure3, 3);
+    AzureIoTCollection.setAzureIoTDevice(Azure4, 4);
     #endif
     return;
 }
