@@ -7,6 +7,7 @@ class PulseMeterManager{
     public:
         PulseMeterManager(int deviceId, int interruptPin, float convertionFactor = 2.0f);
         ~PulseMeterManager();
+        void init(){ pulseMeter->init(); }
         void begin(){ pulseMeter->begin(); }
         int getDeviceId(){ return deviceId; }
         void triggerUpdate();

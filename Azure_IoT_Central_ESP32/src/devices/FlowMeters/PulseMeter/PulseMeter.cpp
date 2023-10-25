@@ -2,6 +2,8 @@
 #include <ClockModule.h>
 #include <FunctionalInterrupt.h>
 #include <functional>
+#include <SD.h>
+#include <SDDataStorage.h>
 
 
 PulseMeter::PulseMeter(int deviceId, int pinNumber, float convertionFactor) : deviceId(deviceId),
@@ -20,12 +22,25 @@ PulseMeter::PulseMeter(int deviceId, int pinNumber, float convertionFactor) : de
 
 
 
+    sdDataStorage.get(filePath, totalCounter);
+    Serial.print("Restored value: ");
+    Serial.println(totalCounter);
 bool PulseMeter::begin(){
     pinMode(interruptPin, INPUT_PULLUP); // input from wind meters rain gauge sensor
     _t0 = systemClock.getEpochTime();
     attachInterrupt(digitalPinToInterrupt(interruptPin), std::bind(&PulseMeter::counterISR,this), FALLING);
     if(_t0) return true;
     return false;
+}
+
+
+
+void PulseMeter::loop(){
+    if(saveInSD){
+        Serial.println(filePath);
+        bool stored = sdDataStorage.put(filePath, totalCounter);
+        if(stored) saveInSD = false;
+    }
 }
 
 
@@ -65,4 +80,5 @@ bool PulseMeter::update(){
 void IRAM_ATTR PulseMeter::counterISR(){
     periodCounter++;
     totalCounter++;
+    saveInSD = true;
 }

@@ -106,6 +106,17 @@ void DeviceCollectionClass::sendDevicesProperties(){
 }
 
 
+void DeviceCollectionClass::initFlowMeters(){
+    for(int i=0; i<MAX_ALLOWED_DEVICES; i++){
+        
+        if(PulseMeterPool[i]) PulseMeterPool[i]->init();
+        //if(AnalogMeterPool[i]) AnalogMeterPool[i]->init();
+    }
+
+    return;
+}
+
+
 void DeviceCollectionClass::setDevice(EM110Manager& em){ 
     int slot = em.getDeviceId();
     EM110Pool[slot] = &em;

@@ -17,6 +17,7 @@ class DeviceCollectionClass{
         void loopDevices();
         void loopDevicesNoNetwork();
         void sendDevicesProperties();
+        void initFlowMeters();
 
 
         void setDevice(EM110Manager& em);

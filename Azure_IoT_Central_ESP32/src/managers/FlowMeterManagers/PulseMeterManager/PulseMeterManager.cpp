@@ -19,6 +19,7 @@ void PulseMeterManager::triggerUpdate(){
 }
 
 FlowMeterUpdateState_t PulseMeterManager::loop(){
+    pulseMeter->loop();
     switch(state){
       case FLOW_METER_BEGIN:
         if(pulseMeter->begin()) state = FLOW_METER_IDLE;

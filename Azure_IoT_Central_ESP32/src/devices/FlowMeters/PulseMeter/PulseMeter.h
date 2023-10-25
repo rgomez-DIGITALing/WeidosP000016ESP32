@@ -8,12 +8,17 @@
 class PulseMeter{
     public:
         PulseMeter(int deviceId, int pinNumber, float convertionFactor);
+
+
+        void init();
+
         /**
          * Attach the interrupt and begin time and counter.
          */
         bool begin();
 
-
+        void loop();
+        
         void getData(flowMeterData_t& payload);
 
 
@@ -26,15 +31,15 @@ class PulseMeter{
          */
         int deviceId;
         int interruptPin;
-        
         void IRAM_ATTR counterISR();
         float convertionFactor;
         volatile unsigned long periodCounter;
         volatile unsigned long totalCounter;
         unsigned long _t0;
         unsigned long _tf;
+        volatile bool saveInSD = false;
 
-
+        flowMeterInitError_t initError;
         flowMeterError_t error;
         float totalConsumption;
         float periodConsumption;

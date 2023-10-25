@@ -8,7 +8,11 @@ typedef enum flowMeterError_enum_t{
     FM_VOLTAGE_ERROR
 } flowMeterError_t;
 
-
+typedef enum flowMeterInitError_enum_t{
+    FM_SD_BEGIN_ERROR,
+    FM_SD_FILE_EXISTS_ERROR,
+    FM_SD_FILE_OPEN_ERROR
+} flowMeterInitError_t;
 
 typedef struct  flowMeterData_struct_t{
     flowMeterError_t error;
