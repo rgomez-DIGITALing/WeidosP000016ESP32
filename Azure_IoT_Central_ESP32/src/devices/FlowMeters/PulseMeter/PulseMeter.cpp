@@ -37,7 +37,6 @@ bool PulseMeter::begin(){
 
 void PulseMeter::loop(){
     if(saveInSD){
-        Serial.println(filePath);
         bool stored = sdDataStorage.put(filePath, totalCounter);
         if(stored) saveInSD = false;
     }
