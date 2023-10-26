@@ -197,33 +197,6 @@ int AzureIoTDevice::sendProperties(az_span message){
   return azure_iot_send_properties_update(&azure_iot, properties_request_id++, message);
 }
 
-/*
-void on_message_received(String &topic, String &payload) 
-{
-  LogInfo("MQTT message received.");
-
-  mqtt_message_t mqtt_message;
-
-  // Copy message topic. Avoids any inadvertant ArduinoMqttClient _rxState or _rxMessageTopic changes.
-  // messageTopic() must be called before read();
-  String message_topic = topic;
-  Serial.print("Message topic: ");
-  Serial.println(message_topic);
-  //arduino_mqtt_client.read(message_buffer, (size_t)message_size);
-
-  mqtt_message.topic = az_span_create((uint8_t*)message_topic.c_str(), message_topic.length());
-  mqtt_message.payload = az_span_create((uint8_t*)payload.c_str(), payload.length());
-  //mqtt_message.payload = az_span_create(message_buffer, message_size);
-  mqtt_message.qos = mqtt_qos_at_most_once; // QoS is unused by azure_iot_mqtt_client_message_received. 
-
-  Serial.print("Message payload: ");
-  Serial.println(payload);
-  if (azure_iot_mqtt_client_message_received(&azure_iot, &mqtt_message) != 0)
-  {
-    LogError("azure_iot_mqtt_client_message_received failed (topic=%s).", topic.c_str());
-  }
-}
-*/
 
 
 /* --- MQTT Interface Functions --- */
