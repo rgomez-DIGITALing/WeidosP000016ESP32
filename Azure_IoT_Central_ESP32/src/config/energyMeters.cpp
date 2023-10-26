@@ -58,9 +58,9 @@ EM750Manager acOficinas(acOficinasEM, 5, MODBUS_NUMBER_TRIES);
 
 
 #ifdef BATCH_IT_SOPORTE
-EM110Manager compresorIT1(1, 50, 1);
-EM110Manager compresorIT2(2, 50, 1);
-EM111Manager compresorSoporte(3);
+EM111Manager compresorSoporte(1);
+EM110Manager compresorIT1(2, 50, 1);
+EM110Manager compresorIT2(3, 50, 1);
 EM120Manager ascensor(4, 50, 1);
 #endif
 
@@ -109,9 +109,9 @@ void configureDeviceCollection(){
 
 
   #ifdef BATCH_IT_SOPORTE
+  DeviceCollection.setDevice(compresorSoporte);
   DeviceCollection.setDevice(compresorIT1);
   DeviceCollection.setDevice(compresorIT2);
-  DeviceCollection.setDevice(compresorSoporte);
   DeviceCollection.setDevice(ascensor);
   #endif
 
@@ -224,6 +224,15 @@ void setEnergyMeterProperties(){
 
 
   #ifdef BATCH_IT_SOPORTE
+
+  EM111* em111 = nullptr;
+  em111 = compresorSoporte.getEnergyMeter();
+  em111->setAsset(ASSET_COMPRESOR_CALIDAD);
+  em111->setIdentifier(IDENTIFIER_COMPRESOR_CALIDAD);
+  em111->setLocation1(LOCATION_NAVE_400);
+  em111->setLocation2(LOCATION_DIRECTO_COMPRESOR);
+
+
   EM110* em110 = nullptr;
   em110 = compresorIT1.getEnergyMeter();
   em110->setAsset(ASSET_COMPRESOR_LETS_CONNECT);
@@ -237,13 +246,6 @@ void setEnergyMeterProperties(){
   em110->setIdentifier(IDENTIFIER_COMPRESOR_MONTAJE);
   em110->setLocation1(LOCATION_NAVE_400);
   em110->setLocation2(LOCATION_DIRECTO_COMPRESOR);
-
-  EM111* em111 = nullptr;
-  em111 = compresorSoporte.getEnergyMeter();
-  em111->setAsset(ASSET_COMPRESOR_CALIDAD);
-  em111->setIdentifier(IDENTIFIER_COMPRESOR_CALIDAD);
-  em111->setLocation1(LOCATION_NAVE_400);
-  em111->setLocation2(LOCATION_DIRECTO_COMPRESOR);
 
 
   EM120* em120 = nullptr;

@@ -70,16 +70,16 @@
 
 #ifdef BATCH_IT_SOPORTE
 #define IOT_CONFIG_DEVICE_GATEWAY_ID "1uv9j90f7ic"     //GW IT-Soporte
-#define IOT_CONFIG_DEVICE_1_ID "z8xt2ydr8d"           //Compresor IT 1 (ok)
-#define IOT_CONFIG_DEVICE_2_ID "dpj8xlx0sc"           //Compresor IT 2 (ok)
-#define IOT_CONFIG_DEVICE_3_ID "1gt42big9ck"           //Compresor Soporte
+#define IOT_CONFIG_DEVICE_1_ID "1gt42big9ck"           //Compresor Soporte
+#define IOT_CONFIG_DEVICE_2_ID "z8xt2ydr8d"           //Compresor IT 1 (ok)
+#define IOT_CONFIG_DEVICE_3_ID "dpj8xlx0sc"           //Compresor IT 2 (ok)
 #define IOT_CONFIG_DEVICE_4_ID "1s8n4mjky6m"           //Ascensor
 #define IOT_CONFIG_DEVICE_5_ID "unusedDevic"           //Unused
 
 #define IOT_CONFIG_DEVICE_GATEWAY_KEY "aBMfmJMK8VrbSnXaHomUeazDXWD88g9nLnmlBAZ0nzE="    //GW IT-Soporte
-#define IOT_CONFIG_DEVICE_1_KEY "rwXJzhN0s8PQlwJHxp68TrloRZLurpTJUmmVTD3nSuo="          //Compresor IT 1 (ok)
-#define IOT_CONFIG_DEVICE_2_KEY "P4u5eMu05ZJYX1A1uh5BQhf2iM3ZgkjdtLdJrIO1QLA="          //Compresor IT 2 (ok)
-#define IOT_CONFIG_DEVICE_3_KEY "qxI3X4O8KX36BbVoCptJ12BXzU8dgmFSbBFbjL+VeOU="          //Compresor Soporte
+#define IOT_CONFIG_DEVICE_1_KEY "qxI3X4O8KX36BbVoCptJ12BXzU8dgmFSbBFbjL+VeOU="          //Compresor Soporte
+#define IOT_CONFIG_DEVICE_2_KEY "rwXJzhN0s8PQlwJHxp68TrloRZLurpTJUmmVTD3nSuo="          //Compresor IT 1 (ok)
+#define IOT_CONFIG_DEVICE_3_KEY "P4u5eMu05ZJYX1A1uh5BQhf2iM3ZgkjdtLdJrIO1QLA="          //Compresor IT 2 (ok)
 #define IOT_CONFIG_DEVICE_4_KEY "Fv31jlILxgZ0W2+hfXr12lOhneE1jA4hTkwaY+Jpb9I="          //Ascensor
 #define IOT_CONFIG_DEVICE_5_KEY "unusedunusedunusedunusedunusedunusedunusedun"          //Unused
 #endif
