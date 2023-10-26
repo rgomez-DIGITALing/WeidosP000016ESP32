@@ -5,8 +5,9 @@
 //#define BATCH_GENERAL_ROBOT
 //#define BATCH_LINEA_EMPAQUETADO_AC_OFICINAS
 //#define BATCH_LETS_CONNECT
-#define BATCH_IT_SOPORTE
-//#define BATCH_TEST
+//#define BATCH_IT_SOPORTE
+//#define BATCH_BARCELONA_SAI
+#define BATCH_TEST
 
 
 // Azure IoT Central
@@ -98,6 +99,23 @@
 #define IOT_CONFIG_DEVICE_3_KEY "ywb9fgU7ILQhne6U79SD/x5azpz9AZXtcGAuqS/SlE8="     //Test 3
 #define IOT_CONFIG_DEVICE_4_KEY "X/u+62h6n50qJrlZP91m0aVmeMWX/ygmoiKOuwfJH+A="           //Test 4
 #define IOT_CONFIG_DEVICE_5_KEY "vLBPEJYxxO52B7koz0+xFTWPfP1o7vkD7qzVKuwSDYI="           //Test 5
+#endif
+
+
+#ifdef BATCH_BARCELONA_SAI
+#define IOT_CONFIG_DEVICE_GATEWAY_ID "n9cmbjvg77"      //GW-BARCELONA-SAI
+#define IOT_CONFIG_DEVICE_1_ID "2mtbdzsz410"           //Compresor Sala Barcelona
+#define IOT_CONFIG_DEVICE_2_ID "2e7guwkqz75"           //Compresor Sala Automation
+#define IOT_CONFIG_DEVICE_3_ID "c19bzm37cd"            //Compresor Sala París/Milán
+#define IOT_CONFIG_DEVICE_4_ID "1yjx096rm9i"           //Compresor Sala Rack
+#define IOT_CONFIG_DEVICE_5_ID "70fe8tx0wg"            //Enchufes Equipos (SAI)
+
+#define IOT_CONFIG_DEVICE_GATEWAY_KEY "F7yC04kCtTq9y6C8DdxxCAOS2uZEAsXWMmRH5eF3ZaI="    //GW-BARCELONA-SAI
+#define IOT_CONFIG_DEVICE_1_KEY "PfWuTppfV481YWX8NK8giJsc/e79jqX1MipztTY2Ep0="          //Compresor Sala Barcelona
+#define IOT_CONFIG_DEVICE_2_KEY "yxOAOb1UNP5EkaAdyuHqinVWE0Pr8IQ36vY/rE7Feg4="          //Compresor Sala Automation
+#define IOT_CONFIG_DEVICE_3_KEY "3/iFSel6t9WK6vdKmcbd9TJhCeXmkqQ/ZjrAkVAL5HM="          //Compresor Sala París/Milán
+#define IOT_CONFIG_DEVICE_4_KEY "5qs1F9qWas6i/GRNvig0vPvMh1T326S4s6mqng4N3e4="          //Compresor Sala Rack
+#define IOT_CONFIG_DEVICE_5_KEY "v2XZ2RB0beMe7YjepqqQmtTcS8903KOz168RQiIUZ3o="          //Enchufes Equipos (SAI)
 #endif
 
 

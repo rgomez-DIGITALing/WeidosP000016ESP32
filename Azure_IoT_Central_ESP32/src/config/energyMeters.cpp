@@ -70,17 +70,25 @@ EM122Manager compresorMontaje(2);
 EM111Manager compresorCalidad(3);
 #endif
 
+#ifdef BATCH_BARCELONA_SAI
+EM111Manager barcelona(1);
+EM111Manager automation(2);
+EM111Manager parisMilan(3);
+EM111Manager rack(4);
+EM120Manager sai(5, 50, 1);
+#endif
+
 
 
 
 
 void configureDeviceCollection(){
   #if defined BATCH_GENERAL_ROBOT || defined BATCH_TEST
-  DeviceCollection.setEnergyMeter(general);
-  DeviceCollection.setEnergyMeter(transelevador1);
-  DeviceCollection.setEnergyMeter(transelevador2);
-  DeviceCollection.setEnergyMeter(transelevador3);
-  DeviceCollection.setEnergyMeter(robot);
+  DeviceCollection.setDevice(general);
+  DeviceCollection.setDevice(transelevador1);
+  DeviceCollection.setDevice(transelevador2);
+  DeviceCollection.setDevice(transelevador3);
+  DeviceCollection.setDevice(robot);
   #endif
 
 
@@ -105,6 +113,15 @@ void configureDeviceCollection(){
   DeviceCollection.setDevice(compresorIT2);
   DeviceCollection.setDevice(compresorSoporte);
   DeviceCollection.setDevice(ascensor);
+  #endif
+
+
+  #ifdef BATCH_BARCELONA_SAI
+  DeviceCollection.setDevice(barcelona);
+  DeviceCollection.setDevice(automation);
+  DeviceCollection.setDevice(parisMilan);
+  DeviceCollection.setDevice(rack);
+  DeviceCollection.setDevice(sai);
   #endif
 
 }
@@ -235,5 +252,41 @@ void setEnergyMeterProperties(){
   em120->setIdentifier(IDENTIFIER_ASCENSOR);
   em120->setLocation1(LOCATION_NAVE_400);
   em120->setLocation2(LOCATION_DIRECTO_COMPRESOR);
+  #endif
+
+
+  #ifdef BATCH_BARCELONA_SAI
+  EM111* em111 = nullptr;
+  em111 = barcelona.getEnergyMeter();
+  em111->setAsset(ASSET_COMPRESOR_SALA_BARCELONA);
+  em111->setIdentifier(IDENTIFIER_COMPRESOR_SALA_BARCELONA);
+  em111->setLocation1(LOCATION_NAVE_400);
+  em111->setLocation2(LOCATION_TERRAZA);
+
+  em111 = automation.getEnergyMeter();
+  em111->setAsset(ASSET_COMPRESOR_SALA_AUTOMOTION);
+  em111->setIdentifier(IDENTIFIER_COMPRESOR_SALA_AUTOMOTION);
+  em111->setLocation1(LOCATION_NAVE_400);
+  em111->setLocation2(LOCATION_TERRAZA);
+
+  em111 = parisMilan.getEnergyMeter();
+  em111->setAsset(ASSET_COMPRESOR_SALA_PARIS_MILAN);
+  em111->setIdentifier(IDENTIFIER_COMPRESOR_SALA_PARIS_MILAN);
+  em111->setLocation1(LOCATION_NAVE_400);
+  em111->setLocation2(LOCATION_TERRAZA);
+
+  em111 = rack.getEnergyMeter();
+  em111->setAsset(ASSET_COMPRESOR_SALA_RACK);
+  em111->setIdentifier(IDENTIFIER_COMPRESOR_SALA_RACK);
+  em111->setLocation1(LOCATION_NAVE_400);
+  em111->setLocation2(LOCATION_TERRAZA);
+
+
+  EM120* em120 = nullptr;
+  em120 = sai.getEnergyMeter();
+  em120->setAsset(ASSET_ENCHUFES_EQUIPOS_SAI);
+  em120->setIdentifier(IDENTIFIER_ENCHUFES_EQUIPOS_SAI);
+  em120->setLocation1(LOCATION_NAVE_400);
+  em120->setLocation2(LOCATION_SALA_RACK_SAI);
   #endif
 }

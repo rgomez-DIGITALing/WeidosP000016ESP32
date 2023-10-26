@@ -157,5 +157,13 @@ void setAzureIoTCollectionDevices(){
     AzureIoTCollection.setAzureIoTDevice(Azure3, 3);
     AzureIoTCollection.setAzureIoTDevice(Azure4, 4);
     #endif
+
+    #ifdef BATCH_BARCELONA_SAI
+    AzureIoTCollection.setAzureIoTDevice(Azure1, 1);
+    AzureIoTCollection.setAzureIoTDevice(Azure2, 2);
+    AzureIoTCollection.setAzureIoTDevice(Azure3, 3);
+    AzureIoTCollection.setAzureIoTDevice(Azure4, 4);
+    AzureIoTCollection.setAzureIoTDevice(Azure5, 5);
+    #endif
     return;
 }
