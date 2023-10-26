@@ -70,13 +70,13 @@ void DataHub<T,N>::loop(){
                 state = MOVE_MESSAGE;
                 deviceId = currentPayload.deviceId;
                 numSendTries = 1;
-                LogInfo("Info for device ID: %i poped", deviceId);
+                LogInfo2(F("Info for device ID: %i poped"), deviceId);
             }
             break;
 
         case MOVE_MESSAGE:
             deviceId = currentPayload.deviceId;
-            LogInfo("Moving Info for device ID: %i", deviceId);
+            LogInfo2(F("Moving Info for device ID: %i"), deviceId);
             if(AzureIoTCollection[deviceId]->getStatus() == azure_iot_connected){
                 size_t payload_buffer_length = 0;
                 uint8_t* payload_buffer = AzureIoTCollection[deviceId]->getDataBuffer2();
@@ -90,12 +90,12 @@ void DataHub<T,N>::loop(){
             break;
 
         case TELEMETRY_SENT:
-            LogInfo("Message successfully sent. Required number of tries: %i", numSendTries);
+            LogInfo2(F("Message successfully sent. Required number of tries: %i"), numSendTries);
             state = GET_DATA_FROM_FIFO;
             break;
 
         case TELEMETRY_SEND_FAILURE:
-            LogError("Failed sending telemetry. Current number of tries: %i", numSendTries++);
+            LogError2(F("Failed sending telemetry. Current number of tries: %i"), numSendTries++);
             
             state = MOVE_MESSAGE;
             break;

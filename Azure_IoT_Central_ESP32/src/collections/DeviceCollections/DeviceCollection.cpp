@@ -167,8 +167,6 @@ void DeviceCollectionClass::setDevice(PulseMeterManager& pulseMeter){
 
 void DeviceCollectionClass::setDevice(AnalogMeterManager& analogMeter){
     int slot = analogMeter.getDeviceId();
-    Serial.print("Setting analog meter in slot: ");
-    Serial.println(slot);
     AnalogMeterPool[slot] = &analogMeter;
 }
 

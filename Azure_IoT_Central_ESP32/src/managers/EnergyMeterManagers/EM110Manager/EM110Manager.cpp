@@ -14,11 +14,6 @@ em110(nullptr),
 deviceId(deviceId),
 maxTries(maxTries)
 {
-  Serial.println("Creating an EM110Manager");
-  Serial.print("CT Primary: ");
-  Serial.print(ctPrimary);
-  Serial.print("  -  CT Secondary: ");
-  Serial.println(ctSecondary);
   em110 = new EM110(deviceId, ctPrimary, ctSecondary);
 }
 
@@ -39,7 +34,7 @@ EnergyMeterUpdateState_t EM110Manager::loop(){
         if(!em110->begin()){
          state = ENERGY_METER_UPDATE_FAILED;
          em110->stop();
-         LogError("Modbus Client for device ID %i could not begin.", deviceId);
+         LogError2(F("Modbus Client for device ID %i could not begin."), deviceId);
          break;
         }
 
@@ -53,15 +48,15 @@ EnergyMeterUpdateState_t EM110Manager::loop(){
         if(numTries>maxTries){
           numTries = 0;
           state = PASS_MESSAGE;
-          LogError("Energy meter update failed.");
+          LogError2(F("Energy meter update failed."));
         }else{
           state = UPDATE_ENERGY_METER;
-          LogError("Retrying (%i/%i)", numTries, maxTries);
+          LogError2(F("Retrying (%i/%i)"), numTries, maxTries);
         }
         break;
 
       case ENERGY_METER_UPDATED:
-        LogInfo(" Updated EM110  (ID:%i)", deviceId);
+        LogInfo2(F(" Updated EM110  (ID:%i)"), deviceId);
         state = PASS_MESSAGE;
       break;
 
@@ -70,7 +65,7 @@ EnergyMeterUpdateState_t EM110Manager::loop(){
         msg.deviceId = deviceId;
         msg.timestamp = systemClock.getEpochTime();
         em110->getData(msg.payload);
-        LogInfo("Pushing data for device ID: %i", deviceId);
+        LogInfo2(F("Pushing data for device ID: %i"), deviceId);
         DataHubCollection.push(msg, deviceId);
         state = END_TASK;
         break;

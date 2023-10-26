@@ -19,7 +19,7 @@ EnergyMeterUpdateState_t EA750Manager::loop(){
         if(!ea750.begin()){
          state = ENERGY_METER_UPDATE_FAILED;
          ea750.stop();
-         LogError("Modbus Client for device ID %i could not begin.", deviceId);  
+         LogError2(F("Modbus Client for device ID %i could not begin."), deviceId);  
          break;
         }
 
@@ -33,15 +33,15 @@ EnergyMeterUpdateState_t EA750Manager::loop(){
         if(numTries>maxTries){
           numTries = 0;
           state = PASS_MESSAGE;
-          LogError("Energy meter update failed.");
+          LogError2(F("Energy meter update failed."));
         }else{
           state = UPDATE_ENERGY_METER;
-          LogError("Retrying (%i/%i)", numTries, maxTries);
+          LogError2(F("Retrying (%i/%i)"), numTries, maxTries);
         }
         break;
 
       case ENERGY_METER_UPDATED:
-        LogInfo(" Updated EA750  (ID:%i)", deviceId);
+        LogInfo2(F(" Updated EA750  (ID:%i)"), deviceId);
         state = PASS_MESSAGE;
         break;
 
@@ -50,7 +50,7 @@ EnergyMeterUpdateState_t EA750Manager::loop(){
         msg.deviceId = deviceId;
         msg.timestamp = systemClock.getEpochTime();
         ea750.getData(msg.payload);
-        LogInfo("Pushing data for device ID: %i", deviceId);
+        LogInfo2(F("Pushing data for device ID: %i"), deviceId);
         DataHubCollection.push(msg, deviceId);
         state = END_TASK;
         break;

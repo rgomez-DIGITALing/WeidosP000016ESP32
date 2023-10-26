@@ -66,7 +66,6 @@ void AzureIoTDevice::loop(){
       case azure_iot_connected:
         break;
       case azure_iot_error:
-        LogError("Azure IoT client is in error state.");
         azure_iot_stop(&azure_iot);
         break;
       case azure_iot_disconnected:
@@ -85,7 +84,6 @@ void AzureIoTDevice::loop(){
     if(getStatus() == azure_iot_connecting || getStatus() == azure_iot_connected ){
       if(!mqttClient->connected()){
         azure_iot_mqtt_client_disconnected(&azure_iot);
-        LogInfo("Spurious MQTT disconection");
       } 
     }
 }
@@ -280,7 +278,7 @@ int AzureIoTDevice::mqtt_client_init(mqtt_client_config_t* mqtt_client_config, m
   result = azure_iot_mqtt_client_connected(&azure_iot);
   if (result != RESULT_OK)
   {
-    LogError("Failed updating azure iot client of MQTT connection.");
+    LogError2(F("Failed updating azure iot client of MQTT connection."));
   }else
   {
     *mqtt_client_handle = mqttClient;
@@ -304,7 +302,7 @@ int AzureIoTDevice::mqtt_client_deinit(mqtt_client_handle_t mqtt_client_handle)
   result = azure_iot_mqtt_client_disconnected(&azure_iot);
   if (result != RESULT_OK)
   {
-    LogError("Failed updating azure iot client of MQTT disconnection.");      
+    LogError2(F("Failed updating azure iot client of MQTT disconnection."));      
   }
 
   return result;
@@ -330,7 +328,7 @@ int AzureIoTDevice::mqtt_client_subscribe(mqtt_client_handle_t mqtt_client_handl
       result = azure_iot_mqtt_client_subscribe_completed(&azure_iot, packet_id);
       if (result != RESULT_OK)
       {
-        LogError("Failed updating azure iot client of MQTT subscribe.");
+        LogError2(F("Failed updating azure iot client of MQTT subscribe."));
       }
   }
   else
@@ -365,7 +363,7 @@ int AzureIoTDevice::mqtt_client_publish(mqtt_client_handle_t mqtt_client_handle,
     result = azure_iot_mqtt_client_publish_completed(&azure_iot, packet_id);
     if (result != RESULT_OK)
     {
-      LogError("Failed updating azure iot client of MQTT publish.");
+      LogError2(F("Failed updating azure iot client of MQTT publish."));
     }
   }
   else
@@ -401,7 +399,7 @@ void AzureIoTDevice::onMessageReceived(String &topic, String &payload)
   Serial.println(payload);
   if (azure_iot_mqtt_client_message_received(&azure_iot, &mqtt_message) != 0)
   {
-    LogError("azure_iot_mqtt_client_message_received failed (topic=%s).", topic.c_str());
+    LogError2(F("azure_iot_mqtt_client_message_received failed (topic=%s)."), topic.c_str());
   }
 }
 
@@ -474,8 +472,8 @@ void AzureIoTDevice::azure_iot_init(azure_iot_t* azure_iot, azure_iot_config_t* 
           || az_span_is_content_equal(
               azure_iot_config->device_certificate_private_key, AZ_SPAN_EMPTY)))
   {
-    LogError("Please define either a device key or a device certificate and certificate private "
-             "key. See iot_configs.h");
+    LogError2(F("Please define either a device key or a device certificate and certificate private "
+             "key. See iot_configs.h"));
     return;
   }
 
@@ -511,12 +509,12 @@ int AzureIoTDevice::azure_iot_start(azure_iot_t* azure_iot)
 
   if (azure_iot->state == azure_iot_state_not_initialized)
   {
-    LogError("Azure IoT client must be initialized before starting.");
+    LogError2(F("Azure IoT client must be initialized before starting."));
     result = RESULT_ERROR;
   }
   else if (azure_iot->state != azure_iot_state_initialized)
   {
-    LogError("Azure IoT client already started or in error state.");
+    LogError2(F("Azure IoT client already started or in error state."));
     result = RESULT_ERROR;
   }
   else
@@ -537,7 +535,7 @@ int AzureIoTDevice::azure_iot_stop(azure_iot_t* azure_iot)
 
   if (azure_iot->state == azure_iot_state_not_initialized)
   {
-    LogError("Azure IoT client must be initialized before stopping.");
+    LogError2(F("Azure IoT client must be initialized before stopping."));
     result = RESULT_ERROR;
   }
   else
@@ -547,7 +545,7 @@ int AzureIoTDevice::azure_iot_stop(azure_iot_t* azure_iot)
       if (mqtt_client_deinit(azure_iot->mqtt_client_handle) != 0)
       {
         azure_iot->state = azure_iot_state_error;
-        LogError("Failed deinitializing MQTT client.");
+        LogError2(F("Failed deinitializing MQTT client."));
         result = RESULT_ERROR;
       }
       else
@@ -663,7 +661,6 @@ void AzureIoTDevice::azure_iot_do_work(azure_iot_t* azure_iot)
       if (result != RESULT_OK || mqtt_client_init(&mqtt_client_config, &azure_iot->mqtt_client_handle) != RESULT_OK)
       {
         azure_iot->state = azure_iot_state_error;
-        LogError("Failed initializing MQTT client.");
         return;
       }
 
@@ -682,7 +679,7 @@ void AzureIoTDevice::azure_iot_do_work(azure_iot_t* azure_iot)
       if (mqtt_result != RESULT_OK)
       {
         azure_iot->state = azure_iot_state_error;
-        LogError("Failed subscribing to Azure Device Provisioning respose topic.");
+        LogError2(F("Failed subscribing to Azure Device Provisioning respose topic."));
         return;
       }
 
@@ -707,7 +704,7 @@ void AzureIoTDevice::azure_iot_do_work(azure_iot_t* azure_iot)
       if (az_span_is_content_equal(mqtt_message.topic, AZ_SPAN_EMPTY) || az_span_is_content_equal(data_buffer, AZ_SPAN_EMPTY))
       {
         azure_iot->state = azure_iot_state_error;
-        LogError("Failed reserving memory for DPS register payload.");
+        LogError2(F("Failed reserving memory for DPS register payload."));
         return;
       }
 
@@ -718,7 +715,7 @@ void AzureIoTDevice::azure_iot_do_work(azure_iot_t* azure_iot)
       if (az_span_is_content_equal(dps_register_custom_property, AZ_SPAN_EMPTY))
       {
         azure_iot->state = azure_iot_state_error;
-        LogError("Failed generating DPS register custom property payload.");
+        LogError2(F("Failed generating DPS register custom property payload."));
         return;
       }
 
@@ -746,7 +743,7 @@ void AzureIoTDevice::azure_iot_do_work(azure_iot_t* azure_iot)
       if (mqtt_result != RESULT_OK)
       {
         azure_iot->state = azure_iot_state_error;
-        LogError("Failed publishing to DPS registration topic");
+        LogError2(F("Failed publishing to DPS registration topic"));
         return;
       }
 
@@ -757,7 +754,7 @@ void AzureIoTDevice::azure_iot_do_work(azure_iot_t* azure_iot)
       if (now == 0) //Oriol aqui cal mirar-ho bé
       {
         azure_iot->state = azure_iot_state_error;
-        LogError("Failed getting current time for DPS query throttling");
+        LogError2(F("Failed getting current time for DPS query throttling"));
         return;
       }
 
@@ -793,7 +790,7 @@ void AzureIoTDevice::azure_iot_do_work(azure_iot_t* azure_iot)
       if (mqtt_result != RESULT_OK)
       {
         azure_iot->state = azure_iot_state_error;
-        LogError("Failed publishing to DPS status query topic");
+        LogError2(F("Failed publishing to DPS status query topic"));
         return;
       }
 
@@ -806,7 +803,7 @@ void AzureIoTDevice::azure_iot_do_work(azure_iot_t* azure_iot)
           && mqtt_client_deinit(azure_iot->mqtt_client_handle) != 0)
       {
         azure_iot->state = azure_iot_state_error;
-        LogError("Failed de-initializing MQTT client.");
+        LogError2(F("Failed de-initializing MQTT client."));
         return;
       }
 
@@ -818,7 +815,7 @@ void AzureIoTDevice::azure_iot_do_work(azure_iot_t* azure_iot)
       if (result != 0)
       {
         azure_iot->state = azure_iot_state_error;
-        LogError("Failed getting MQTT client configuration for connecting to IoT Hub.");
+        LogError2(F("Failed getting MQTT client configuration for connecting to IoT Hub."));
         return;
       }
 
@@ -827,7 +824,7 @@ void AzureIoTDevice::azure_iot_do_work(azure_iot_t* azure_iot)
       if (mqtt_client_init(&mqtt_client_config, &azure_iot->mqtt_client_handle) != RESULT_OK)
       {
         azure_iot->state = azure_iot_state_error;
-        LogError("Failed initializing MQTT client for IoT Hub connection.");
+        LogError2(F("Failed initializing MQTT client for IoT Hub connection."));
         return;
       }
 
@@ -842,7 +839,7 @@ void AzureIoTDevice::azure_iot_do_work(azure_iot_t* azure_iot)
       if (mqtt_result != RESULT_OK)
       {
         azure_iot->state = azure_iot_state_error;
-        LogError("Failed subscribing to IoT Plug and Play commands topic.");
+        LogError2(F("Failed subscribing to IoT Plug and Play commands topic."));
         return;
       }
 
@@ -858,7 +855,7 @@ void AzureIoTDevice::azure_iot_do_work(azure_iot_t* azure_iot)
       if (mqtt_result != RESULT_OK)
       {
         azure_iot->state = azure_iot_state_error;
-        LogError("Failed subscribing to IoT Plug and Play properties topic.");
+        LogError2(F("Failed subscribing to IoT Plug and Play properties topic."));
         return;
       }
 
@@ -874,7 +871,7 @@ void AzureIoTDevice::azure_iot_do_work(azure_iot_t* azure_iot)
       if (mqtt_result != RESULT_OK)
       {
         azure_iot->state = azure_iot_state_error;
-        LogError("Failed subscribing to IoT Plug and Play writable properties topic.");
+        LogError2(F("Failed subscribing to IoT Plug and Play writable properties topic."));
         return;
       }
 
@@ -888,7 +885,7 @@ void AzureIoTDevice::azure_iot_do_work(azure_iot_t* azure_iot)
       if (now == 0)
       {
         azure_iot->state = azure_iot_state_error;
-        LogError("Failed getting current time for checking SAS token expiration.");
+        LogError2(F("Failed getting current time for checking SAS token expiration."));
         return;
       }
       else if ((azure_iot->sas_token_expiration_time - now) < SAS_TOKEN_REFRESH_THRESHOLD_IN_SECS)
@@ -897,7 +894,7 @@ void AzureIoTDevice::azure_iot_do_work(azure_iot_t* azure_iot)
         if (mqtt_client_deinit(azure_iot->mqtt_client_handle) != 0)
         {
           azure_iot->state = azure_iot_state_error;
-          LogError("Failed de-initializing MQTT client.");
+          LogError2(F("Failed de-initializing MQTT client."));
           return;
         }
 
@@ -984,7 +981,7 @@ int AzureIoTDevice::azure_iot_mqtt_client_connected(azure_iot_t* azure_iot)
     if (!azure_iot->config->use_device_provisioning)
     {
       azure_iot->state = azure_iot_state_error;
-      LogError("Invalid state, provisioning disabled in config.");
+      LogError2(F("Invalid state, provisioning disabled in config."));
       result = RESULT_ERROR;
     }
     else
@@ -1144,7 +1141,6 @@ int AzureIoTDevice::azure_iot_mqtt_client_message_received(azure_iot_t* azure_io
 
         // An error has occurred
         case AZ_IOT_HUB_CLIENT_PROPERTIES_MESSAGE_TYPE_ERROR:
-          LogError("Message Type: Request Error");
           result = RESULT_ERROR;
           break;
       }
@@ -1206,7 +1202,7 @@ int AzureIoTDevice::azure_iot_mqtt_client_message_received(azure_iot_t* azure_io
           if (az_span_is_content_equal(azure_iot->dps_operation_id, AZ_SPAN_EMPTY))
           {
             azure_iot->state = azure_iot_state_error;
-            LogError("Failed reserving memory for DPS operation id.");
+            LogError2(F("Failed reserving memory for DPS operation id."));
             result = RESULT_ERROR;
           }
         }
@@ -1228,7 +1224,7 @@ int AzureIoTDevice::azure_iot_mqtt_client_message_received(azure_iot_t* azure_io
         if (az_span_is_content_equal(azure_iot->config->iot_hub_fqdn, AZ_SPAN_EMPTY))
         {
           azure_iot->state = azure_iot_state_error;
-          LogError("Failed saving IoT Hub fqdn from provisioning.");
+          LogError2(F("Failed saving IoT Hub fqdn from provisioning."));
           result = RESULT_ERROR;
         }
         else
@@ -1239,7 +1235,7 @@ int AzureIoTDevice::azure_iot_mqtt_client_message_received(azure_iot_t* azure_io
           if (az_span_is_content_equal(azure_iot->config->device_id, AZ_SPAN_EMPTY))
           {
             azure_iot->state = azure_iot_state_error;
-            LogError("Failed saving device id from provisioning.");
+            LogError2(F("Failed saving device id from provisioning."));
             result = RESULT_ERROR;
           }
           else
@@ -1253,14 +1249,14 @@ int AzureIoTDevice::azure_iot_mqtt_client_message_received(azure_iot_t* azure_io
       else
       {
         azure_iot->state = azure_iot_state_error;
-        LogError("Device provisisioning failed.");
+        LogError2(F("Device provisisioning failed."));
         result = RESULT_OK;
       }
     }
   }
   else
   {
-    LogError("No PUBLISH notification expected.");
+    LogError2(F("No PUBLISH notification expected."));
     result = RESULT_ERROR;
   }
 
@@ -1333,7 +1329,7 @@ az_span AzureIoTDevice::generate_dps_register_custom_property(
     az_span data_buffer,
     az_span* remainder)
 {
-  LogInfo("Lets generate DPS register custom propery");
+  LogInfo2(F("Lets generate DPS register custom propery"));
   az_span custom_property;
   Serial.print("Gateway address: ");
   Serial.println(gatewayId);
