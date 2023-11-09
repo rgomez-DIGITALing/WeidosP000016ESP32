@@ -233,6 +233,7 @@ int AzureIoTDevice::mqtt_client_init(mqtt_client_config_t* mqtt_client_config, m
 
   if(!mqttClient->connect(client_id, username, password)){
     int code = mqttClient->lastError();
+    mqttClient->disconnect();
     return RESULT_ERROR;
   }
 
