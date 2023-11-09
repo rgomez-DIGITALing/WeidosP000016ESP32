@@ -4,6 +4,10 @@
 
 #define NUM_TOTAL_DATA_1PHASE 11
 #define NUM_TOTAL_DATA_3PHASE 60
+#define NUM_TOTAL_PERIOD_DATA_1PHASE 6
+#define NUM_TOTAL_PERIOD_DATA_3PHASE 24
+
+//static const double NO_PREV_DATA_AVAILABLE_ERROR_VALUE = (double)999999999999998;
 //#define NUM_TOTAL_DATA_EM750 60
 
 
@@ -52,6 +56,19 @@ typedef struct em1phData_struct_t{
         float apparentEnergyTotal;
       };
     };
+
+    union{
+      float periodData[NUM_TOTAL_PERIOD_DATA_1PHASE];
+
+      struct{
+        float periodRealPowerTotal;
+        float periodApparentPowerTotal;
+        float periodReactivePowerTotal;
+        float periodRealEnergyTotal;
+        float periodApparentEnergyTotal;
+        float periodReactiveEnergyTotal;
+      };
+    };
 } em1phData_t;
 
 
@@ -84,6 +101,37 @@ typedef struct em3phData_struct_t{
         float reactiveEnergyL1, reactiveEnergyL2, reactiveEnergyL3;
         float apparentEnergyL1, apparentEnergyL2, apparentEnergyL3;
         float rotField;
+      };
+    };
+
+    union{
+      float periodData[NUM_TOTAL_PERIOD_DATA_3PHASE];
+
+      struct{
+        float periodRealPowerL1N;
+        float periodRealPowerL2N;
+        float periodRealPowerL3N;
+        float periodRealPowerTotal;
+        float periodApparentPowerL1N;
+        float periodApparentPowerL2N;
+        float periodApparentPowerL3N;
+        float periodApparentPowerTotal;
+        float periodReactivePowerL1N;
+        float periodReactivePowerL2N;
+        float periodReactivePowerL3N;
+        float periodReactivePowerTotal;
+        float periodRealEnergyL1N;
+        float periodRealEnergyL2N;
+        float periodRealEnergyL3N;
+        float periodRealEnergyTotal;
+        float periodApparentEnergyL1;
+        float periodApparentEnergyL2;
+        float periodApparentEnergyL3;
+        float periodApparentEnergyTotal;
+        float periodReactiveEnergyL1;
+        float periodReactiveEnergyL2;
+        float periodReactiveEnergyL3;
+        float periodReactiveEnergyTotal;
       };
     };
 } em3phData_t;
@@ -150,44 +198,29 @@ enum EM3PHDataArrayIndex{
   EM3PH_APPARENT_ENERGY_L1_INDEX,
   EM3PH_APPARENT_ENERGY_L2_INDEX,
   EM3PH_APPARENT_ENERGY_L3_INDEX,
-  EM3PH_ROT_FIELD_INDEX
+  EM3PH_ROT_FIELD_INDEX,
+  EM3PH_PERIOD_REAL_POWER_L1N,
+  EM3PH_PERIOD_REAL_POWER_L2N,
+  EM3PH_PERIOD_REAL_POWER_L3N,
+  EM3PH_PERIOD_REAL_POWER_TOTAL,
+  EM3PH_PERIOD_APPARENT_POWER_L1N,
+  EM3PH_PERIOD_APPARENT_POWER_L2N,
+  EM3PH_PERIOD_APPARENT_POWER_L3N,
+  EM3PH_PERIOD_APPARENT_POWER_TOTAL,
+  EM3PH_PERIOD_REACTIVE_POWER_L1N,
+  EM3PH_PERIOD_REACTIVE_POWER_L2N,
+  EM3PH_PERIOD_REACTIVE_POWER_L3N,
+  EM3PH_PERIOD_REACTIVE_POWER_TOTAL,
+  EM3PH_PERIOD_REAL_ENERGY_L1N,
+  EM3PH_PERIOD_REAL_ENERGY_L2N,
+  EM3PH_PERIOD_REAL_ENERGY_L3N,
+  EM3PH_PERIOD_REAL_ENERGY_TOTAL,
+  EM3PH_PERIOD_APPARENT_ENERGY_L1,
+  EM3PH_PERIOD_APPARENT_ENERGY_L2,
+  EM3PH_PERIOD_APPARENT_ENERGY_L3,
+  EM3PH_PERIOD_APPARENT_ENERGY_TOTAL,
+  EM3PH_PERIOD_REACTIVE_ENERGY_L1,
+  EM3PH_PERIOD_REACTIVE_ENERGY_L2,
+  EM3PH_PERIOD_REACTIVE_ENERGY_L3,
+  EM3PH_PERIOD_REACTIVE_ENERGY_TOTAL
 };
-
-// typedef struct em750Data_struct_t{
-//   uint8_t comState;
-//   union{
-//       float data[NUM_TOTAL_DATA_EM750];
-
-//       struct{
-//         float voltageL1N, voltageL2N, voltageL3N;
-//         float avgVoltageLN;
-//         float voltageL1L2, voltageL2L3, voltageL1L3, avgVoltageLL;
-//         float currentL1, currentL2, currentL3;
-//         float currentNeutral;
-//         float avgCurrentL;
-//         float currentTotal;
-//         float realPowerL1N, realPowerL2N, realPowerL3N;
-//         float realPowerTotal;
-//         float apparentPowerL1N, apparentPowerL2N, apparentPowerL3N;
-//         float apparentPowerTotal;
-//         float reactivePowerL1N, reactivePowerL2N, reactivePowerL3N;
-//         float reactivePowerTotal;
-//         float cosPhiL1, cosPhiL2, cosPhiL3;
-//         float avgCosPhi, frequency, rotField;
-//         float realEnergyL1N, realEnergyL2N, realEnergyL3N;
-//         float realEnergyTotal;
-//         float apparentEnergyL1, apparentEnergyL2, apparentEnergyL3;
-//         float apparentEnergyTotal;
-//         float reactiveEnergyL1, reactiveEnergyL2, reactiveEnergyL3;
-//         float reactiveEnergyTotal;
-//         float THDVoltsL1N, THDVoltsL2N, THDVoltsL3N;
-//         float avgTHDVoltsLN;
-//         float THDCurrentL1N, THDCurrentL2N, THDCurrentL3N;
-//         float avgTHDCurrentLN;
-//         float THDVoltsL1L2, THDVoltsL2L3, THDVoltsL1L3;
-//         float avgTHDVoltsLL;
-//         float powerFactorL1N, powerFactorL2N, powerFactorL3N;
-//         float powerFactorTotal;
-//       };
-//     };
-// } em750Data_t;

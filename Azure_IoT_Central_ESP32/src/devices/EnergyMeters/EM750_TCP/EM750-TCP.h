@@ -1,6 +1,7 @@
 #pragma once
 #include <ArduinoModbus.h>
 #include "../EMDataDefinitions.h"
+#include "../em_telemetryDefinition.h"
 
 
 
@@ -36,6 +37,8 @@ class EM750{
     void copyData(float* buffer, int bufferSize);
     void getData(em3phData_t& payload);
     float* getData();
+    void resetPrevValues(){ prevDataAvailable = false; }
+    void updatePreviousValues();
 
     void setIdentifier(char* identifier){ this->identifier = identifier; }
     void setAsset(char* asset){ this->asset = asset; }
@@ -87,6 +90,31 @@ class EM750{
     char* location2;
 
     COM_error_t comError;
+    bool prevDataAvailable = false;
+    float prevRealPowerL1N;
+    float prevRealPowerL2N;
+    float prevRealPowerL3N;
+    float prevRealPowerTotal;
+    float prevApparentPowerL1N;
+    float prevApparentPowerL2N;
+    float prevApparentPowerL3N;
+    float prevApparentPowerTotal;
+    float prevReactivePowerL1N;
+    float prevReactivePowerL2N;
+    float prevReactivePowerL3N;
+    float prevReactivePowerTotal;
+    float prevRealEnergyL1N;
+    float prevRealEnergyL2N;
+    float prevRealEnergyL3N;
+    float prevRealEnergyTotal;
+    float prevApparentEnergyL1;
+    float prevApparentEnergyL2;
+    float prevApparentEnergyL3;
+    float prevApparentEnergyTotal;
+    float prevReactiveEnergyL1;
+    float prevReactiveEnergyL2;
+    float prevReactiveEnergyL3;
+    float prevReactiveEnergyTotal;
     
     union{
       float data[NUM_TOTAL_DATA_3PHASE];

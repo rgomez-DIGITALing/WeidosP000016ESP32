@@ -18,7 +18,9 @@
 #define NUM_REGISTERS_BATCH_3       2
 #define NUM_DATA_BATCH_3            NUM_REGISTERS_BATCH_3/2
 
-EM750::EM750(ModbusTCPClient& client, IPAddress ipAddress) : _client(client), ipAddress(ipAddress){}
+
+
+EM750::EM750(ModbusTCPClient& client, IPAddress ipAddress) : _client(client), ipAddress(ipAddress), prevDataAvailable(false){}
 
 int EM750::begin(){
     _client.setTimeout(MODBUS_TIMEOUT);
@@ -92,6 +94,38 @@ void EM750::copyData(float* buffer, int bufferSize){
 void EM750::getData(em3phData_t& payload){
   payload.comError = comError;
   copyData(payload.data, NUM_TOTAL_DATA_3PHASE);
+
+  if(prevDataAvailable){
+    payload.periodRealPowerL1N = realPowerL1N - prevRealPowerL1N;
+    payload.periodRealPowerL2N = realPowerL2N - prevRealPowerL2N;
+    payload.periodRealPowerL3N = realPowerL3N - prevRealPowerL3N;
+    payload.periodRealPowerTotal = realPowerTotal - prevRealPowerTotal;
+    payload.periodApparentPowerL1N = apparentPowerL1N - prevApparentPowerL1N;
+    payload.periodApparentPowerL2N = apparentPowerL2N - prevApparentPowerL2N;
+    payload.periodApparentPowerL3N = apparentPowerL3N - prevApparentPowerL3N;
+    payload.periodApparentPowerTotal = apparentPowerTotal - prevApparentPowerTotal;
+    payload.periodReactivePowerL1N = reactivePowerL1N - prevReactivePowerL1N;
+    payload.periodReactivePowerL2N = reactivePowerL2N - prevReactivePowerL2N;
+    payload.periodReactivePowerL3N = reactivePowerL3N - prevReactivePowerL3N;
+    payload.periodReactivePowerTotal = reactivePowerTotal - prevReactivePowerTotal;
+    payload.periodRealEnergyL1N = realEnergyL1 - prevRealEnergyL1N;
+    payload.periodRealEnergyL2N = realEnergyL2 - prevRealEnergyL2N;
+    payload.periodRealEnergyL3N = realEnergyL3 - prevRealEnergyL3N;
+    payload.periodRealEnergyTotal = realEnergyTotal - prevRealEnergyTotal;
+    payload.periodApparentEnergyL1 = apparentEnergyL1 - prevApparentEnergyL1;
+    payload.periodApparentEnergyL2 = apparentEnergyL2 - prevApparentEnergyL2;
+    payload.periodApparentEnergyL3 = apparentEnergyL3 - prevApparentEnergyL3;
+    payload.periodApparentEnergyTotal = apparentEnergyTotal - prevApparentEnergyTotal;
+    payload.periodReactiveEnergyL1 = reactiveEnergyL1 - prevReactiveEnergyL1;
+    payload.periodReactiveEnergyL2 = reactiveEnergyL2 - prevReactiveEnergyL2;
+    payload.periodReactiveEnergyL3 = reactiveEnergyL3 - prevReactiveEnergyL3;
+    payload.periodReactiveEnergyTotal = reactiveEnergyTotal - prevReactiveEnergyTotal;
+  }else{
+    for(int i=0; i<NUM_TOTAL_PERIOD_DATA_3PHASE; i++){
+      payload.periodData[i] = FLOAT_NO_PREV_DATA_AVAILABLE_ERROR_VALUE;
+    }
+  }
+  
   return;
 }
 
@@ -201,3 +235,33 @@ float EM750::getNextData(){
     float data = *(float *)&rawData; 
     return data;
 };
+
+
+void EM750::updatePreviousValues(){
+  prevRealPowerL1N = realPowerL1N;
+  prevRealPowerL2N = realPowerL2N;
+  prevRealPowerL3N = realPowerL3N;
+  prevRealPowerTotal = realPowerTotal;
+  prevApparentPowerL1N = apparentPowerL1N;
+  prevApparentPowerL2N = apparentPowerL2N;
+  prevApparentPowerL3N = apparentPowerL3N;
+  prevApparentPowerTotal = apparentPowerTotal;
+  prevReactivePowerL1N = reactivePowerL1N;
+  prevReactivePowerL2N = reactivePowerL2N;
+  prevReactivePowerL3N = reactivePowerL3N;
+  prevReactivePowerTotal = reactivePowerTotal;
+  prevRealEnergyL1N = realEnergyL1;
+  prevRealEnergyL2N = realEnergyL2;
+  prevRealEnergyL3N = realEnergyL3;
+  prevRealEnergyTotal = realEnergyTotal;
+  prevApparentEnergyL1 = apparentEnergyL1;
+  prevApparentEnergyL2 = apparentEnergyL2;
+  prevApparentEnergyL3 = apparentEnergyL3;
+  prevApparentEnergyTotal = apparentEnergyTotal;
+  prevReactiveEnergyL1 = reactiveEnergyL1;
+  prevReactiveEnergyL2 = reactiveEnergyL2;
+  prevReactiveEnergyL3 = reactiveEnergyL3;
+  prevReactiveEnergyTotal = reactiveEnergyTotal;
+
+  prevDataAvailable = true;
+}
