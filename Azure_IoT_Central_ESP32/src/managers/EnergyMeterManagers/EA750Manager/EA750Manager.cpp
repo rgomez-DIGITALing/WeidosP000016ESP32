@@ -49,6 +49,7 @@ EnergyMeterUpdateState_t EA750Manager::loop(){
         em3phManagerData_t msg;
         msg.deviceId = deviceId;
         msg.timestamp = systemClock.getEpochTime();
+        msg.backup = 0;
         ea750.getData(msg.payload);
         LogInfo2(F("Pushing data for device ID: %i"), deviceId);
         DataHubCollection.push(msg, deviceId);

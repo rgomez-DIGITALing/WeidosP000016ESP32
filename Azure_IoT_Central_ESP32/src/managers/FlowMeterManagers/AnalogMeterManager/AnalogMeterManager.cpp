@@ -33,6 +33,7 @@ FlowMeterUpdateState_t AnalogMeterManager::loop(){
         flowMeterManagerData_t msg;
         msg.deviceId = deviceId;
         msg.timestamp = systemClock.getEpochTime();
+        msg.backup = 0;
         analogMeter->update();
         analogMeter->getData(msg.payload);
         LogInfo("Pushing data for device ID: %i", deviceId);

@@ -2,6 +2,7 @@
 
 int isEMDataValid(float data);
 double getEMErrorValue(int dataError);
+//static const double NO_PREV_DATA_AVAILABLE_ERROR_VALUE = (double)999999999999998;
 
 extern const double NAN_ERROR_VALUE;
 extern const double NO_PREV_DATA_AVAILABLE_ERROR_VALUE;

@@ -1,5 +1,7 @@
 #include "AnalogMeter.h"
 #include <ClockModule.h>
+#include <SDDataStorage.h>
+#include "../../../classes/SDFolderManager/SDFolderManager.h"
 
 static const unsigned long MEASURE_FREQUENCY = 100;
 
@@ -24,10 +26,21 @@ AnalogMeter::AnalogMeter(int deviceId, int pinNumber, float convertionFactor) : 
                                         tf(0)
                                         {}
 
+void AnalogMeter::init(){
+    char* filePath = SDFolderManager.setAnalogMeterFilePath(deviceId);
+    Serial.print("Lets GET PulseMeter data in file: ");
+    Serial.println(filePath);
+    SDDataStorage.get(filePath, totalConsumption);
+    Serial.print("Restored value: ");
+    Serial.println(totalConsumption);
+}
+
 
 bool AnalogMeter::begin(){
     pinMode(analogPin, INPUT); // input from wind meters rain gauge sensor
     _t0 = systemClock.getEpochTime();
+    Serial.print("Analog begin t0: ");
+    Serial.println(_t0);
     if(_t0) return true;
     return false;
 }
@@ -35,24 +48,36 @@ bool AnalogMeter::begin(){
 
 void AnalogMeter::loop(){
     if(millis()-prevTime > MEASURE_FREQUENCY){
-        float voltage = analogRead(analogPin)*10.0f/4095.0f;
-        float instantFlow = convertionFactor*voltage;
-        
-        if(voltage>(ERROR_VOLTAGE + ERROR_VOLTAGE_TOLERANCE)){
-            _averageFlow += instantFlow;
-            _measureCounter++;
-            _error = FM_NO_ERROR;
-        }else{
-            _invalidMeasures++;
-            _error = FM_VOLTAGE_ERROR;
-        }
-
+        makeMeasure();
         prevTime = millis();
+    }
+
+
+    if(saveInSD){
+        char* filePath = SDFolderManager.setAnalogMeterFilePath(deviceId);
+        Serial.print("Lets save AnalogeMeter data in file: ");
+        Serial.println(filePath);
+        bool stored = SDDataStorage.put(filePath, totalConsumption);
+        if(stored) saveInSD = false;
     }
 
     return;
 }
 
+
+void AnalogMeter::makeMeasure(){
+    float voltage = analogRead(analogPin)*10.0f/4095.0f;
+    float instantFlow = convertionFactor*voltage;
+    
+    if(voltage>(ERROR_VOLTAGE + ERROR_VOLTAGE_TOLERANCE)){
+        _averageFlow += instantFlow;
+        _measureCounter++;
+        _error = FM_NO_ERROR;
+    }else{
+        _invalidMeasures++;
+        _error = FM_VOLTAGE_ERROR;
+    }
+}
 
 bool AnalogMeter::update(){
     _tf = systemClock.getEpochTime();
@@ -72,12 +97,21 @@ bool AnalogMeter::update(){
     tf = _tf;
     error = _error;
 
+    Serial.print("averageFlow: ");
+    Serial.println(averageFlow);
+    Serial.print("measureCounter: ");
+    Serial.println(_measureCounter);
+    Serial.print("invalidMeasures: ");
+    Serial.println(invalidMeasures);
+
+
     //Reset variables
     _error = FM_NO_ERROR;
     _averageFlow = 0;
     _measureCounter = 0;
     _invalidMeasures = 0;
     _t0 = _tf;
+    saveInSD = true;
     return true;
 }
 
@@ -90,5 +124,18 @@ void AnalogMeter::getData(flowMeterData_t& payload){
     payload.tf = tf;
     payload.error = error;
 
+    
+    Serial.print("totalConsumption: ");
+    Serial.println(totalConsumption);
+    Serial.print("periodConsumption: ");
+    Serial.println(periodConsumption);
+    Serial.print("averageFlow: ");
+    Serial.println(averageFlow);
+    Serial.print("t0: ");
+    Serial.println(t0);
+    Serial.print("tf: ");
+    Serial.println(tf);
+    Serial.print("error: ");
+    Serial.println(error);
     return;
 }

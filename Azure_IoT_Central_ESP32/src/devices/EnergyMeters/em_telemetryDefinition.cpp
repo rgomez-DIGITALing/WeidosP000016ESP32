@@ -13,6 +13,7 @@ const double NAN_ERROR_VALUE = (double)999999999999999;
 const double NO_PREV_DATA_AVAILABLE_ERROR_VALUE = (double)999999999999998;
 const float FLOAT_NO_PREV_DATA_AVAILABLE_ERROR_VALUE = (float)99999999999;
 
+
 int isEMDataValid(float data){
     if(isnan(data)) return NaN_VALUE;
     if(data == FLOAT_NO_PREV_DATA_AVAILABLE_ERROR_VALUE) return NO_PREV_DATA;

@@ -11,6 +11,7 @@
 //#define NUM_TOTAL_DATA_EM750 60
 
 
+
 typedef enum{
   COM_OK,
   COM_BEGIN_ERROR,
@@ -74,7 +75,6 @@ typedef struct em1phData_struct_t{
 
 typedef struct em3phData_struct_t{
   COM_error_t comError;
-
   union{
       float data[NUM_TOTAL_DATA_3PHASE];
 

@@ -13,6 +13,7 @@ enum WeidosState{
 typedef struct WeidosManagerData_struct_t{
   int deviceId;
   unsigned long timestamp;
+  int backup;
   weidosMetadata_t payload;
 } WeidosManagerData_t;
 

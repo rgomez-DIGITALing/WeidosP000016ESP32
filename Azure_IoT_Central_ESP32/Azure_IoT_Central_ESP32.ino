@@ -35,8 +35,6 @@
 
 #define WDT_TIMEOUT 2*60 //in seconds
 
-#define ARDUINO
-
 
 // For hmac SHA256 encryption
 #include <ECCX08.h>
@@ -53,7 +51,8 @@
 #include "src/collections/DeviceCollections/DeviceCollection.h"
 #include "src/collections/DataHubCollection/DataHubCollection.h"
 #include "src/collections/AzureIoTCollection/AzureIoTCollection.h"
-
+#include "src/collections/SDBackaupSenderCollection/SDBackupSenderCollection.h"
+#include "src/classes/SDFolderManager/SDFolderManager.h"
 
 #include <ArduinoBearSSL.h>
 
@@ -84,6 +83,7 @@ void setup()
   DataHubCollection.init();
   DeviceCollection.init();
   AzureIoTCollection.init();
+  SDBackupSenderCollection.init();
   createObjects();
   configureAzureDevices();
   setAzureIoTCollectionDevices();
@@ -91,11 +91,21 @@ void setup()
   setDataHubsPayloadGenerators();
   setEnergyMeterProperties();
   configureDeviceCollection();
- 
+  SDBackupSenderCollection.begin();
   DeviceCollection.initFlowMeters();
   esp_task_wdt_init(WDT_TIMEOUT, true); //enable panic so ESP32 restarts
   esp_task_wdt_add(NULL); //add current thread to WDT watch
 
+  // SDFolderManager.getPendingFilePath(1, 1699354826);
+  // SDFolderManager.getPendingFilePath(1, 16826);
+
+  // SDFolderManager.getProvisionalFilePath(1, 1699354826);
+  // SDFolderManager.getProvisionalFilePath(1, 16826);
+  // while(1){}
+  // Serial.println(SDFolderManager.getPulseMeterFilePath(1));
+  // Serial.println(SDFolderManager.getAnalogMeterFilePath(2));
+  // Serial.println(SDFolderManager.getProvisionalFilePath(2));
+  // Serial.println(SDFolderManager.getPendingFilePath(2));
   LogInfo("Let's go to the looP function");
 }
 
@@ -114,20 +124,24 @@ static const unsigned long DELTA_TIME = 60*1000;
 bool  networkUp = false;
 bool  clockRunning = false;
 int prevLinkStatus = LinkON;
-
+// unsigned long prevEthernetLoop = 0;
+// static const unsigned long ETHERNET_FREQUENCY = 100;
 
 void loop()
 {
   esp_task_wdt_reset();
+  // if(millis()-prevEthernetLoop > ETHERNET_FREQUENCY){
+  //   EthernetModule.loop();
+    
+  // }
   EthernetModule.loop();
   networkUp = EthernetModule.isNetworkUp();
   systemClock.loop(networkUp);
   clockRunning = systemClock.clockRunning();
-  
+
   if(!networkUp){
     AzureIoTCollection.stop();
   }
-
 
   if(networkUp && clockRunning){
     if(millis()-prevTcpTime>TCP_UPDATE_FREQUENCY){
@@ -136,7 +150,6 @@ void loop()
     }
   }
 
-
   if(clockRunning){
     if(millis()-prevNoTcpTime>NO_TCP_UPDATE_FREQUENCY){
       weidosESP32Manager.triggerUpdate();
@@ -144,7 +157,6 @@ void loop()
       prevNoTcpTime = millis();
     }
   }
-
 
   if(networkUp){
     weidosESP32Manager.loop();
@@ -160,14 +172,16 @@ void loop()
   if(networkUp){
     DeviceCollection.sendDevicesProperties();
   }
+
   if(networkUp){
     AzureIoTCollection.loop();
+    SDBackupSenderCollection.loop();
   }
-
 
 
   if(millis()-prevTime>DELTA_TIME){
     prevTime = millis();
-    LogInfo("Link status: %i", Ethernet.linkStatus());  
+    LogInfo("Link status: %i", Ethernet.linkStatus()); 
   }
+  
 }

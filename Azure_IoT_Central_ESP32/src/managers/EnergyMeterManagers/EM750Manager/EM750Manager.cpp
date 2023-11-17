@@ -10,29 +10,33 @@
 
 
 EnergyMeterUpdateState_t EM750Manager::loop(){
+    em3phManagerData_t msg;
+
     switch(state){
       case ENERGY_METER_IDLE:
         break;
 
+
       case UPDATE_ENERGY_METER:
         //state = ENERGY_METER_UPDATED;
         if(!em750.begin()){
-         state = ENERGY_METER_UPDATE_FAILED;
+         state = ENERGY_METER_RETRY_UPDATE;
          em750.stop();
          LogError("Modbus Client for device ID %i could not begin.", deviceId);  
          break;
         }
 
         if(em750.update()) state = ENERGY_METER_UPDATED;
-        else state = ENERGY_METER_UPDATE_FAILED;
+        else state = ENERGY_METER_RETRY_UPDATE;
         em750.stop();
         break;
       
-      case ENERGY_METER_UPDATE_FAILED:
+      case ENERGY_METER_RETRY_UPDATE:
         numTries++;
         if(numTries>maxTries){
           numTries = 0;
-          state = PASS_MESSAGE;
+          //state = PASS_MESSAGE;
+          state = ENERGY_METER_UPDATE_FAILED;
           LogError("Energy meter update failed.");
         }else{
           state = UPDATE_ENERGY_METER;
@@ -42,20 +46,31 @@ EnergyMeterUpdateState_t EM750Manager::loop(){
 
       case ENERGY_METER_UPDATED:
         LogInfo(" Updated EM750  (ID:%i)", deviceId);
-        state = PASS_MESSAGE;
-        break;
-
-      case PASS_MESSAGE:
-        em3phManagerData_t msg;
+        //em3phManagerData_t msg;
         msg.deviceId = deviceId;
         msg.timestamp = systemClock.getEpochTime();
+        msg.backup = 0;
         em750.getData(msg.payload);
         LogInfo("Pushing data for device ID: %i", deviceId);
         DataHubCollection.push(msg, deviceId);
+        em750.updatePreviousValues();
+        state = END_TASK;
+        break;
+
+      case ENERGY_METER_UPDATE_FAILED:
+        
+        msg.deviceId = deviceId;
+        msg.timestamp = systemClock.getEpochTime();
+        em750.resetPrevValues();
+        em750.getData(msg.payload);
+        LogInfo("Pushing data for device ID: %i", deviceId);
+        DataHubCollection.push(msg, deviceId);
+        
         state = END_TASK;
         break;
 
       case END_TASK:
+
         state = ENERGY_METER_IDLE;
         //em750.stop();
         break;

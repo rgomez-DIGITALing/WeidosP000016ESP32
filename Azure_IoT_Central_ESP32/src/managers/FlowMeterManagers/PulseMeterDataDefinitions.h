@@ -11,5 +11,6 @@ typedef enum FlowMeterUpdateState_enum_t{
 typedef struct flowMeterManagerData_struct_t{
   int deviceId;
   unsigned long timestamp;
+  int backup;
   flowMeterData_t payload;
 } flowMeterManagerData_t;

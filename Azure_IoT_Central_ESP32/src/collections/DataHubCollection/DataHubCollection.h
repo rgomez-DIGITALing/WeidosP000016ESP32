@@ -22,7 +22,7 @@ class DataHubCollectionClass{
         void setDataHub(DataHub<em1phManagerData_t, ENERGY_METER_RING_BUFFER_SIZE>& dataHub, int slot);
         void setDataHub(DataHub<em3phManagerData_t, ENERGY_METER_RING_BUFFER_SIZE>& dataHub, int slot);
         void setDataHub(DataHub<flowMeterManagerData_t, ENERGY_METER_RING_BUFFER_SIZE>& dataHub, int slot);
-        
+
 
     private:
     DataHub<WeidosManagerData_t, WEIDOS_METADATA_RING_BUFFER_SIZE>* weidosDataHub;

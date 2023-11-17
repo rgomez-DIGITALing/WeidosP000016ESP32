@@ -72,6 +72,7 @@ EnergyMeterUpdateState_t EM120Manager::loop(){
         em3phManagerData_t msg;
         msg.deviceId = deviceId;
         msg.timestamp = systemClock.getEpochTime();
+        msg.backup = 0;
         em120->getData(msg.payload);
         LogInfo("Pushing data for device ID: %i", deviceId);
         DataHubCollection.push(msg, deviceId);

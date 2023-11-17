@@ -28,7 +28,7 @@ int EM750::begin(){
     if(_client.begin(ipAddress)) return 1;
 
     comError = COM_BEGIN_ERROR;
-    return 0; 
+    return 0;
 }
 
 void EM750::stop(){
@@ -38,7 +38,7 @@ void EM750::stop(){
 
 int EM750::update(){
     comError = COM_OK;
-
+    
     int response = _client.requestFrom(MODBUS_ADDRESS, INPUT_REGISTERS, REG_ADDRESS_BATCH_1, NUM_REGISTERS_BATCH_1);
     if(response != NUM_REGISTERS_BATCH_1)
     {   
@@ -66,7 +66,7 @@ int EM750::update(){
     assignData3();
 
     computeData();
-    
+
     return 1;
 }
 
@@ -90,6 +90,8 @@ void EM750::copyData(float* buffer, int bufferSize){
   }
   return;
 };
+
+
 
 void EM750::getData(em3phData_t& payload){
   payload.comError = comError;
@@ -164,7 +166,7 @@ void EM750::assignData(){
     realEnergyL1 = getNextData()/1000.0f;
     realEnergyL2 = getNextData()/1000.0f;
     realEnergyL3 = getNextData()/1000.0f;
-    realEnergyTotal = getNextData()/1000.0f;
+    realEnergyTotal = getNextData()/1000.0f;//31
     getNextData();       //realEnergyConsL1 deleted variable
     getNextData();       //realEnergyConsL2 deleted variable
     getNextData();       //realEnergyConsL3 deleted variable

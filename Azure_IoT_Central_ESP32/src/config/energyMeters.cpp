@@ -9,7 +9,41 @@
 
 
 
-#if defined BATCH_GENERAL_ROBOT || defined BATCH_TEST
+
+#if defined BATCH_TEST && defined FLOW_METER_TEST
+PulseMeterManager pulseMeterManager(1, DI_7, 3.0f);
+PulseMeterManager pulseMeterManager2(2, DI_6, 3.0f);
+//AnalogMeterManager analogMeterManager(2, ADI_1, 3.0f);
+#endif
+
+
+#if defined BATCH_TEST && defined EM750_TEST
+static EthernetClient ethernetClientModbus(7);
+static ModbusTCPClient modbusTCPClient(ethernetClientModbus);
+
+IPAddress ipLineaEmpaquetado(10, 88, 47, 221);          //Linea Empaquetado
+IPAddress ipModula4(10, 88, 47, 222);        //Modula 4
+IPAddress ipModula11(10, 88, 47, 223);        //Modula 11
+IPAddress ipCompresorAireComprimido(10, 88, 47, 203);        //Compresor aire comprimido
+IPAddress ipAcOficinas(10, 88, 47, 241);        //Compresor aire comprimido
+
+EM750 lineaEmpaquetadoEM(modbusTCPClient, ipLineaEmpaquetado);
+EM750 modula4EM(modbusTCPClient, ipModula4);
+EM750 modula11EM(modbusTCPClient, ipModula11);
+EM750 compresorAireComprimidoEM(modbusTCPClient, ipCompresorAireComprimido);
+EM750 acOficinasEM(modbusTCPClient, ipAcOficinas);
+
+EM750Manager lineaEmpaquetado(lineaEmpaquetadoEM, 1, MODBUS_NUMBER_TRIES);
+EM750Manager modula4(modula4EM, 2, MODBUS_NUMBER_TRIES);
+EM750Manager modula11(modula11EM, 3, MODBUS_NUMBER_TRIES);
+EM750Manager compresorAireComprimido(compresorAireComprimidoEM, 4, MODBUS_NUMBER_TRIES);
+EM750Manager acOficinas(acOficinasEM, 5, MODBUS_NUMBER_TRIES);
+#endif
+
+
+
+
+#if defined BATCH_GENERAL_ROBOT
 static EthernetClient ethernetClientModbus(7);
 static ModbusTCPClient modbusTCPClient(ethernetClientModbus);
 
@@ -79,11 +113,34 @@ EM120Manager sai(5, 50, 1);
 #endif
 
 
+#ifdef BATCH_GAC_LETS_CONNECT
+EM111Manager compresorGAC4(1);
+EM111Manager compresorGAC5(2);
+EM122Manager compresorLetsConnect(3);
+#endif
+
 
 
 
 void configureDeviceCollection(){
-  #if defined BATCH_GENERAL_ROBOT || defined BATCH_TEST
+
+  #if defined BATCH_TEST && defined FLOW_METER_TEST
+  DeviceCollection.setDevice(pulseMeterManager);
+  DeviceCollection.setDevice(pulseMeterManager2);
+  //DeviceCollection.setDevice(analogMeterManager);
+  #endif
+
+  #if defined BATCH_TEST && defined EM750_TEST
+  DeviceCollection.setDevice(lineaEmpaquetado);
+  DeviceCollection.setDevice(modula4);
+  DeviceCollection.setDevice(modula11);
+  DeviceCollection.setDevice(compresorAireComprimido);
+  DeviceCollection.setDevice(acOficinas);
+  #endif
+
+
+
+  #if defined BATCH_GENERAL_ROBOT
   DeviceCollection.setDevice(general);
   DeviceCollection.setDevice(transelevador1);
   DeviceCollection.setDevice(transelevador2);
@@ -124,13 +181,57 @@ void configureDeviceCollection(){
   DeviceCollection.setDevice(sai);
   #endif
 
+
+  #ifdef BATCH_GAC_LETS_CONNECT
+  DeviceCollection.setDevice(compresorGAC4);
+  DeviceCollection.setDevice(compresorGAC5);
+  DeviceCollection.setDevice(compresorLetsConnect);
+  #endif
+
 }
 
 
 
 
 void setEnergyMeterProperties(){
-  #if defined BATCH_GENERAL_ROBOT || defined BATCH_TEST
+  #if defined BATCH_TEST && defined FLOW_METER_TEST
+  #endif
+
+  #if defined BATCH_TEST && defined EM750_TEST
+  EM750* energyMeter = nullptr;
+  energyMeter = lineaEmpaquetado.getEnergyMeter();
+  energyMeter->setAsset(ASSET_LINEA_EMPAQUETADO);
+  energyMeter->setIdentifier(IDENTIFIER_LINEA_EMPAQUETADO);
+  energyMeter->setLocation1(LOCATION_NAVE_400);
+  energyMeter->setLocation2(LOCATION_CUADRO_ALMACEN);
+
+  energyMeter = modula4.getEnergyMeter();
+  energyMeter->setAsset(ASSET_MODULA_4);
+  energyMeter->setIdentifier(IDENTIFIER_MODULA_4);
+  energyMeter->setLocation1(LOCATION_NAVE_400);
+  energyMeter->setLocation2(LOCATION_CUADRO_ALMACEN);
+
+  energyMeter = modula11.getEnergyMeter();
+  energyMeter->setAsset(ASSET_MODULA_11);
+  energyMeter->setIdentifier(IDENTIFIER_MODULA_11);
+  energyMeter->setLocation1(LOCATION_NAVE_400);
+  energyMeter->setLocation2(LOCATION_CUADRO_ALMACEN);
+
+  energyMeter = compresorAireComprimido.getEnergyMeter();
+  energyMeter->setAsset(ASSET_AIRE_COMPRIMIDO);
+  energyMeter->setIdentifier(IDENTIFIER_AIRE_COMPRIMIDO);
+  energyMeter->setLocation1(LOCATION_NAVE_400);
+  energyMeter->setLocation2(LOCATION_CUADRO_LETS_CONNECT);
+
+  energyMeter = acOficinas.getEnergyMeter();
+  energyMeter->setAsset(ASSET_AIRE_ACONDICIONADO);
+  energyMeter->setIdentifier(IDENTIFIER_AIRE_ACONDICIONADO);
+  energyMeter->setLocation1(LOCATION_NAVE_400);
+  energyMeter->setLocation2(LOCATION_CUADRO_ENTRADA);
+  #endif
+
+
+  #if defined BATCH_GENERAL_ROBOT
   EA750* ea750 = nullptr;
   ea750 = general.getEnergyMeter();
   ea750->setAsset(ASSET_GENERAL);
@@ -291,4 +392,28 @@ void setEnergyMeterProperties(){
   em120->setLocation1(LOCATION_NAVE_400);
   em120->setLocation2(LOCATION_SALA_RACK_SAI);
   #endif
+
+
+  #ifdef BATCH_GAC_LETS_CONNECT
+  EM111* em111 = nullptr;
+  em111 = compresorGAC4.getEnergyMeter();
+  em111->setAsset(ASSET_COMPRESOR_GAC4);
+  em111->setIdentifier(IDENTIFIER_COMPRESOR_GAC4);
+  em111->setLocation1(LOCATION_NAVE_400);
+  em111->setLocation2(LOCATION_PLANTA_0);
+
+  em111 = compresorGAC5.getEnergyMeter();
+  em111->setAsset(ASSET_COMPRESOR_GAC5);
+  em111->setIdentifier(IDENTIFIER_COMPRESOR_GAC5);
+  em111->setLocation1(LOCATION_NAVE_400);
+  em111->setLocation2(LOCATION_PLANTA_0);
+
+  EM122* em122 = nullptr;
+  em122 = compresorLetsConnect.getEnergyMeter();
+  em122->setAsset(ASSET_COMPRESOR_SALA_LETS_CONNECT);
+  em122->setIdentifier(IDENTIFIER_COMPRESOR_SALA_LETS_CONNECT);
+  em122->setLocation1(LOCATION_NAVE_400);
+  em122->setLocation2(LOCATION_PLANTA_MINUS_1);
+  #endif
+
 }

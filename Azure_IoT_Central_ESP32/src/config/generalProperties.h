@@ -26,7 +26,14 @@
 #define IDENTIFIER_COMPRESOR_MONTAJE "400-03-EM120-18"
 #define IDENTIFIER_COMPRESOR_CALIDAD "400-01-EM110-19"
 
+#define IDENTIFIER_COMPRESOR_GAC4 "400-01-EM111-15"
+#define IDENTIFIER_COMPRESOR_GAC5 "400-01-EM111-16"
+#define IDENTIFIER_COMPRESOR_SALA_LETS_CONNECT "400-03-EM122-23"
+
 #define LOCATION_NAVE_400 "Nave 400"
+#define LOCATION_PLANTA_0 "Planta 0"
+#define LOCATION_PLANTA_MINUS_1 "Planta -1"
+
 #define LOCATION_CUADRO_ALMACEN "Cuadro general en Almacén"
 #define LOCATION_CUADRO_ENTRADA "Cuadro General Entrada"
 #define LOCATION_SALA_IT "Sala IT"
@@ -62,3 +69,7 @@
 #define ASSET_COMPRESOR_SALA_RACK "Compresor Sala Rack"
 #define ASSET_ENCHUFES_EQUIPOS_SAI "Enchufes Equipos (SAI)"
 
+
+#define ASSET_COMPRESOR_GAC4 "Compresor Despacho 4 GAC"
+#define ASSET_COMPRESOR_GAC5 "Compresor Despacho 5 GAC"
+#define ASSET_COMPRESOR_SALA_LETS_CONNECT "Compresor Sala Let's Connect - 3 fases"

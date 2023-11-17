@@ -24,10 +24,11 @@ AzureIoTDevice* Azure5 = nullptr;
 #define MQTT_CLIENT_BUFFER_SIZE 3000
 
 void createObjects(){
+    uint8_t* bufferPtr = nullptr;
     BearSSLClient* bear_ssl_client0 = new BearSSLClient(ethernetClient0);
     MQTTClient* mqttClient0 = new MQTTClient(MQTT_CLIENT_BUFFER_SIZE);
     Azure0 = new AzureIoTDevice(mqttClient0, bear_ssl_client0);
-    uint8_t* bufferPtr = new uint8_t[AZ_IOT_DATA_BUFFER_SIZE];
+    bufferPtr = new uint8_t[AZ_IOT_DATA_BUFFER_SIZE];
     Azure0->setDataBuffer(bufferPtr);
     bufferPtr = new uint8_t[DATA_BUFFER_SIZE];
     Azure0->setDataBuffer2(bufferPtr);
@@ -136,7 +137,15 @@ void configureAzureDevices(){
 void setAzureIoTCollectionDevices(){
     AzureIoTCollection.setAzureIoTDevice(Azure0, 0);
 
-    #if defined BATCH_GENERAL_ROBOT || defined BATCH_LINEA_EMPAQUETADO_AC_OFICINAS || defined BATCH_TEST
+    #ifdef BATCH_TEST
+    AzureIoTCollection.setAzureIoTDevice(Azure1, 1);
+    AzureIoTCollection.setAzureIoTDevice(Azure2, 2);
+    AzureIoTCollection.setAzureIoTDevice(Azure3, 3);
+    AzureIoTCollection.setAzureIoTDevice(Azure4, 4);
+    AzureIoTCollection.setAzureIoTDevice(Azure5, 5);
+    #endif
+
+    #if defined BATCH_GENERAL_ROBOT || defined BATCH_LINEA_EMPAQUETADO_AC_OFICINAS
     AzureIoTCollection.setAzureIoTDevice(Azure1, 1);
     AzureIoTCollection.setAzureIoTDevice(Azure2, 2);
     AzureIoTCollection.setAzureIoTDevice(Azure3, 3);
@@ -165,5 +174,12 @@ void setAzureIoTCollectionDevices(){
     AzureIoTCollection.setAzureIoTDevice(Azure4, 4);
     AzureIoTCollection.setAzureIoTDevice(Azure5, 5);
     #endif
+
+    #ifdef BATCH_GAC_LETS_CONNECT
+    AzureIoTCollection.setAzureIoTDevice(Azure1, 1);
+    AzureIoTCollection.setAzureIoTDevice(Azure2, 2);
+    AzureIoTCollection.setAzureIoTDevice(Azure3, 3);
+    #endif
+
     return;
 }

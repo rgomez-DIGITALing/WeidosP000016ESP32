@@ -7,7 +7,10 @@
 //#define BATCH_LETS_CONNECT
 //#define BATCH_IT_SOPORTE
 //#define BATCH_BARCELONA_SAI
+//#define BATCH_GAC_LETS_CONNECT
 #define BATCH_TEST
+#define FLOW_METER_TEST
+//#define EM750_TEST
 
 
 // Azure IoT Central
@@ -120,6 +123,22 @@
 
 
 
+
+#ifdef BATCH_GAC_LETS_CONNECT
+#define IOT_CONFIG_DEVICE_GATEWAY_ID "2d0grny8nhi"     //GW GAC-Let's Connect
+#define IOT_CONFIG_DEVICE_1_ID "ck3uf3l0q8"           //Compresor Despacho 4 GAC
+#define IOT_CONFIG_DEVICE_2_ID "2d617lqqq93"            //Compresor Despacho 5 GAC
+#define IOT_CONFIG_DEVICE_3_ID "1r1ej68avhj"            //Compresor Sala Let's Connect - 3 fases
+#define IOT_CONFIG_DEVICE_4_ID "unusedDevic"           //Unused
+#define IOT_CONFIG_DEVICE_5_ID "unusedDevic"           //Unused
+
+#define IOT_CONFIG_DEVICE_GATEWAY_KEY "ge1CYbc5gnp+LDDmemqBvfVLklcafqW0KSRAaXzisVI="    //GW GAC-Let's Connect
+#define IOT_CONFIG_DEVICE_1_KEY "6DY+uEF9KlRm9QLSLZP/Y71p1yvSfkVklN86aTu4lBo="          //Compresor Despacho 4 GAC
+#define IOT_CONFIG_DEVICE_2_KEY "tmiXKe8Ewoyk9qh+DouQ8fpNl85ZeiY0ABfakIA6PaI="          //Compresor Despacho 5 GAC
+#define IOT_CONFIG_DEVICE_3_KEY "qOgrO7v4Ar2qz9OCbyUEQoZCL12g82sj4ruge32s6rQ="          //Compresor Sala Let's Connect - 3 fases
+#define IOT_CONFIG_DEVICE_4_KEY "unusedunusedunusedunusedunusedunusedunusedun"          //Unused
+#define IOT_CONFIG_DEVICE_5_KEY "unusedunusedunusedunusedunusedunusedunusedun"          //Unused
+#endif
 
 // User-agent (url-encoded) provided by the MQTT client to Azure IoT Services.
 // When developing for your own Arduino-based platform,

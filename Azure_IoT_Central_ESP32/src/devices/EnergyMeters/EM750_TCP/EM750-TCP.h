@@ -80,6 +80,7 @@ class EM750{
      * @return Register's data.
      */
     float getNextData();
+
     
     ModbusTCPClient& _client;
     IPAddress ipAddress;

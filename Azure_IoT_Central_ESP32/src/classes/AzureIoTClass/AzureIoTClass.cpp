@@ -298,7 +298,7 @@ int AzureIoTDevice::mqtt_client_subscribe(mqtt_client_handle_t mqtt_client_handl
  */
 int AzureIoTDevice::mqtt_client_publish(mqtt_client_handle_t mqtt_client_handle, mqtt_message_t* mqtt_message)
 {
-  LogInfo("MQTT client publishing to '%s'", az_span_ptr(mqtt_message->topic));
+  //LogInfo("MQTT client publishing to '%s'", az_span_ptr(mqtt_message->topic));
 
   int result;
 

@@ -16,6 +16,7 @@ WeidosState WeidosManager::loop(){
         WeidosManagerData_t msg;
         msg.deviceId = deviceId;
         msg.payload = metadata;
+        msg.backup = 0;
         msg.timestamp = systemClock.getEpochTime();
         DataHubCollection.push(msg);
         state = WEIDOS_IDLE;

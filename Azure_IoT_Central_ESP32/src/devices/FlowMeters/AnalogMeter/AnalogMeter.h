@@ -8,7 +8,7 @@ class AnalogMeter{
     public:
         AnalogMeter(int deviceId, int pinNumber, float convertionFactor);
 
-
+        void init();
         bool begin();
         void getData(flowMeterData_t& payload);
         bool update();
@@ -17,11 +17,14 @@ class AnalogMeter{
 
 
     private:
+        void makeMeasure();
+        
         int deviceId;
         int analogPin;
         int _invalidMeasures;
         bool begun;
-        
+        bool saveInSD = false;
+
         float convertionFactor;
         float _averageFlow;
         unsigned long _measureCounter;

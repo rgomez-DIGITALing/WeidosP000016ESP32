@@ -32,9 +32,12 @@ FlowMeterUpdateState_t PulseMeterManager::loop(){
         flowMeterManagerData_t msg;
         msg.deviceId = deviceId;
         msg.timestamp = systemClock.getEpochTime();
+        Serial.print("Pulsemeter timestamp: ");
+        Serial.println(msg.timestamp);
+        msg.backup = 0;
         pulseMeter->update();
         pulseMeter->getData(msg.payload);
-        LogInfo("Pushing data for device ID: %i", deviceId);
+        //LogInfo("Pushing data for device ID: %i", deviceId);
         DataHubCollection.push(msg, deviceId);
         state = FLOW_METER_IDLE;
         break;
