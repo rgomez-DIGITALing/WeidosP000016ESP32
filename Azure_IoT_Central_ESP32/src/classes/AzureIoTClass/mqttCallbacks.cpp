@@ -7,7 +7,7 @@
 
 #define COMMAND_RESPONSE_CODE_ACCEPTED 202
 #define COMMAND_RESPONSE_CODE_REJECTED 404
-
+bool jsonGetUint32(az_json_reader* json_reader, char* key, uint32_t& value);
 /*
  * See the documentation of `command_request_received_t` in AzureIoT.h for details.
  */
@@ -94,6 +94,7 @@ static az_span COMMAND_NAME_TOGGLE_D0_1 = AZ_SPAN_FROM_STR("DO_1");
 static az_span COMMAND_NAME_TOGGLE_D0_2 = AZ_SPAN_FROM_STR("DO_2");
 static az_span COMMAND_NAME_TOGGLE_D0_3 = AZ_SPAN_FROM_STR("DO_3");
 static az_span COMMAND_NAME_REBOOT = AZ_SPAN_FROM_STR("reboot");
+static az_span COMMAND_NAME_BOOST = AZ_SPAN_FROM_STR("boost");
 
 int gateway_handle_command_request(AzureIoTDevice* azureIoTDevice, command_request_t command){
  //_az_PRECONDITION_NOT_NULL(azure_iot);
@@ -135,6 +136,31 @@ int gateway_handle_command_request(AzureIoTDevice* azureIoTDevice, command_reque
       azure_iot, command.request_id, response_code, AZ_SPAN_EMPTY);
     ESP.restart();
   }
+  else if (az_span_is_content_equal(command.command_name, COMMAND_NAME_BOOST))
+  {
+    Serial.println("BOOST command has been recieved");
+    Serial.print("Payload: ");
+    Serial.println((char*)az_span_ptr(command.payload));
+
+    az_json_reader out_json_reader;
+
+    az_json_reader_init(&out_json_reader, command.payload, NULL);
+  
+    uint32_t frequency = 0;
+    jsonGetUint32(&out_json_reader, "frequency", frequency);
+    Serial.print("Frequency out funciton: ");
+    Serial.println(frequency);
+
+
+    uint32_t other = 0;
+    jsonGetUint32(&out_json_reader, "other", other);
+    Serial.print("other out funciton: ");
+    Serial.println(other);
+
+    response_code = COMMAND_RESPONSE_CODE_ACCEPTED;
+    azureIoTDevice->azure_iot_send_command_response(
+      azure_iot, command.request_id, response_code, AZ_SPAN_EMPTY);
+  }
   else
   {
     LogError(
@@ -146,4 +172,35 @@ int gateway_handle_command_request(AzureIoTDevice* azureIoTDevice, command_reque
 
   return azureIoTDevice->azure_iot_send_command_response(
       azure_iot, command.request_id, response_code, AZ_SPAN_EMPTY);
+}
+
+
+
+
+bool jsonGetUint32(az_json_reader* json_reader, char* key, uint32_t& value){
+  az_json_token token = json_reader->token;
+
+  Serial.print("I'm searching for key: ");
+  Serial.println(key);
+
+  bool keyReached = false;
+
+  while(az_json_reader_next_token(json_reader) == AZ_OK){
+    az_json_token token = json_reader->token;
+
+    if(az_json_token_is_text_equal(&token, az_span_create_from_str(key))){
+      keyReached = true;
+      continue;
+    }
+
+    if(keyReached){
+      if((token.kind == AZ_JSON_TOKEN_NUMBER)){
+        az_json_token_get_uint32(&token, &value);
+        return true;
+      }
+    }
+  }
+
+
+  return false;
 }
