@@ -52,6 +52,7 @@
 #include "src/collections/DataHubCollection/DataHubCollection.h"
 #include "src/collections/AzureIoTCollection/AzureIoTCollection.h"
 #include "src/collections/SDBackaupSenderCollection/SDBackupSenderCollection.h"
+#include "src/collections/TriggerCollection/TriggerCollection.h"
 #include "src/classes/SDFolderManager/SDFolderManager.h"
 
 #include <ArduinoBearSSL.h>
@@ -84,6 +85,7 @@ void setup()
   DeviceCollection.init();
   AzureIoTCollection.init();
   SDBackupSenderCollection.init();
+  TriggerCollection.init();
   createObjects();
   configureAzureDevices();
   setAzureIoTCollectionDevices();
@@ -91,6 +93,7 @@ void setup()
   setDataHubsPayloadGenerators();
   setEnergyMeterProperties();
   configureDeviceCollection();
+  setTriggers();
   SDBackupSenderCollection.begin();
   DeviceCollection.initFlowMeters();
   esp_task_wdt_init(WDT_TIMEOUT, true); //enable panic so ESP32 restarts
@@ -143,20 +146,8 @@ void loop()
     AzureIoTCollection.stop();
   }
 
-  if(networkUp && clockRunning){
-    if(millis()-prevTcpTime>TCP_UPDATE_FREQUENCY){
-      DeviceCollection.triggerUpdateTCP();
-      prevTcpTime = millis();
-    }
-  }
 
-  if(clockRunning){
-    if(millis()-prevNoTcpTime>NO_TCP_UPDATE_FREQUENCY){
-      weidosESP32Manager.triggerUpdate();
-      DeviceCollection.triggerUpdateRTU();
-      prevNoTcpTime = millis();
-    }
-  }
+  if(clockRunning) TriggerCollection.loop(networkUp);
 
   if(networkUp){
     weidosESP32Manager.loop();
