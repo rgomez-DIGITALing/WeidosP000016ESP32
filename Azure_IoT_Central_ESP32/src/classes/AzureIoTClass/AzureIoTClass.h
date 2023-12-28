@@ -21,9 +21,9 @@ static const int MQTT_TIMEOUT = 5000;
 class AzureIoTDevice{
     public:
         AzureIoTDevice() : mqttClient(nullptr), client(nullptr){};
-        AzureIoTDevice(MQTTClient& mqttClient, Client& client) : mqttClient(&mqttClient), client(&client){};
-        AzureIoTDevice(MQTTClient& mqttClient, Client* client) : mqttClient(&mqttClient), client(client){};
-        AzureIoTDevice(MQTTClient* mqttClient, Client* client) : mqttClient(mqttClient), client(client){};
+        AzureIoTDevice(uint8_t slot, MQTTClient& mqttClient, Client& client) : slot(slot), mqttClient(&mqttClient), client(&client){};
+        AzureIoTDevice(uint8_t slot, MQTTClient& mqttClient, Client* client) : slot(slot), mqttClient(&mqttClient), client(client){};
+        AzureIoTDevice(uint8_t slot, MQTTClient* mqttClient, Client* client) : slot(slot), mqttClient(mqttClient), client(client){};
         void loop();
         void stop();
         void init();
@@ -48,7 +48,7 @@ class AzureIoTDevice{
         void setOnCommandReceived(command_request_received_t onCommandRequest){ azure_iot_config.on_command_request_received = onCommandRequest; }
         void statusChange();
         int azure_iot_send_command_response(azure_iot_t* azure_iot, az_span request_id, uint16_t response_status, az_span payload);
-
+        uint8_t getSlot(){ return slot; }
     private:
         azure_iot_status_t prevState = azure_iot_connected;
         azure_iot_t azure_iot;
@@ -56,6 +56,7 @@ class AzureIoTDevice{
         uint8_t* az_iot_data_buffer;
         uint8_t* data_buffer;
 
+        uint8_t slot = 0;
         Client* client;
         MQTTClient* mqttClient;
         bool deviceInfoSent = false;
