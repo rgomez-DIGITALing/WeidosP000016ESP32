@@ -121,7 +121,7 @@ void AzureIoTDevice::init(){
   azure_iot_config.data_manipulation_functions.base64_encode = base64_encode;
   azure_iot_config.on_properties_update_completed = on_properties_update_completed;
   azure_iot_config.on_properties_received = on_properties_received;
-  azure_iot_config.on_command_request_received = default_on_command_request_received;
+  azure_iot_config.on_command_request_received = device_on_command_request_received;
 
   azure_iot_init(&azure_iot, &azure_iot_config);
   azure_iot_start(&azure_iot);
