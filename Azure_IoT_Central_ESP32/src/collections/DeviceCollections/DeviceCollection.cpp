@@ -67,29 +67,46 @@ void DeviceCollectionClass::loopDevicesNoNetwork(){
 }
 
 
-void DeviceCollectionClass::triggerUpdateRTU(){
-    for(int i=0; i<MAX_ALLOWED_DEVICES; i++){
-        if(EM110Pool[i]) EM110Pool[i]->triggerUpdate();
-        if(EM111Pool[i]) EM111Pool[i]->triggerUpdate();
-        if(EM120Pool[i]) EM120Pool[i]->triggerUpdate();
-        if(EM122Pool[i]) EM122Pool[i]->triggerUpdate();
-        if(EM220Pool[i]) EM220Pool[i]->triggerUpdate();
-        if(PulseMeterPool[i]) PulseMeterPool[i]->triggerUpdate();
-        if(AnalogMeterPool[i]) AnalogMeterPool[i]->triggerUpdate();
+bool DeviceCollectionClass::triggerUpdate(uint8_t slot){
+    if(slot == 0) {
+        if(weidosManager) weidosManager->triggerUpdate();
+        return true;
     }
 
-    return;
+    if(EM110Pool[slot]){
+        EM110Pool[slot]->triggerUpdate();
+        return true;
+    } 
+    if(EM111Pool[slot]){
+            EM111Pool[slot]->triggerUpdate();
+        return true;
+    }
+    if(EM120Pool[slot]){
+        EM120Pool[slot]->triggerUpdate();
+        return true;
+    }
+    if(EM122Pool[slot]){
+        EM122Pool[slot]->triggerUpdate();
+        return true;
+    }
+    if(EM220Pool[slot]){
+        EM220Pool[slot]->triggerUpdate();
+        return true;
+    }
+    if(PulseMeterPool[slot]){
+        PulseMeterPool[slot]->triggerUpdate();
+        return true;
+    }
+    if(AnalogMeterPool[slot]){
+        AnalogMeterPool[slot]->triggerUpdate();
+        return true;
+    }
+
+    return false;
 }
 
 
-void DeviceCollectionClass::triggerUpdateTCP(){
-    for(int i=0; i<MAX_ALLOWED_DEVICES; i++){
-        if(EM750Pool[i]) EM750Pool[i]->triggerUpdate();
-        if(EA750Pool[i]) EA750Pool[i]->triggerUpdate();
-    }
 
-    return;
-}
 
 
 void DeviceCollectionClass::sendDevicesProperties(){

@@ -12,8 +12,7 @@
 class DeviceCollectionClass{
     public:
         void init();
-        void triggerUpdateRTU();
-        void triggerUpdateTCP();
+        bool triggerUpdate(uint8_t slot);
         void loopDevices();
         void loopDevicesNoNetwork();
         void sendDevicesProperties();
