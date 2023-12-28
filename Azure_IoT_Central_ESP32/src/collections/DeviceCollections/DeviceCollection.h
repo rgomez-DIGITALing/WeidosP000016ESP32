@@ -19,7 +19,7 @@ class DeviceCollectionClass{
         void sendDevicesProperties();
         void initFlowMeters();
 
-
+        void setDevice(WeidosManager& weidos);
         void setDevice(EM110Manager& em);
         void setDevice(EM111Manager& em);
         void setDevice(EM120Manager& em);
@@ -31,6 +31,7 @@ class DeviceCollectionClass{
         void setDevice(AnalogMeterManager& analogMeter);
 
     private:
+        WeidosManager* weidosManager = nullptr;
         EM110Manager* EM110Pool[MAX_ALLOWED_DEVICES];
         EM111Manager* EM111Pool[MAX_ALLOWED_DEVICES];
         EM120Manager* EM120Pool[MAX_ALLOWED_DEVICES];

@@ -3,6 +3,7 @@
 
 
 void DeviceCollectionClass::init(){
+    weidosManager = nullptr;
     for(int i=0; i<MAX_ALLOWED_DEVICES; i++){
         EM110Pool[i] = nullptr;
         EM111Pool[i] = nullptr;
@@ -35,6 +36,8 @@ void DeviceCollectionClass::loopDevices(){
 
 
 void DeviceCollectionClass::loopDevicesNoNetwork(){
+    if(weidosManager) weidosManager->loop();
+
     for(int i=0; i<MAX_ALLOWED_DEVICES; i++){
         if(EM110Pool[i]){
             if(EM110Pool[i]->loop() != ENERGY_METER_IDLE) return;
@@ -116,6 +119,10 @@ void DeviceCollectionClass::initFlowMeters(){
     return;
 }
 
+
+void DeviceCollectionClass::setDevice(WeidosManager& weidos){ 
+    weidosManager = &weidos;
+}
 
 void DeviceCollectionClass::setDevice(EM110Manager& em){ 
     int slot = em.getDeviceId();
