@@ -3,6 +3,7 @@
 #include "AzureIoTClass.h"
 #include <Arduino.h>
 #include <LogModule.h>
+#include "../../collections/TriggerCollection/TriggerCollection.h"
 
 
 #define COMMAND_RESPONSE_CODE_ACCEPTED 202
@@ -34,23 +35,6 @@ void default_on_command_request_received(AzureIoTDevice* azureIoTDevice, command
 
 
 
-
-int default_handle_command_request(AzureIoTDevice* azureIoTDevice, command_request_t command){
- //_az_PRECONDITION_NOT_NULL(azure_iot);
-
- uint16_t response_code;
-
- LogError( "Command not recognized (%.*s).", az_span_size(command.command_name), az_span_ptr(command.command_name));
- response_code = COMMAND_RESPONSE_CODE_REJECTED;
- 
-  azure_iot_t* azure_iot = azureIoTDevice->getAzureIoT();
- return azureIoTDevice->azure_iot_send_command_response(
-     azure_iot, command.request_id, response_code, AZ_SPAN_EMPTY);
-}
-
-
-
-
 /*
  * See the documentation of `command_request_received_t` in AzureIoT.h for details.
  */
@@ -79,6 +63,33 @@ void gateway_on_command_request_received(AzureIoTDevice* azureIoTDevice, command
 
 
 
+void device_on_command_request_received(AzureIoTDevice* azureIoTDevice, command_request_t command){
+ az_span component_name = az_span_size(command.component_name) == 0 ? AZ_SPAN_FROM_STR("") : command.component_name;
+  Serial.print("Command received in device: ");
+  Serial.println(azureIoTDevice->getDeviceId());
+
+  LogInfo(
+      "Command request received (id=%.*s, component=%.*s, name=%.*s)",
+      az_span_size(command.request_id),
+      az_span_ptr(command.request_id),
+      az_span_size(component_name),
+      az_span_ptr(component_name),
+      az_span_size(command.command_name),
+      az_span_ptr(command.command_name));
+
+  // Here the request is being processed within the callback that delivers the command request.
+  // However, for production application the recommendation is to save `command` and process it
+  // outside this callback, usually inside the main thread/task/loop.
+  (void)device_handle_command_request(azureIoTDevice, command);
+}
+
+
+
+
+
+
+
+
 
 
 
@@ -95,6 +106,21 @@ static az_span COMMAND_NAME_TOGGLE_D0_2 = AZ_SPAN_FROM_STR("DO_2");
 static az_span COMMAND_NAME_TOGGLE_D0_3 = AZ_SPAN_FROM_STR("DO_3");
 static az_span COMMAND_NAME_REBOOT = AZ_SPAN_FROM_STR("reboot");
 static az_span COMMAND_NAME_BOOST = AZ_SPAN_FROM_STR("boost");
+
+
+int default_handle_command_request(AzureIoTDevice* azureIoTDevice, command_request_t command){
+ uint16_t response_code;
+
+ LogError( "Command not recognized (%.*s).", az_span_size(command.command_name), az_span_ptr(command.command_name));
+ response_code = COMMAND_RESPONSE_CODE_REJECTED;
+ 
+  azure_iot_t* azure_iot = azureIoTDevice->getAzureIoT();
+ return azureIoTDevice->azure_iot_send_command_response(
+     azure_iot, command.request_id, response_code, AZ_SPAN_EMPTY);
+}
+
+
+
 
 int gateway_handle_command_request(AzureIoTDevice* azureIoTDevice, command_request_t command){
  //_az_PRECONDITION_NOT_NULL(azure_iot);
@@ -146,16 +172,26 @@ int gateway_handle_command_request(AzureIoTDevice* azureIoTDevice, command_reque
 
     az_json_reader_init(&out_json_reader, command.payload, NULL);
   
+    uint8_t slot = azureIoTDevice->getSlot();
     uint32_t frequency = 0;
     jsonGetUint32(&out_json_reader, "frequency", frequency);
-    Serial.print("Frequency out funciton: ");
-    Serial.println(frequency);
+
+    uint32_t duration = 0;
+    jsonGetUint32(&out_json_reader, "duration", duration);
 
 
-    uint32_t other = 0;
-    jsonGetUint32(&out_json_reader, "other", other);
-    Serial.print("other out funciton: ");
-    Serial.println(other);
+
+
+    if(frequency && duration){
+      TriggerClass* trigger = TriggerCollection.getTrigger(slot);
+      if(trigger) trigger->boost(frequency, duration);
+    }
+    else if(frequency){
+      TriggerClass* trigger = TriggerCollection.getTrigger(slot);
+      if(trigger) trigger->boost(frequency);
+    }
+
+
 
     response_code = COMMAND_RESPONSE_CODE_ACCEPTED;
     azureIoTDevice->azure_iot_send_command_response(
@@ -177,11 +213,64 @@ int gateway_handle_command_request(AzureIoTDevice* azureIoTDevice, command_reque
 
 
 
+int device_handle_command_request(AzureIoTDevice* azureIoTDevice, command_request_t command){
+ //_az_PRECONDITION_NOT_NULL(azure_iot);
+  azure_iot_t* azure_iot = azureIoTDevice->getAzureIoT();
+  uint16_t response_code;
+
+  
+  if (az_span_is_content_equal(command.command_name, COMMAND_NAME_BOOST))
+  {
+
+    az_json_reader out_json_reader;
+
+    az_json_reader_init(&out_json_reader, command.payload, NULL);
+  
+    uint8_t slot = azureIoTDevice->getSlot();
+    uint32_t frequency = 0;
+    jsonGetUint32(&out_json_reader, "frequency", frequency);
+
+
+    uint32_t duration = 0;
+    jsonGetUint32(&out_json_reader, "duration", duration);
+    
+
+
+
+    if(frequency && duration){
+      TriggerClass* trigger = TriggerCollection.getTrigger(slot);
+      if(trigger) trigger->boost(frequency, duration);
+    }
+    else if(frequency){
+      TriggerClass* trigger = TriggerCollection.getTrigger(slot);
+      if(trigger) trigger->boost(frequency);
+    }
+
+
+
+    response_code = COMMAND_RESPONSE_CODE_ACCEPTED;
+    azureIoTDevice->azure_iot_send_command_response(
+      azure_iot, command.request_id, response_code, AZ_SPAN_EMPTY);
+  }
+  else
+  {
+    LogError(
+        "Command not recognized LOL (%.*s).",
+        az_span_size(command.command_name),
+        az_span_ptr(command.command_name));
+    response_code = COMMAND_RESPONSE_CODE_REJECTED;
+  }
+
+  return azureIoTDevice->azure_iot_send_command_response(
+      azure_iot, command.request_id, response_code, AZ_SPAN_EMPTY);
+}
+
+
+
+
+
 bool jsonGetUint32(az_json_reader* json_reader, char* key, uint32_t& value){
   az_json_token token = json_reader->token;
-
-  Serial.print("I'm searching for key: ");
-  Serial.println(key);
 
   bool keyReached = false;
 
