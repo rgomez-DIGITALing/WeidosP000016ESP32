@@ -57,36 +57,36 @@ class DataHub{
 template <class T, int N>
 void DataHub<T,N>::push(T data){
     bool savedInBuffer =  dataBuffer.push(data);
-    int deviceId = data.deviceId;
-    unsigned long timestamp = data.timestamp;
+    // int deviceId = data.deviceId;
+    // unsigned long timestamp = data.timestamp;
     
-    if(savedInBuffer){
-        //Serial.println("Inside provisional");
-        SDFolderManager.createProvisionalFolder(deviceId);
-        // if(SDFolderManager.createProvisionalFolder(deviceId)) Serial.println("Folders exists. No worries.");
-        //else Serial.println("Folders do NOT exists");
-        char* fileName = SDFolderManager.setProvisionalFilePath(deviceId, timestamp);
-        //Serial.print("[DataHub<T,N>::push] fielename: ");
-        Serial.println(fileName);
-        if(SDDataStorage.put(fileName, data)){
-            //Serial.println("Data successful PUSH in DATAHUB.");
-        }else{
-            //Serial.println("Data PUSH failure in DATAHUB.");
+    // if(savedInBuffer){
+    //     //Serial.println("Inside provisional");
+    //     SDFolderManager.createProvisionalFolder(deviceId);
+    //     // if(SDFolderManager.createProvisionalFolder(deviceId)) Serial.println("Folders exists. No worries.");
+    //     //else Serial.println("Folders do NOT exists");
+    //     char* fileName = SDFolderManager.setProvisionalFilePath(deviceId, timestamp);
+    //     //Serial.print("[DataHub<T,N>::push] fielename: ");
+    //     Serial.println(fileName);
+    //     if(SDDataStorage.put(fileName, data)){
+    //         //Serial.println("Data successful PUSH in DATAHUB.");
+    //     }else{
+    //         //Serial.println("Data PUSH failure in DATAHUB.");
 
-        }
-        return;
-    }
+    //     }
+    //     return;
+    // }
 
 
 
-    SDFolderManager.createPendingFolder(deviceId);
-    char* fileName = SDFolderManager.setPendingFilePath(deviceId, timestamp);
-    if(SDDataStorage.put(fileName, data)){
-            //Serial.println("Data successful PUSH in DATAHUB.");
-        }else{
-            //Serial.println("Data PUSH failure in DATAHUB.");
+    // SDFolderManager.createPendingFolder(deviceId);
+    // char* fileName = SDFolderManager.setPendingFilePath(deviceId, timestamp);
+    // if(SDDataStorage.put(fileName, data)){
+    //         //Serial.println("Data successful PUSH in DATAHUB.");
+    //     }else{
+    //         //Serial.println("Data PUSH failure in DATAHUB.");
 
-        }
+    //     }
 
     return;
 }
@@ -110,7 +110,7 @@ void DataHub<T,N>::loop(){
 
         case MOVE_MESSAGE:
             deviceId = currentPayload.deviceId;
-            //LogInfo2(F("Moving Info for device ID: %i"), deviceId);
+            LogInfo2(F("Moving Info for device ID: %i"), deviceId);
             //Serial.println("[DataHub<T,N>::loop()] --- 1");
             if(AzureIoTCollection[deviceId]->getStatus() == azure_iot_connected){
                 size_t payload_buffer_length = 0;
@@ -130,20 +130,21 @@ void DataHub<T,N>::loop(){
             break;
 
         case TELEMETRY_SENT:
-            //LogInfo2(F("Message successfully sent. Required number of tries: %i"), numSendTries);
-            filePath = SDFolderManager.setProvisionalFilePath(currentPayload.deviceId, currentPayload.timestamp);
-            Serial.print("Let's remove file: ");
-            Serial.println(filePath);
-            if(SDFolderManager.removeFile(filePath)){
-                Serial.println("File removed.");
-            }else{
-                Serial.println("File NOT removed.");
-            }
+            LogInfo2(F("Message successfully sent for ID: %i. Required number of tries: %i"), deviceId, numSendTries);
+
+            // filePath = SDFolderManager.setProvisionalFilePath(currentPayload.deviceId, currentPayload.timestamp);
+            // Serial.print("DataHub<T,N>::loop() Let's remove file: ");
+            // Serial.println(filePath);
+            // if(SDFolderManager.removeFile(filePath)){
+            //     Serial.println("DataHub<T,N>::loop() File removed.");
+            // }else{
+            //     Serial.println("DataHub<T,N>::loop() File NOT removed.");
+            // }
             state = GET_DATA_FROM_FIFO;
             break;
 
         case TELEMETRY_SEND_FAILURE:
-            //LogError2(F("Failed sending telemetry. Current number of tries: %i"), numSendTries++);
+            LogError2(F("Failed sending telemetry. Current number of tries: %i"), numSendTries++);
             
             state = MOVE_MESSAGE;
             break;

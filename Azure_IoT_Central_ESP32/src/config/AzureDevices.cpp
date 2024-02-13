@@ -153,6 +153,12 @@ void setAzureIoTCollectionDevices(){
     AzureIoTCollection.setAzureIoTDevice(Azure5, 5);
     #endif
 
+    #if defined BATCH_TRANSELEVADORES_FAST 
+    AzureIoTCollection.setAzureIoTDevice(Azure1, 1);
+    AzureIoTCollection.setAzureIoTDevice(Azure2, 2);
+    AzureIoTCollection.setAzureIoTDevice(Azure3, 3);
+    #endif
+
 
     #ifdef BATCH_LETS_CONNECT
     AzureIoTCollection.setAzureIoTDevice(Azure1, 1);
@@ -179,6 +185,11 @@ void setAzureIoTCollectionDevices(){
     AzureIoTCollection.setAzureIoTDevice(Azure1, 1);
     AzureIoTCollection.setAzureIoTDevice(Azure2, 2);
     AzureIoTCollection.setAzureIoTDevice(Azure3, 3);
+    #endif
+
+
+    #ifdef BATCH_ELEVADOR
+    AzureIoTCollection.setAzureIoTDevice(Azure1, 1);
     #endif
 
     return;

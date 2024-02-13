@@ -31,7 +31,7 @@ class SDFolderManagerClass{
         bool removeFile(char* filePath);
         
     private:
-        void clear(char* path);
+        bool clear(char* path);
         char filePath[100];
 };
 

@@ -1,6 +1,6 @@
 #pragma once
 #include "../EMDataDefinitions.h"
-
+#include "../em_telemetryDefinition.h"
 
 
 class EM111{
@@ -73,6 +73,11 @@ class EM111{
     char* asset;
     char* location1;
     char* location2;
+
+    float realEnergyConsTotal;
+    float realEnergyDelivTotal;
+    float reactiveEnergyConsTotal;
+    float reactiveEnergyDelivTotal;
 
     union{
       float data[NUM_TOTAL_DATA_1PHASE];

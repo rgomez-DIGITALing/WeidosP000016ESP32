@@ -4,6 +4,8 @@
 
 #define NUM_TOTAL_DATA_1PHASE 11
 #define NUM_TOTAL_DATA_3PHASE 60
+#define NUM_TOTAL_CONS_DELIV_DATA_1PHASE 4
+#define NUM_TOTAL_CONS_DELIV_DATA_3PHASE 15
 #define NUM_TOTAL_PERIOD_DATA_1PHASE 6
 #define NUM_TOTAL_PERIOD_DATA_3PHASE 24
 
@@ -58,6 +60,19 @@ typedef struct em1phData_struct_t{
       };
     };
 
+  union{
+      float consDelivData[NUM_TOTAL_CONS_DELIV_DATA_1PHASE];
+
+      struct{
+        float realEnergyConsTotal;
+        float realEnergyDelivTotal;
+        float reactiveEnergyConsTotal;
+        float reactiveEnergyDelivTotal;
+      };
+    };
+
+    
+
     union{
       float periodData[NUM_TOTAL_PERIOD_DATA_1PHASE];
 
@@ -101,6 +116,29 @@ typedef struct em3phData_struct_t{
         float reactiveEnergyL1, reactiveEnergyL2, reactiveEnergyL3;
         float apparentEnergyL1, apparentEnergyL2, apparentEnergyL3;
         float rotField;
+      };
+    };
+
+    union{
+      float consDelivData[NUM_TOTAL_CONS_DELIV_DATA_3PHASE];
+
+      struct{
+        float realEnergyConsL1;
+        float realEnergyConsL2;
+        float realEnergyConsL3;
+        float realEnergyConsTotal;
+        float realEnergyDelivL1;
+        float realEnergyDelivL2;
+        float realEnergyDelivL3;
+        float realEnergyDelivTotal;
+        float realEnergySum;
+        
+        float reactiveEnergyConsL1;
+        float reactiveEnergyConsL2;
+        float reactiveEnergyConsL3;
+        float reactiveEnergyDelivL1;
+        float reactiveEnergyDelivL2;
+        float reactiveEnergyDelivL3;
       };
     };
 

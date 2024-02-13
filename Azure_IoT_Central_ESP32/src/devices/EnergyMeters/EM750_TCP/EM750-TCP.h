@@ -1,5 +1,6 @@
 #pragma once
 #include <ArduinoModbus.h>
+#include "../EM3PH_BaseClass/EM3PH_BaseClass.h"
 #include "../EMDataDefinitions.h"
 #include "../em_telemetryDefinition.h"
 
@@ -84,6 +85,7 @@ class EM750{
     
     ModbusTCPClient& _client;
     IPAddress ipAddress;
+
     uint8_t id;
     char* identifier;
     char* asset;
@@ -116,6 +118,23 @@ class EM750{
     float prevReactiveEnergyL2;
     float prevReactiveEnergyL3;
     float prevReactiveEnergyTotal;
+
+    float realEnergyConsL1;
+    float realEnergyConsL2;
+    float realEnergyConsL3;
+    float realEnergyConsTotal;
+    float realEnergyDelivL1;
+    float realEnergyDelivL2;
+    float realEnergyDelivL3;
+    float realEnergyDelivTotal;
+    float realEnergySum;
+    
+    float reactiveEnergyConsL1;
+    float reactiveEnergyConsL2;
+    float reactiveEnergyConsL3;
+    float reactiveEnergyDelivL1;
+    float reactiveEnergyDelivL2;
+    float reactiveEnergyDelivL3;
     
     union{
       float data[NUM_TOTAL_DATA_3PHASE];

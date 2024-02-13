@@ -176,9 +176,18 @@ int gateway_handle_command_request(AzureIoTDevice* azureIoTDevice, command_reque
     uint32_t frequency = 0;
     jsonGetUint32(&out_json_reader, "frequency", frequency);
 
+    if(jsonGetUint32(&out_json_reader, "frequency", frequency)){
+      Serial.print("Frequency out funciton: ");
+      Serial.println(frequency);
+    }
+
     uint32_t duration = 0;
     jsonGetUint32(&out_json_reader, "duration", duration);
 
+    if(jsonGetUint32(&out_json_reader, "duration", duration)){
+      Serial.print("Frequency out funciton: ");
+      Serial.println(frequency);
+    }
 
 
 
@@ -221,6 +230,9 @@ int device_handle_command_request(AzureIoTDevice* azureIoTDevice, command_reques
   
   if (az_span_is_content_equal(command.command_name, COMMAND_NAME_BOOST))
   {
+    Serial.println("BOOST command has been recieved");
+    Serial.print("Payload: ");
+    Serial.println((char*)az_span_ptr(command.payload));
 
     az_json_reader out_json_reader;
 
@@ -230,10 +242,18 @@ int device_handle_command_request(AzureIoTDevice* azureIoTDevice, command_reques
     uint32_t frequency = 0;
     jsonGetUint32(&out_json_reader, "frequency", frequency);
 
+    if(jsonGetUint32(&out_json_reader, "frequency", frequency)){
+      Serial.print("Frequency out funciton: ");
+      Serial.println(frequency);
+    }
 
     uint32_t duration = 0;
     jsonGetUint32(&out_json_reader, "duration", duration);
     
+    if(jsonGetUint32(&out_json_reader, "duration", duration)){
+      Serial.print("Frequency out funciton: ");
+      Serial.println(frequency);
+    }
 
 
 

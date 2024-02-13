@@ -5,6 +5,7 @@
 
 
 static const unsigned long DEFAULT_FREQUENCY = 60000;
+//static const unsigned long DEFAULT_FREQUENCY = 10000;   //Test Rocio
 static const unsigned long DEFAULT_BOOST_DURATION = 60000;
 
 
@@ -17,6 +18,7 @@ class TriggerClass{
         uint8_t getSlot(){ return slot; }
     private:
         bool connectionDependent = false;
+        //bool connectionDependent = true;  //Test Rocio
         uint8_t slot = 0;
         unsigned long defaultFrequency = DEFAULT_FREQUENCY;
         unsigned long prevTime = 0;

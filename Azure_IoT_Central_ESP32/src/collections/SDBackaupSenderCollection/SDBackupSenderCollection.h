@@ -7,7 +7,7 @@
 
 #define MAX_DATA_HUBS_ALLOWED 6
 #define ENERGY_METER_RING_BUFFER_SIZE 15
-#define WEIDOS_METADATA_RING_BUFFER_SIZE 20
+#define WEIDOS_METADATA_RING_BUFFER_SIZE 15
 
 class SDBackupSenderCollectionClass{
     public:

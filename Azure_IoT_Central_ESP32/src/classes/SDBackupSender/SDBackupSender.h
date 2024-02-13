@@ -33,9 +33,10 @@ class SDBackupSenderClass{
       payloadGenerator generatePayload;
       int numSendTries = 0;
       int deviceId;
-      T currentPayload;
+      //T currentPayload;
       int getDataErrorCount = 0;
       int putDataErrorCount = 0;
+      int numSkipFiles = 0;
 
     private:
 };
@@ -49,16 +50,19 @@ class SDBackupSenderClass{
 
 template <class T>
 SD_backup_init_state_t SDBackupSenderClass<T>::begin(){
+    Serial.println("[SDBackupSenderClass<T>::begin()] function called.");
     if(!AzureIoTCollection[deviceId]) return ERROR_NO_AZURE_DEVICE;
 
     
     char* provisionalFolderPath = SDFolderManager.setProvisionalFolderPath(deviceId);
     if(!SD.begin()) return ERROR_BEGIN;
+    Serial.println("[SDBackupSenderClass<T>::begin] SD begun");
     if(!SD.exists(provisionalFolderPath)){
         SD.end();
+        Serial.println("[SDBackupSenderClass<T>::begin()] Provisional foler doesnt exists.");
         return SUCCESS_NO_PROVISIONAL_FOLDER;
     }
-
+    Serial.println("[SDBackupSenderClass<T>::begin()] Provisional Folder exists. Therefore, files must be moved to pending.");
     //Open provisional folder
     File folder;
     int numTries = 0;
@@ -76,13 +80,13 @@ SD_backup_init_state_t SDBackupSenderClass<T>::begin(){
     }
 
     //Check if folder is acctually a folder. Sometimes, when a folder is created, an error occures and it is created as a file.
-    if(folder){
-        if(!folder.isDirectory()){
-            SDFolderManager.removeFile(folder.name());
-            SD.end();
-            return ERROR_PROV_FOLDER_IS_FILE;
-        }
+    
+    if(!folder.isDirectory()){
+        SDFolderManager.removeFile(folder.name());
+        SD.end();
+        return ERROR_PROV_FOLDER_IS_FILE;
     }
+    
 
 
     //Open a file (if there are any) inside folder 
@@ -162,7 +166,8 @@ SD_backup_init_state_t SDBackupSenderClass<T>::begin(){
         provisionalFilePath = SDFolderManager.concatenate(fileName);
         Serial.print("Deleting provisional file: ");
         Serial.println(provisionalFilePath);
-        SDFolderManager.removeFile(provisionalFilePath);
+        if(SDFolderManager.removeFile(provisionalFilePath)) Serial.println("File has been deleted.");
+        else Serial.println("File NOT deleted.");
 
 
         Serial.println();
@@ -177,14 +182,17 @@ SD_backup_init_state_t SDBackupSenderClass<T>::begin(){
 
 template <class T>
 void SDBackupSenderClass<T>::loop(){
+            if(!AzureIoTCollection[deviceId]) return;
             if(AzureIoTCollection[deviceId]->getStatus() != azure_iot_connected) return;
 
-            char* pendingFolderPath = SDFolderManager.setPendingFolderPath(deviceId);
             if(!SD.begin()) return;
+
+            char* pendingFolderPath = SDFolderManager.setPendingFolderPath(deviceId);
             if(!SD.exists(pendingFolderPath)){
                 SD.end();
                 return;
             }
+
             File folder = SD.open(pendingFolderPath);
             if(!folder){
                 //Serial.println("Could not OPEN folder");
@@ -192,53 +200,102 @@ void SDBackupSenderClass<T>::loop(){
                 return;
             }
 
+            int i = -1;
+            File file;
+            while(i != numSkipFiles){
+                file = folder.openNextFile();
+                i++;
+            }
 
-            File file = folder.openNextFile();
             if(!file){
                 //Serial.println("There are no files in the folder");
                 SD.end();
                 return;
             }
+
             T msg;
-            //Serial.print("[SDBackupSenderClass] file name: ");
-            Serial.println(file.name());
+
             SDFolderManager.concatenate("/");
             pendingFolderPath = SDFolderManager.concatenate(file.name());
             file.close();
-            //Serial.print("[SDBackupSenderClass] After concatenation: ");
-            //Serial.println(pendingFolderPath);
+            Serial.print("[SDBackupSenderClass] ID: ");
+            Serial.print(deviceId);
+            Serial.print("  -  File after close is: ");
+            Serial.println(file.name());
+
+            bool dataRecovered = false;
             if(SDDataStorage.get(pendingFolderPath, msg)){
-                //Serial.println("[SDBackupSenderClass] Data successfully recovered.");
+                dataRecovered = true;
+                Serial.println("[SDBackupSenderClass] Data successfully recovered.");
             }else{
                 Serial.println("[SDBackupSenderClass] Data could not be recovered to be sent");
             }
-            msg.backup = 1;
-            size_t payload_buffer_length = 0;
-            uint8_t* payload_buffer = AzureIoTCollection[deviceId]->getDataBuffer2();
 
-            generatePayload(payload_buffer, AZ_IOT_DATA_BUFFER_SIZE, &payload_buffer_length, currentPayload);
-            
-            //int error = 0;
-            int error = AzureIoTCollection[deviceId]->sendMessage(az_span_create(payload_buffer, payload_buffer_length));
-            if(error){
-                Serial.println("Error sending the pending telemetry");
+            //Delete file
+            bool fileDeleted = false;
+            if(SDFolderManager.removeFile(pendingFolderPath)){
+                Serial.println("[SDBackupSenderClass] File deleted");
+                fileDeleted = true;
+                SD.end();
+                
+            }else{
+                numSkipFiles++;
+                Serial.println("[SDBackupSenderClass] File NOT deleted");
+                Serial.println("Number of skip files: ");
+                Serial.println(numSkipFiles);
                 SD.end();
                 return;
-            }else{
-                //Serial.println("[SDBackupSenderClass] Data has been sent");
             }
 
-            unsigned long timestamp = msg.timestamp;
-            char* filePath = SDFolderManager.setPendingFilePath(deviceId, timestamp);
-            //Serial.print("[SDBackupSenderClass] Delte file of sent data: ");
-            //Serial.println(filePath);
+            // bool fileDeleted = false;
+            // if(!dataRecovered){
+            //     Serial.println("[SDBackupSenderClass] Error recovering data. Lets remove file");
+            //     if(SDFolderManager.removeFile(pendingFolderPath)){
+            //         Serial.println("[SDBackupSenderClass] File deleted");
+            //         SD.end();
+            //         return;
+            //     }else{
+            //         Serial.println("[SDBackupSenderClass] File NOT deleted");
+            //     }
+            // }
+
+
+
+
+            int sendError = 1;
+            if(dataRecovered && fileDeleted){
+                msg.backup = 1;
+                size_t payload_buffer_length = 0;
+                Serial.println("[SDBackupSenderClass] Sending data to IoT Central");
+                uint8_t* payload_buffer = AzureIoTCollection[deviceId]->getDataBuffer2();
+                generatePayload(payload_buffer, AZ_IOT_DATA_BUFFER_SIZE, &payload_buffer_length, msg);
+                sendError = AzureIoTCollection[deviceId]->sendMessage(az_span_create(payload_buffer, payload_buffer_length));
+            }else{
+                Serial.println("I can0't send the telemetry because conditions are not met");
+            }
+
+        
+
             
-            if(SDFolderManager.removeFile(filePath)) Serial.println("Pending file successfully removed");
-            else Serial.println("Pending file NOT removed");
+            if(!sendError) Serial.println("[SDBackupSenderClass] Pending telemetry has been sent");
+            else Serial.println("[SDBackupSenderClass] Error sending the pending telemetry.");
+
+            // }else{
+            //     Serial.println("[SDBackupSenderClass] Data has been sent. Let's remove file");
+            //     if(SDFolderManager.removeFile(pendingFolderPath)){
+            //         Serial.println("[SDBackupSenderClass] File deleted");
+            //     }else{
+            //         Serial.println("[SDBackupSenderClass] File NOT deleted");
+            //     }
+            // }
+
+
+
+
+         
+        
 
            
             SD.end();
             return;
-            
-
 }

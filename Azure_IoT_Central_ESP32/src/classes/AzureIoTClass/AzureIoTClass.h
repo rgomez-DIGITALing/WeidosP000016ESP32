@@ -12,7 +12,7 @@ enum securityType_t{
 };
 
 #define AZ_IOT_DATA_BUFFER_SIZE 3000
-#define DATA_BUFFER_SIZE 3000
+#define DATA_BUFFER_SIZE 5000
 
 static const int MQTT_KEEP_ALIVE = 60;
 static const int MQTT_TIMEOUT = 5000;
@@ -58,7 +58,7 @@ class AzureIoTDevice{
 
         uint8_t slot = 0;
         Client* client;
-        MQTTClient* mqttClient;
+        MQTTClient* mqttClient = nullptr;
         bool deviceInfoSent = false;
         securityType_t securityType;
         char* gatewayId = nullptr;

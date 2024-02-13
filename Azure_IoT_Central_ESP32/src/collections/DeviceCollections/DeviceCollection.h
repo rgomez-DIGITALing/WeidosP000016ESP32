@@ -2,16 +2,33 @@
 
 #include "../../managers/EnergyMeterManagers/EMManagers.h"
 #include "../../managers/managers.h"
+#include "../../globalDefinitions/globalDefinitions.h"
 //#include "../EnergyMeterManagers/EMManagers.h"
 
 
 
 #define MAX_ALLOWED_DEVICES 6
 
+// enum DeviceType{
+//     NONE_DEVICE_TYPE,
+//     EM110_DEVICE_TYPE,
+//     EM111_DEVICE_TYPE,
+//     EM120_DEVICE_TYPE,
+//     EM122_DEVICE_TYPE,
+//     EM220_DEVICE_TYPE,
+//     FLOW_METER_DEVICE_TYPE,
+//     PULSE_METER_DEVICE_TYPE
+// };
+
+
 
 class DeviceCollectionClass{
     public:
+        DeviceCollectionClass();
         void init();
+        // void setDevice(String& deviceTypeString, uint8_t slot);
+        // String getEnergyMeterName(uint8_t slot);
+
         bool triggerUpdate(uint8_t slot);
         void loopDevices();
         void loopDevicesNoNetwork();
@@ -30,6 +47,11 @@ class DeviceCollectionClass{
         void setDevice(AnalogMeterManager& analogMeter);
 
     private:
+        // void createDeviceObjects();
+        // void createObject(int deviceType, int slot);
+
+        uint8_t deviceList[MAX_ALLOWED_DEVICES];
+
         WeidosManager* weidosManager = nullptr;
         EM110Manager* EM110Pool[MAX_ALLOWED_DEVICES];
         EM111Manager* EM111Pool[MAX_ALLOWED_DEVICES];

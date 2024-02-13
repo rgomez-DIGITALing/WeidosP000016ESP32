@@ -2,6 +2,7 @@
 #include <Ethernet.h>
 #include "generalProperties.h"
 #include "../collections/DeviceCollections/DeviceCollection.h"
+#include "../collections/TriggerCollection/TriggerCollection.h"
 #include "azure_parameters.h"
 
 
@@ -13,6 +14,8 @@
 #if defined BATCH_TEST && defined FLOW_METER_TEST
 PulseMeterManager pulseMeterManager(1, DI_7, 3.0f);
 PulseMeterManager pulseMeterManager2(2, DI_6, 3.0f);
+TriggerClass pulseMeterTrigger(0);
+TriggerClass pulseMeter2Trigger(1);
 //AnalogMeterManager analogMeterManager(2, ADI_1, 3.0f);
 #endif
 
@@ -38,6 +41,13 @@ EM750Manager modula4(modula4EM, 2, MODBUS_NUMBER_TRIES);
 EM750Manager modula11(modula11EM, 3, MODBUS_NUMBER_TRIES);
 EM750Manager compresorAireComprimido(compresorAireComprimidoEM, 4, MODBUS_NUMBER_TRIES);
 EM750Manager acOficinas(acOficinasEM, 5, MODBUS_NUMBER_TRIES);
+
+TriggerClass weidosESP32Trigger(0);
+TriggerClass lineaEmpaquetadoTrigger(1);
+TriggerClass modula4Trigger(2);
+TriggerClass modula11Trigger(3);
+TriggerClass compresorAireComprimidoTrigger(4);
+TriggerClass acOficinasTrigger(5);
 #endif
 
 
@@ -64,6 +74,37 @@ EM750Manager transelevador1(transelevador1EM, 2, MODBUS_NUMBER_TRIES);
 EM750Manager transelevador2(transelevador2EM, 3, MODBUS_NUMBER_TRIES);
 EM750Manager transelevador3(transelevador3EM, 4, MODBUS_NUMBER_TRIES);
 EM750Manager robot(robotEM, 5, MODBUS_NUMBER_TRIES);
+
+TriggerClass weidosESP32Trigger(0);
+TriggerClass generalTrigger(1);
+TriggerClass transelevador1Trigger(2);
+TriggerClass transelevador2Trigger(3);
+TriggerClass transelevador3Trigger(4);
+TriggerClass robotTrigger(5);
+#endif
+
+
+#if defined BATCH_TRANSELEVADORES_FAST
+static EthernetClient ethernetClientModbus(7);
+static ModbusTCPClient modbusTCPClient(ethernetClientModbus);
+
+
+IPAddress ipTranselevador1(10, 88, 47, 242);        //Transelevador 1
+IPAddress ipTranselevador2(10, 88, 47, 243);        //Transelevador 2
+IPAddress ipTranselevador3(10, 88, 47, 244);        //Transelevador 3
+
+
+EM750 transelevador1EM(modbusTCPClient, ipTranselevador1);
+EM750 transelevador2EM(modbusTCPClient, ipTranselevador2);
+EM750 transelevador3EM(modbusTCPClient, ipTranselevador3);
+
+EM750Manager transelevador1(transelevador1EM, 1, MODBUS_NUMBER_TRIES);
+EM750Manager transelevador2(transelevador2EM, 2, MODBUS_NUMBER_TRIES);
+EM750Manager transelevador3(transelevador3EM, 3, MODBUS_NUMBER_TRIES);
+
+TriggerClass transelevador1Trigger(1);
+TriggerClass transelevador2Trigger(2);
+TriggerClass transelevador3Trigger(3);
 #endif
 
 
@@ -88,6 +129,13 @@ EM750Manager modula4(modula4EM, 2, MODBUS_NUMBER_TRIES);
 EM750Manager modula11(modula11EM, 3, MODBUS_NUMBER_TRIES);
 EM750Manager compresorAireComprimido(compresorAireComprimidoEM, 4, MODBUS_NUMBER_TRIES);
 EM750Manager acOficinas(acOficinasEM, 5, MODBUS_NUMBER_TRIES);
+
+TriggerClass weidosESP32Trigger(0);
+TriggerClass lineaEmpaquetadoTrigger(1);
+TriggerClass modula4Trigger(2);
+TriggerClass modula11Trigger(3);
+TriggerClass compresorAireComprimidoTrigger(4);
+TriggerClass acOficinasTrigger(5);
 #endif
 
 
@@ -110,6 +158,13 @@ EM111Manager automation(2);
 EM111Manager parisMilan(3);
 EM111Manager rack(4);
 EM120Manager sai(5, 50, 1);
+
+TriggerClass weidosESP32Trigger(0);
+TriggerClass barcelonaTrigger(1);
+TriggerClass automationTrigger(2);
+TriggerClass parisMilanTrigger(3);
+TriggerClass rackTrigger(4);
+TriggerClass saiTrigger(5);
 #endif
 
 
@@ -119,7 +174,105 @@ EM111Manager compresorGAC5(2);
 EM122Manager compresorLetsConnect(3);
 #endif
 
+#if defined BATCH_ELEVADOR
+static EthernetClient ethernetClientModbus(7);
+static ModbusTCPClient modbusTCPClient(ethernetClientModbus);
 
+IPAddress ipElevador(10, 88, 47, 225);        //General
+
+EM750 elevadorEM(modbusTCPClient, ipElevador);
+
+EM750Manager elevador(elevadorEM, 1, MODBUS_NUMBER_TRIES);
+
+#endif
+
+void setTriggers(){
+  #if defined BATCH_TEST && defined FLOW_METER_TEST
+  TriggerCollection.setTrigger(weidosESP32Trigger);
+  TriggerCollection.setTrigger(pulseMeterTrigger);
+  TriggerCollection.setTrigger(pulseMeter2Trigger);
+  //DeviceCollection.setDevice(analogMeterManager);
+  #endif
+
+  #if defined BATCH_TEST && defined EM750_TEST
+  TriggerCollection.setTrigger(weidosESP32Trigger);
+  TriggerCollection.setTrigger(lineaEmpaquetadoTrigger);
+  TriggerCollection.setTrigger(modula4Trigger);
+  TriggerCollection.setTrigger(modula11Trigger);
+  TriggerCollection.setTrigger(compresorAireComprimidoTrigger);
+  TriggerCollection.setTrigger(acOficinasTrigger);
+  #endif
+
+
+
+  #if defined BATCH_GENERAL_ROBOT
+  TriggerCollection.setTrigger(weidosESP32Trigger);
+  TriggerCollection.setTrigger(generalTrigger);
+  TriggerCollection.setTrigger(transelevador1Trigger);
+  TriggerCollection.setTrigger(transelevador2Trigger);
+  TriggerCollection.setTrigger(transelevador3Trigger);
+  TriggerCollection.setTrigger(robotTrigger);
+  #endif
+
+  #if defined BATCH_TRANSELEVADORES_FAST
+  TriggerCollection.setTrigger(weidosESP32Trigger);
+  TriggerCollection.setTrigger(transelevador1Trigger);
+  TriggerCollection.setTrigger(transelevador2Trigger);
+  TriggerCollection.setTrigger(transelevador3Trigger);
+  #endif
+
+
+  #ifdef BATCH_LINEA_EMPAQUETADO_AC_OFICINAS
+  TriggerCollection.setTrigger(weidosESP32Trigger);
+  TriggerCollection.setTrigger(lineaEmpaquetadoTrigger);
+  TriggerCollection.setTrigger(modula4Trigger);
+  TriggerCollection.setTrigger(modula11Trigger);
+  TriggerCollection.setTrigger(compresorAireComprimidoTrigger);
+  TriggerCollection.setTrigger(acOficinasTrigger);
+  #endif
+
+
+  #ifdef BATCH_LETS_CONNECT
+  TriggerCollection.setTrigger(weidosESP32Trigger);
+  TriggerCollection.setTrigger(compresorLetsConnect);
+  TriggerCollection.setTrigger(compresorMontaje);
+  TriggerCollection.setTrigger(compresorCalidad);
+  #endif
+
+
+  #ifdef BATCH_IT_SOPORTE
+  TriggerCollection.setTrigger(weidosESP32Trigger);
+  TriggerCollection.setTrigger(compresorSoporte);
+  TriggerCollection.setTrigger(compresorIT1);
+  TriggerCollection.setTrigger(compresorIT2);
+  TriggerCollection.setTrigger(ascensor);
+  #endif
+
+
+  #ifdef BATCH_BARCELONA_SAI
+  TriggerCollection.setTrigger(weidosESP32Trigger);
+  TriggerCollection.setTrigger(barcelonaTrigger);
+  TriggerCollection.setTrigger(automationTrigger);
+  TriggerCollection.setTrigger(parisMilanTrigger);
+  TriggerCollection.setTrigger(rackTrigger);
+  TriggerCollection.setTrigger(saiTrigger);
+  #endif
+
+
+  #ifdef BATCH_GAC_LETS_CONNECT
+  TriggerCollection.setTrigger(weidosESP32Trigger);
+  TriggerCollection.setTrigger(compresorGAC4);
+  TriggerCollection.setTrigger(compresorGAC5);
+  TriggerCollection.setTrigger(compresorLetsConnect);
+  #endif
+
+
+  #ifdef BATCH_ELEVADOR
+  TriggerCollection.setTrigger(weidosESP32Trigger);
+  TriggerCollection.setTrigger(elevador);
+  #endif
+
+}
 
 
 void configureDeviceCollection(){
@@ -146,6 +299,13 @@ void configureDeviceCollection(){
   DeviceCollection.setDevice(transelevador2);
   DeviceCollection.setDevice(transelevador3);
   DeviceCollection.setDevice(robot);
+  #endif
+
+
+   #if defined BATCH_TRANSELEVADORES_FAST
+  DeviceCollection.setDevice(transelevador1);
+  DeviceCollection.setDevice(transelevador2);
+  DeviceCollection.setDevice(transelevador3);
   #endif
 
 
@@ -186,6 +346,11 @@ void configureDeviceCollection(){
   DeviceCollection.setDevice(compresorGAC4);
   DeviceCollection.setDevice(compresorGAC5);
   DeviceCollection.setDevice(compresorLetsConnect);
+  #endif
+
+
+  #ifdef BATCH_ELEVADOR
+  DeviceCollection.setDevice(elevador);
   #endif
 
 }
@@ -261,6 +426,28 @@ void setEnergyMeterProperties(){
   em750 = robot.getEnergyMeter();
   em750->setAsset(ASSET_ROBOT);
   em750->setIdentifier(IDENTIFIER_ROBOT);
+  em750->setLocation1(LOCATION_NAVE_400);
+  em750->setLocation2(LOCATION_CUADRO_ALMACEN);
+  #endif
+
+
+  #if defined BATCH_TRANSELEVADORES_FAST
+  EM750* em750 = nullptr;
+  em750 = transelevador1.getEnergyMeter();
+  em750->setAsset(ASSET_TRANSELEVADOR_1);
+  em750->setIdentifier(IDENTIFIER_TRANSELEVADOR_1);
+  em750->setLocation1(LOCATION_NAVE_400);
+  em750->setLocation2(LOCATION_CUADRO_ALMACEN);
+
+  em750 = transelevador2.getEnergyMeter();
+  em750->setAsset(ASSET_TRANSELEVADOR_2);
+  em750->setIdentifier(IDENTIFIER_TRANSELEVADOR_2);
+  em750->setLocation1(LOCATION_NAVE_400);
+  em750->setLocation2(LOCATION_CUADRO_ALMACEN);
+
+  em750 = transelevador3.getEnergyMeter();
+  em750->setAsset(ASSET_TRANSELEVADOR_3);
+  em750->setIdentifier(IDENTIFIER_TRANSELEVADOR_3);
   em750->setLocation1(LOCATION_NAVE_400);
   em750->setLocation2(LOCATION_CUADRO_ALMACEN);
   #endif
@@ -414,6 +601,16 @@ void setEnergyMeterProperties(){
   em122->setIdentifier(IDENTIFIER_COMPRESOR_SALA_LETS_CONNECT);
   em122->setLocation1(LOCATION_NAVE_400);
   em122->setLocation2(LOCATION_PLANTA_MINUS_1);
+  #endif
+
+
+  #ifdef BATCH_ELEVADOR
+  EM750* em750 = nullptr;
+  em750 = elevador.getEnergyMeter();
+  em750->setAsset(ASSET_ELEVADOR);
+  em750->setIdentifier(IDENTIFIER_ELEVADOR);
+  em750->setLocation1(LOCATION_NAVE_400);
+  em750->setLocation2(LOCATION_CUADRO_ALMACEN);
   #endif
 
 }

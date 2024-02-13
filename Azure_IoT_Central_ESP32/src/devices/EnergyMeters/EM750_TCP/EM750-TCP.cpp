@@ -97,6 +97,22 @@ void EM750::getData(em3phData_t& payload){
   payload.comError = comError;
   copyData(payload.data, NUM_TOTAL_DATA_3PHASE);
 
+  payload.realEnergyConsL1 = realEnergyConsL1;
+  payload.realEnergyConsL2 = realEnergyConsL2;
+  payload.realEnergyConsL3 = realEnergyConsL3;
+  payload.realEnergyConsTotal = realEnergyConsTotal;
+  payload.realEnergyDelivL1 = realEnergyDelivL1;
+  payload.realEnergyDelivL2 = realEnergyDelivL2;
+  payload.realEnergyDelivL3 = realEnergyDelivL3;
+  payload.realEnergyDelivTotal = realEnergyDelivTotal;
+  payload.realEnergyDelivTotal = realEnergyDelivTotal;
+  payload.reactiveEnergyConsL1 = reactiveEnergyConsL1;
+  payload.reactiveEnergyConsL2 = reactiveEnergyConsL2;
+  payload.reactiveEnergyConsL3 = reactiveEnergyConsL3;
+  payload.reactiveEnergyDelivL1 = reactiveEnergyDelivL1;
+  payload.reactiveEnergyDelivL2 = reactiveEnergyDelivL2;
+  payload.reactiveEnergyDelivL3 = reactiveEnergyDelivL3;
+
   if(prevDataAvailable){
     payload.periodRealPowerL1N = realPowerL1N - prevRealPowerL1N;
     payload.periodRealPowerL2N = realPowerL2N - prevRealPowerL2N;
@@ -167,14 +183,16 @@ void EM750::assignData(){
     realEnergyL2 = getNextData()/1000.0f;
     realEnergyL3 = getNextData()/1000.0f;
     realEnergyTotal = getNextData()/1000.0f;//31
-    getNextData();       //realEnergyConsL1 deleted variable
-    getNextData();       //realEnergyConsL2 deleted variable
-    getNextData();       //realEnergyConsL3 deleted variable
-    getNextData();      //realEnergyConsTotal deleted variable
-    getNextData();      //realEnergyDelivL1 deleted variable     
-    getNextData();      //realEnergyDelivL2 deleted variable
-    getNextData();      //realEnergyDelivL3 deleted variable
-    getNextData();      //realEnergyDelivTotal deleted variable
+
+    realEnergyConsL1 = getNextData();       //realEnergyConsL1 deleted variable
+    realEnergyConsL2 = getNextData();       //realEnergyConsL2 deleted variable
+    realEnergyConsL3 = getNextData();       //realEnergyConsL3 deleted variable
+    realEnergyConsTotal = getNextData();      //realEnergyConsTotal deleted variable
+    realEnergyDelivL1 = getNextData();      //realEnergyDelivL1 deleted variable     
+    realEnergyDelivL2 = getNextData();      //realEnergyDelivL2 deleted variable
+    realEnergyDelivL3 = getNextData();      //realEnergyDelivL3 deleted variable
+    realEnergyDelivTotal = getNextData();      //realEnergyDelivTotal deleted variable
+
     apparentEnergyL1 = getNextData()/1000.0f;
     apparentEnergyL2 = getNextData()/1000.0f;
     apparentEnergyL3 = getNextData()/1000.0f;
@@ -228,6 +246,14 @@ void EM750::computeData(){
     avgTHDVoltsLN = (THDVoltsL1N + THDVoltsL2N + THDVoltsL3N)/3.0f;
     avgTHDCurrentLN = (THDCurrentL1N + THDCurrentL2N + THDCurrentL3N)/3.0f;
     avgTHDVoltsLL = (THDVoltsL1L2 + THDVoltsL2L3 + THDVoltsL1L3)/3.0f;
+
+    realEnergySum = realEnergyConsTotal + realEnergyDelivTotal;
+    reactiveEnergyConsL1 = 0;
+    reactiveEnergyConsL2 = 0;
+    reactiveEnergyConsL3 = 0;
+    reactiveEnergyDelivL1 = 0;
+    reactiveEnergyDelivL2 = 0;
+    reactiveEnergyDelivL3 = 0;
 }
 
 float EM750::getNextData(){

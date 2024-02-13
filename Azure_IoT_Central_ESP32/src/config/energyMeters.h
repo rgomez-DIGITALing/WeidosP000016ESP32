@@ -4,3 +4,4 @@
 
 void configureDeviceCollection();
 void setEnergyMeterProperties();
+void setTriggers();

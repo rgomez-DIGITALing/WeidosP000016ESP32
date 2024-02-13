@@ -35,6 +35,7 @@ void TriggerClass::loop(){
     }
 
     if(millis()-prevTime > frequency){
+        Serial.println("Let's trigger update!");
         DeviceCollection.triggerUpdate(slot);
         prevTime = millis();
     }

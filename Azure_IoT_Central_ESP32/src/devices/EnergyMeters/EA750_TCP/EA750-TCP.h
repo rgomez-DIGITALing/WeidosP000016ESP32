@@ -1,6 +1,7 @@
 #pragma once
 #include <ArduinoModbus.h>
 #include "../EMDataDefinitions.h"
+#include "../em_telemetryDefinition.h"
 
 
 
@@ -76,7 +77,7 @@ class EA750{
     void computeData();
     /**
      * Read two bytes from the Modbus Client and join them to cast it into a float variable.
-     *  
+     *
      * @return Register's data.
      */
     float getNextData();
@@ -90,7 +91,48 @@ class EA750{
     char* location2;
 
     COM_error_t comError;
+    float prevRealPowerL1N;
+    float prevRealPowerL2N;
+    float prevRealPowerL3N;
+    float prevRealPowerTotal;
+    float prevApparentPowerL1N;
+    float prevApparentPowerL2N;
+    float prevApparentPowerL3N;
+    float prevApparentPowerTotal;
+    float prevReactivePowerL1N;
+    float prevReactivePowerL2N;
+    float prevReactivePowerL3N;
+    float prevReactivePowerTotal;
+    float prevRealEnergyL1N;
+    float prevRealEnergyL2N;
+    float prevRealEnergyL3N;
+    float prevRealEnergyTotal;
+    float prevApparentEnergyL1;
+    float prevApparentEnergyL2;
+    float prevApparentEnergyL3;
+    float prevApparentEnergyTotal;
+    float prevReactiveEnergyL1;
+    float prevReactiveEnergyL2;
+    float prevReactiveEnergyL3;
+    float prevReactiveEnergyTotal;
     
+    float realEnergyConsL1;
+    float realEnergyConsL2;
+    float realEnergyConsL3;
+    float realEnergyConsTotal;
+    float realEnergyDelivL1;
+    float realEnergyDelivL2;
+    float realEnergyDelivL3;
+    float realEnergyDelivTotal;
+    float realEnergySum;
+    
+    float reactiveEnergyConsL1;
+    float reactiveEnergyConsL2;
+    float reactiveEnergyConsL3;
+    float reactiveEnergyDelivL1;
+    float reactiveEnergyDelivL2;
+    float reactiveEnergyDelivL3;
+
     union{
       float data[NUM_TOTAL_DATA_3PHASE];
 

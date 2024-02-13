@@ -33,6 +33,13 @@ DataHub<em3phManagerData_t, ENERGY_METER_RING_BUFFER_SIZE> emDataHub4;
 DataHub<em3phManagerData_t, ENERGY_METER_RING_BUFFER_SIZE> emDataHub5;
 #endif
 
+#if defined BATCH_TRANSELEVADORES_FAST
+DataHub<em3phManagerData_t, ENERGY_METER_RING_BUFFER_SIZE> emDataHub1;
+DataHub<em3phManagerData_t, ENERGY_METER_RING_BUFFER_SIZE> emDataHub2;
+DataHub<em3phManagerData_t, ENERGY_METER_RING_BUFFER_SIZE> emDataHub3;
+#endif
+
+
 
 #ifdef BATCH_LETS_CONNECT
 DataHub<em1phManagerData_t, ENERGY_METER_RING_BUFFER_SIZE> emDataHub1;
@@ -62,6 +69,10 @@ DataHub<em1phManagerData_t, ENERGY_METER_RING_BUFFER_SIZE> emDataHub2;
 DataHub<em3phManagerData_t, ENERGY_METER_RING_BUFFER_SIZE> emDataHub3;
 #endif
 
+#ifdef BATCH_ELEVADOR
+DataHub<em3phManagerData_t, ENERGY_METER_RING_BUFFER_SIZE> emDataHub1;
+
+#endif
 
 void setDataHubCollection(){
     DataHubCollection.setDataHub(weidosDataHub);
@@ -90,6 +101,12 @@ void setDataHubCollection(){
     DataHubCollection.setDataHub(emDataHub5, 5);
     #endif
 
+    #if defined BATCH_TRANSELEVADORES_FAST
+    DataHubCollection.setDataHub(emDataHub1, 1);
+    DataHubCollection.setDataHub(emDataHub2, 2);
+    DataHubCollection.setDataHub(emDataHub3, 3);
+    #endif
+
     #ifdef BATCH_LETS_CONNECT
     DataHubCollection.setDataHub(emDataHub1, 1);
     DataHubCollection.setDataHub(emDataHub2, 2);
@@ -115,6 +132,11 @@ void setDataHubCollection(){
     DataHubCollection.setDataHub(emDataHub1, 1);
     DataHubCollection.setDataHub(emDataHub2, 2);
     DataHubCollection.setDataHub(emDataHub3, 3);
+    #endif
+
+
+    #ifdef BATCH_ELEVADOR
+    DataHubCollection.setDataHub(emDataHub1, 1);
     #endif
 
 
@@ -150,6 +172,12 @@ void setDataHubsPayloadGenerators(){
     emDataHub5.setPayloadGenerator(em3ph_generete_payload);
     #endif
 
+    #ifdef BATCH_TRANSELEVADORES_FAST
+    emDataHub1.setPayloadGenerator(em3ph_generete_payload);
+    emDataHub2.setPayloadGenerator(em3ph_generete_payload);
+    emDataHub3.setPayloadGenerator(em3ph_generete_payload);
+    #endif
+
 
     #ifdef BATCH_LETS_CONNECT
     emDataHub1.setPayloadGenerator(em1ph_generete_payload);
@@ -177,6 +205,11 @@ void setDataHubsPayloadGenerators(){
     emDataHub1.setPayloadGenerator(em1ph_generete_payload);
     emDataHub2.setPayloadGenerator(em1ph_generete_payload);
     emDataHub3.setPayloadGenerator(em3ph_generete_payload);
+    #endif
+
+
+    #ifdef BATCH_ELEVADOR
+    emDataHub1.setPayloadGenerator(em3ph_generete_payload);
     #endif
 
     return;

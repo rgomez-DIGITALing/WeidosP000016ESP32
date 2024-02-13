@@ -2,7 +2,8 @@
 
 
 
-void DeviceCollectionClass::init(){
+
+DeviceCollectionClass::DeviceCollectionClass(){
     weidosManager = nullptr;
     for(int i=0; i<MAX_ALLOWED_DEVICES; i++){
         EM110Pool[i] = nullptr;
@@ -18,6 +19,46 @@ void DeviceCollectionClass::init(){
 
     return;
 }
+
+
+void DeviceCollectionClass::init(){
+    // PersistentDataModule.getDeviceConfiguration(deviceList, MAX_ALLOWED_DEVICES);
+    // createDeviceObjects();
+    return;
+}
+
+
+
+// void DeviceCollectionClass::setDevice(String& deviceType, uint8_t slot){
+//     //DeviceType deviceType;
+//     int deviceTypeId = NONE_DEVICE_TYPE;
+
+//     if(deviceType.equals("EM110")) deviceTypeId = EM110_DEVICE_TYPE;
+//     if(deviceType.equals("EM111")) deviceTypeId = EM111_DEVICE_TYPE;
+//     if(deviceType.equals("EM120")) deviceTypeId = EM120_DEVICE_TYPE;
+//     if(deviceType.equals("EM122")) deviceTypeId = EM122_DEVICE_TYPE;
+//     if(deviceType.equals("EM220")) deviceTypeId = EM220_DEVICE_TYPE;
+//     if(deviceType.equals("FlowMeter")) deviceTypeId = FLOW_METER_DEVICE_TYPE;
+//     if(deviceType.equals("PulseMeter")) deviceTypeId = PULSE_METER_DEVICE_TYPE;
+
+//     deviceList[slot] = deviceTypeId;
+//     PersistentDataModule.saveDeviceConfiguration(deviceTypeId, slot);
+// }
+
+
+
+// String DeviceCollectionClass::getEnergyMeterName(uint8_t slot){
+//     if(deviceList[slot] == EM110_DEVICE_TYPE) return String("EM110");
+//     if(deviceList[slot] == EM111_DEVICE_TYPE) return String("EM111");
+//     if(deviceList[slot] == EM120_DEVICE_TYPE) return String("EM120");
+//     if(deviceList[slot] == EM122_DEVICE_TYPE) return String("EM122");
+//     if(deviceList[slot] == EM220_DEVICE_TYPE) return String("EM220");
+//     return String("None");
+// }
+
+
+
+
 
 
 void DeviceCollectionClass::loopDevices(){
@@ -73,10 +114,20 @@ bool DeviceCollectionClass::triggerUpdate(uint8_t slot){
         return true;
     }
 
+    if(EA750Pool[slot]){
+        EA750Pool[slot]->triggerUpdate();
+        return true;
+    }
+
+    if(EM750Pool[slot]){
+        EM750Pool[slot]->triggerUpdate();
+        return true;
+    }
+
     if(EM110Pool[slot]){
         EM110Pool[slot]->triggerUpdate();
         return true;
-    } 
+    }
     if(EM111Pool[slot]){
             EM111Pool[slot]->triggerUpdate();
         return true;
@@ -193,6 +244,37 @@ void DeviceCollectionClass::setDevice(AnalogMeterManager& analogMeter){
     int slot = analogMeter.getDeviceId();
     AnalogMeterPool[slot] = &analogMeter;
 }
+
+
+
+
+
+
+
+// void DeviceCollectionClass::createDeviceObjects(){
+//     for(int i = 0; i<MAX_ALLOWED_DEVICES; i++){
+//         createObject(deviceList[i], i);
+//     }
+// }
+
+// void DeviceCollectionClass::createObject(int deviceType, int slot){
+//     int ctPrimary;
+//     int ctSecondary;
+//     PersistentDataModule.getConversionFactor(ctPrimary, slot, true);
+//     PersistentDataModule.getConversionFactor(ctSecondary, slot, false);
+    
+
+//     if(deviceType == NONE_DEVICE_TYPE) return;
+//     if(deviceType == EM110_DEVICE_TYPE) EM110Pool[slot] = new EM110Manager(slot, ctPrimary, ctSecondary);
+//     if(deviceType == EM111_DEVICE_TYPE) EM111Pool[slot] = new EM111Manager(slot);
+//     if(deviceType == EM120_DEVICE_TYPE) EM120Pool[slot] = new EM120Manager(slot, ctPrimary, ctSecondary);
+//     if(deviceType == EM122_DEVICE_TYPE) EM122Pool[slot] = new EM122Manager(slot);
+//     if(deviceType == EM220_DEVICE_TYPE) EM220Pool[slot] = new EM220Manager(slot, ctPrimary, ctSecondary);
+    
+//     AzureDeviceCollection.createAzureDevice(slot);
+
+//     return;
+// }
 
 
 

@@ -107,6 +107,27 @@ void EM220::copyData(float* buffer, int bufferSize){
 void EM220::getData(em3phData_t& payload){
   payload.comError = comError;
   copyData(payload.data, NUM_TOTAL_DATA_3PHASE);
+
+  payload.realEnergyConsL1 = realEnergyConsL1;
+  payload.realEnergyConsL2 = realEnergyConsL2;
+  payload.realEnergyConsL3 = realEnergyConsL3;
+  payload.realEnergyConsTotal = realEnergyConsTotal;
+  payload.realEnergyDelivL1 = realEnergyDelivL1;
+  payload.realEnergyDelivL2 = realEnergyDelivL2;
+  payload.realEnergyDelivL3 = realEnergyDelivL3;
+  payload.realEnergyDelivTotal = realEnergyDelivTotal;
+  payload.realEnergyDelivTotal = realEnergyDelivTotal;
+  payload.reactiveEnergyConsL1 = reactiveEnergyConsL1;
+  payload.reactiveEnergyConsL2 = reactiveEnergyConsL2;
+  payload.reactiveEnergyConsL3 = reactiveEnergyConsL3;
+  payload.reactiveEnergyDelivL1 = reactiveEnergyDelivL1;
+  payload.reactiveEnergyDelivL2 = reactiveEnergyDelivL2;
+  payload.reactiveEnergyDelivL3 = reactiveEnergyDelivL3;
+
+  for(int i=0; i<NUM_TOTAL_PERIOD_DATA_3PHASE; i++){
+      payload.periodData[i] = FLOAT_NO_PREV_DATA_AVAILABLE_ERROR_VALUE;
+  }
+
   return;
 }
 
@@ -194,21 +215,25 @@ void EM220::assignData3(){
   avgTHDVoltsLL = getNextData();
   realEnergyTotal = getNextData();
   reactiveEnergyTotal = getNextData();
-  getNextData();
-  getNextData();
-  getNextData();
-  getNextData();
-  getNextData();
-  getNextData();
+  
+  realEnergyConsL1 = getNextData();
+  realEnergyConsL2 = getNextData();
+  realEnergyConsL3 = getNextData();
+  realEnergyDelivL1 = getNextData();
+  realEnergyDelivL2 = getNextData();
+  realEnergyDelivL3 = getNextData();
+
   realEnergyL1 = getNextData();
   realEnergyL2 = getNextData();
   realEnergyL3 = getNextData();
-  getNextData();
-  getNextData();
-  getNextData();
-  getNextData();
-  getNextData();
-  getNextData();
+
+  reactiveEnergyConsL1 = getNextData();
+  reactiveEnergyConsL2 = getNextData();
+  reactiveEnergyConsL3 = getNextData();
+  reactiveEnergyDelivL1 = getNextData();
+  reactiveEnergyDelivL2 = getNextData();
+  reactiveEnergyDelivL3 = getNextData();
+
   reactiveEnergyL1 = getNextData();
   reactiveEnergyL2 = getNextData();
   reactiveEnergyL3 = getNextData();
@@ -222,6 +247,11 @@ void EM220::computeValues(){
   apparentEnergyTotal = apparentEnergyL1 + apparentEnergyL2 + apparentEnergyL3;
   rotField = (powerFactorTotal>0) ? rotField = 1 : rotField = -1 ;
   powerFactorTotal = abs(powerFactorTotal);
+
+  realEnergySum = 0;
+  realEnergyConsTotal = 0;
+  realEnergyDelivTotal = 0;
+
   return;
 }
 

@@ -77,6 +77,7 @@ void AzureIoTDevice::loop(){
 
     azure_iot_do_work(&azure_iot);
     mqttClient->loop();
+
     delay(MQTT_LOOP_POST_DELAY);
 
 
@@ -255,9 +256,7 @@ int AzureIoTDevice::mqtt_client_init(mqtt_client_config_t* mqtt_client_config, m
 int AzureIoTDevice::mqtt_client_deinit(mqtt_client_handle_t mqtt_client_handle)
 {
   int result;
-
   mqttClient->disconnect();
-
   result = azure_iot_mqtt_client_disconnected(&azure_iot);
   if (result != RESULT_OK)
   {
@@ -336,7 +335,11 @@ void AzureIoTDevice::onMessageReceived(String &topic, String &payload)
   mqtt_message.topic = az_span_create((uint8_t*)message_topic.c_str(), message_topic.length());
   mqtt_message.payload = az_span_create((uint8_t*)payload.c_str(), payload.length());
   mqtt_message.qos = mqtt_qos_at_most_once; // QoS is unused by azure_iot_mqtt_client_message_received. 
-
+  // Serial.println("[onMessageReceived]:");
+  // Serial.println("Topic: ");
+  // Serial.println(topic);
+  // Serial.println("Payload:");
+  // Serial.println(payload);
 
   if (azure_iot_mqtt_client_message_received(&azure_iot, &mqtt_message) != 0)
   {
@@ -473,7 +476,6 @@ int AzureIoTDevice::azure_iot_stop(azure_iot_t* azure_iot)
   _az_PRECONDITION_NOT_NULL(azure_iot);
 
   int result;
-
   if (azure_iot->state == azure_iot_state_not_initialized)
   {
     LogError2(F("Azure IoT client must be initialized before stopping."));

@@ -2,19 +2,22 @@
 // SPDX-License-Identifier: MIT
 
 
-//#define BATCH_GENERAL_ROBOT
+// #define BATCH_GENERAL_ROBOT
 //#define BATCH_LINEA_EMPAQUETADO_AC_OFICINAS
 //#define BATCH_LETS_CONNECT
 //#define BATCH_IT_SOPORTE
-//#define BATCH_BARCELONA_SAI
+#define BATCH_BARCELONA_SAI
 //#define BATCH_GAC_LETS_CONNECT
-#define BATCH_TEST
-#define FLOW_METER_TEST
+//#define BATCH_ELEVADOR
+//#define BATCH_TRANSELEVADORES_FAST
+//#define BATCH_TEST
+//#define FLOW_METER_TEST
 //#define EM750_TEST
 
 
 // Azure IoT Central
 #define DPS_ID_SCOPE "0ne00A56BD4"
+//#define DPS_ID_SCOPE "0ne00B219C5"//To be deleted hahah
 #ifdef BATCH_TEST
 #define DPS_ID_SCOPE "0ne00B219C5"
 #endif
@@ -34,6 +37,23 @@
 #define IOT_CONFIG_DEVICE_3_KEY "TCBoEK1ufBgj3KrGjS1+VIbZd4TgjkImeJ9tFL/ucrM="          //Transelevador 2 (2)
 #define IOT_CONFIG_DEVICE_4_KEY "g9u2jumpLcKZ2vYzNRbBs4ePpsUeCUIacSNiVAD8mlc="          //Transelevador 3 (2)
 #define IOT_CONFIG_DEVICE_5_KEY "emH3afVfZL8YGz1+DWHgfeqXW0Vj5Hq70yqxrBeUL3E="          //Robot (2)
+#endif
+
+
+#ifdef BATCH_TRANSELEVADORES_FAST
+#define IOT_CONFIG_DEVICE_GATEWAY_ID "cesql7bg96"     //Gateway 
+#define IOT_CONFIG_DEVICE_1_ID "1sbmjyrz1oa"           //Transelevador 1
+#define IOT_CONFIG_DEVICE_2_ID "1b66i9vydmw"            //Transelevador 2
+#define IOT_CONFIG_DEVICE_3_ID "oahkpmo0i1"            //Transelevador 3
+#define IOT_CONFIG_DEVICE_4_ID "unusedDevic"           //Unused
+#define IOT_CONFIG_DEVICE_5_ID "unusedDevic"           //Unused
+
+#define IOT_CONFIG_DEVICE_GATEWAY_KEY "cDluf2IWbhMz8wHGJQtA94pJrHTSFzAlP/2ZvLxomOo="    //Gateway 
+#define IOT_CONFIG_DEVICE_1_KEY "ZCJOH3zvqDBusCCTdtMHO2rcv4qWgVq5bzgkxwwIQIM="          //Transelevador 1
+#define IOT_CONFIG_DEVICE_2_KEY "FH7ktxpbRgW2Nq/ms0eANQS2ZKEpdKQorBa98xpM3+E="          //Transelevador 2
+#define IOT_CONFIG_DEVICE_3_KEY "afq88WexxzEbz26qV9WNv+ZqdSE5BePaZOyjR9zVGjw="          //Transelevador 3
+#define IOT_CONFIG_DEVICE_4_KEY "unusedunusedunusedunusedunusedunusedunusedun"          //Unused
+#define IOT_CONFIG_DEVICE_5_KEY "unusedunusedunusedunusedunusedunusedunusedun"          //Unused
 #endif
 
 
@@ -136,6 +156,40 @@
 #define IOT_CONFIG_DEVICE_1_KEY "6DY+uEF9KlRm9QLSLZP/Y71p1yvSfkVklN86aTu4lBo="          //Compresor Despacho 4 GAC
 #define IOT_CONFIG_DEVICE_2_KEY "tmiXKe8Ewoyk9qh+DouQ8fpNl85ZeiY0ABfakIA6PaI="          //Compresor Despacho 5 GAC
 #define IOT_CONFIG_DEVICE_3_KEY "qOgrO7v4Ar2qz9OCbyUEQoZCL12g82sj4ruge32s6rQ="          //Compresor Sala Let's Connect - 3 fases
+#define IOT_CONFIG_DEVICE_4_KEY "unusedunusedunusedunusedunusedunusedunusedun"          //Unused
+#define IOT_CONFIG_DEVICE_5_KEY "unusedunusedunusedunusedunusedunusedunusedun"          //Unused
+#endif
+
+
+#ifdef BATCH_ELEVADOR
+#define IOT_CONFIG_DEVICE_GATEWAY_ID "2owqp9cpc1k"     //Unused
+#define IOT_CONFIG_DEVICE_1_ID "lqvsokgzkb"           //Unused
+#define IOT_CONFIG_DEVICE_2_ID "unusedDevic"            //Unused
+#define IOT_CONFIG_DEVICE_3_ID "unusedDevic"            //Unused
+#define IOT_CONFIG_DEVICE_4_ID "unusedDevic"           //Unused
+#define IOT_CONFIG_DEVICE_5_ID "unusedDevic"           //Unused
+
+#define IOT_CONFIG_DEVICE_GATEWAY_KEY "r3LfhSfYatuGI6OVV67ZF2ZONQ/WSimgM0grX3uZ7pM="    //Unused
+#define IOT_CONFIG_DEVICE_1_KEY "m50YTY6P2EeQ9jxBadh6V72t/kAmNTzTEedlFQUA7Co="          //Unused
+#define IOT_CONFIG_DEVICE_2_KEY "unusedunusedunusedunusedunusedunusedunusedun"          //Unused
+#define IOT_CONFIG_DEVICE_3_KEY "unusedunusedunusedunusedunusedunusedunusedun"          //Unused
+#define IOT_CONFIG_DEVICE_4_KEY "unusedunusedunusedunusedunusedunusedunusedun"          //Unused
+#define IOT_CONFIG_DEVICE_5_KEY "unusedunusedunusedunusedunusedunusedunusedun"          //Unused
+#endif
+
+
+#ifdef BATCH_UNUSED
+#define IOT_CONFIG_DEVICE_GATEWAY_ID "unusedDevic"     //Unused
+#define IOT_CONFIG_DEVICE_1_ID "unusedDevic"           //Unused
+#define IOT_CONFIG_DEVICE_2_ID "unusedDevic"            //Unused
+#define IOT_CONFIG_DEVICE_3_ID "unusedDevic"            //Unused
+#define IOT_CONFIG_DEVICE_4_ID "unusedDevic"           //Unused
+#define IOT_CONFIG_DEVICE_5_ID "unusedDevic"           //Unused
+
+#define IOT_CONFIG_DEVICE_GATEWAY_KEY "unusedunusedunusedunusedunusedunusedunusedun"    //Unused
+#define IOT_CONFIG_DEVICE_1_KEY "unusedunusedunusedunusedunusedunusedunusedun"          //Unused
+#define IOT_CONFIG_DEVICE_2_KEY "unusedunusedunusedunusedunusedunusedunusedun"          //Unused
+#define IOT_CONFIG_DEVICE_3_KEY "unusedunusedunusedunusedunusedunusedunusedun"          //Unused
 #define IOT_CONFIG_DEVICE_4_KEY "unusedunusedunusedunusedunusedunusedunusedun"          //Unused
 #define IOT_CONFIG_DEVICE_5_KEY "unusedunusedunusedunusedunusedunusedunusedun"          //Unused
 #endif

@@ -9,6 +9,7 @@
 #define MODBUS_TIMEOUT_BATCH_1      600
 #define REG_ADDRESS_BATCH_1         0
 #define NUM_REGISTERS_BATCH_1       72
+#define NUM_REGISTERS_BATCH_1       80
 #define NUM_DATA_BATCH_1            NUM_REGISTERS_BATCH_1/2
 
 #define MODBUS_TIMEOUT_BATCH_2      100
@@ -91,6 +92,15 @@ void EM111::copyData(float* buffer, int bufferSize){
 void EM111::getData(em1phData_t& payload){
   payload.comError = comError;
   copyData(payload.data, NUM_TOTAL_DATA_1PHASE);
+
+  payload.realEnergyConsTotal = realEnergyConsTotal;
+  payload.realEnergyDelivTotal = realEnergyDelivTotal;
+  payload.reactiveEnergyConsTotal = reactiveEnergyConsTotal;
+  payload.reactiveEnergyDelivTotal = reactiveEnergyDelivTotal;
+
+  for(int i=0; i<NUM_TOTAL_PERIOD_DATA_1PHASE; i++){
+      payload.periodData[i] = FLOAT_NO_PREV_DATA_AVAILABLE_ERROR_VALUE;
+  }
   return;
 }
 
@@ -133,6 +143,10 @@ void EM111::assignData(){
   getNextData();
   getNextData();
   frequency = getNextData();
+  realEnergyConsTotal = getNextData();
+  realEnergyDelivTotal = getNextData();
+  reactiveEnergyConsTotal = getNextData();
+  reactiveEnergyDelivTotal = getNextData();
   return;
 }
 
