@@ -5,7 +5,7 @@
 typedef struct em1phManagerData_struct_t{
   int deviceId;
   unsigned long timestamp;
-  int backup;
+  int dataSourceStatus;
   em1phData_t payload;
 } em1phManagerData_t;
 
@@ -13,7 +13,7 @@ typedef struct em1phManagerData_struct_t{
 typedef struct em3phManagerData_struct_t{
   int deviceId;
   unsigned long timestamp;
-  int backup;
+  int dataSourceStatus;
   em3phData_t payload;
 } em3phManagerData_t;
 

@@ -145,15 +145,13 @@ void loop()
     AzureIoTCollection.stop();
   }
 
-
   if(clockRunning) TriggerCollection.loop(networkUp);
-  if(clockRunning) DeviceCollection.loopDevicesNoNetwork();
 
+  if(clockRunning) DeviceCollection.loopDevicesNoNetwork();
   if(networkUp){
     weidosESP32Manager.loop();
     DeviceCollection.loopDevices();
   }
-  
 
 
 
@@ -165,12 +163,10 @@ void loop()
     DeviceCollection.sendDevicesProperties();
   }
 
-
   if(networkUp){
     AzureIoTCollection.loop();
     // SDBackupSenderCollection.loop();
   }
-
 
   if(millis()-prevTime>DELTA_TIME){
     prevTime = millis();

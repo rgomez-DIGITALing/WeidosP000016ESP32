@@ -264,7 +264,7 @@ void SDBackupSenderClass<T>::loop(){
 
             int sendError = 1;
             if(dataRecovered && fileDeleted){
-                msg.backup = 1;
+                msg.dataSourceStatus = 1;
                 size_t payload_buffer_length = 0;
                 Serial.println("[SDBackupSenderClass] Sending data to IoT Central");
                 uint8_t* payload_buffer = AzureIoTCollection[deviceId]->getDataBuffer2();

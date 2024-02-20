@@ -4,7 +4,7 @@
 #include <LogModule.h>
 #include <SDDataStorage.h>
 
-#include "../../payloadGenerators.h"
+#include "../../payloadGenerators/payloadGenerators.h"
 #include "../../collections/AzureIoTCollection/AzureIoTCollection.h"
 #include "../SDFolderManager/SDFolderManager.h"
 

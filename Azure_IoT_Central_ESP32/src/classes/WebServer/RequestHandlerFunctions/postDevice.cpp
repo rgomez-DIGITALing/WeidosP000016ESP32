@@ -1,7 +1,7 @@
 #include "postDevice.h"
 #include "handlerFunctions.h"
 #include "../pages/devicesPage.h"
-#include "../../../globalDefinitions/globalDefinitions.h"
+#include "../../../globalDefinitions/globalConfiguration.h"
 
 #include <ESPAsyncWebServer.h>
 

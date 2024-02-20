@@ -6,13 +6,8 @@
 DeviceCollectionClass::DeviceCollectionClass(){
     weidosManager = nullptr;
     for(int i=0; i<MAX_ALLOWED_DEVICES; i++){
-        EM110Pool[i] = nullptr;
-        EM111Pool[i] = nullptr;
-        EM120Pool[i] = nullptr;
-        EM122Pool[i] = nullptr;
-        EM220Pool[i] = nullptr;
-        EM750Pool[i] = nullptr;
-        EA750Pool[i] = nullptr;
+        EM1PHPool[i] = nullptr;
+        EM3PHPool[i] = nullptr;
         PulseMeterPool[i] = nullptr;
         AnalogMeterPool[i] = nullptr;
     }
@@ -62,15 +57,15 @@ void DeviceCollectionClass::init(){
 
 
 void DeviceCollectionClass::loopDevices(){
-    for(int i=0; i<MAX_ALLOWED_DEVICES; i++){
-        if(EM750Pool[i]){
-            if(EM750Pool[i]->loop() != ENERGY_METER_IDLE) return;
-        }
+    // for(int i=0; i<MAX_ALLOWED_DEVICES; i++){
+    //     if(EM750Pool[i]){
+    //         if(EM750Pool[i]->loop() != ENERGY_METER_IDLE) return;
+    //     }
 
-        if(EA750Pool[i]){
-            if(EA750Pool[i]->loop() != ENERGY_METER_IDLE) return;
-        }
-    }
+    //     if(EA750Pool[i]){
+    //         if(EA750Pool[i]->loop() != ENERGY_METER_IDLE) return;
+    //     }
+    // }
 
     return;
 }
@@ -80,25 +75,17 @@ void DeviceCollectionClass::loopDevicesNoNetwork(){
     if(weidosManager) weidosManager->loop();
 
     for(int i=0; i<MAX_ALLOWED_DEVICES; i++){
-        if(EM110Pool[i]){
-            if(EM110Pool[i]->loop() != ENERGY_METER_IDLE) return;
+        
+
+        if(EM1PHPool[i]){
+            if(EM1PHPool[i]->loop() != ENERGY_METER_IDLE) return;
         }
 
-        if(EM111Pool[i]){
-            if(EM111Pool[i]->loop() != ENERGY_METER_IDLE) return;
+
+        if(EM3PHPool[i]){
+            if(EM3PHPool[i]->loop() != ENERGY_METER_IDLE) return;
         }
 
-        if(EM120Pool[i]){
-            if(EM120Pool[i]->loop() != ENERGY_METER_IDLE) return;
-        }
-
-        if(EM122Pool[i]){
-            if(EM122Pool[i]->loop() != ENERGY_METER_IDLE) return;
-        }
-
-        if(EM220Pool[i]){
-            if(EM220Pool[i]->loop() != ENERGY_METER_IDLE) return;
-        }
 
         if(PulseMeterPool[i]) PulseMeterPool[i]->loop();
         if(AnalogMeterPool[i]) AnalogMeterPool[i]->loop();
@@ -114,40 +101,23 @@ bool DeviceCollectionClass::triggerUpdate(uint8_t slot){
         return true;
     }
 
-    if(EA750Pool[slot]){
-        EA750Pool[slot]->triggerUpdate();
+    if(EM1PHPool[slot]){
+        Serial.println("Let's trigger EM1PH");
+        EM1PHPool[slot]->triggerUpdate();
         return true;
     }
 
-    if(EM750Pool[slot]){
-        EM750Pool[slot]->triggerUpdate();
+    if(EM3PHPool[slot]){
+        Serial.println("Let's trigger EM3PH");
+        EM3PHPool[slot]->triggerUpdate();
         return true;
     }
 
-    if(EM110Pool[slot]){
-        EM110Pool[slot]->triggerUpdate();
-        return true;
-    }
-    if(EM111Pool[slot]){
-            EM111Pool[slot]->triggerUpdate();
-        return true;
-    }
-    if(EM120Pool[slot]){
-        EM120Pool[slot]->triggerUpdate();
-        return true;
-    }
-    if(EM122Pool[slot]){
-        EM122Pool[slot]->triggerUpdate();
-        return true;
-    }
-    if(EM220Pool[slot]){
-        EM220Pool[slot]->triggerUpdate();
-        return true;
-    }
     if(PulseMeterPool[slot]){
         PulseMeterPool[slot]->triggerUpdate();
         return true;
     }
+
     if(AnalogMeterPool[slot]){
         AnalogMeterPool[slot]->triggerUpdate();
         return true;
@@ -162,13 +132,8 @@ bool DeviceCollectionClass::triggerUpdate(uint8_t slot){
 
 void DeviceCollectionClass::sendDevicesProperties(){
     for(int i=0; i<MAX_ALLOWED_DEVICES; i++){
-        if(EM110Pool[i]) EM110Pool[i]->sendProperties();
-        if(EM111Pool[i]) EM111Pool[i]->sendProperties();
-        if(EM120Pool[i]) EM120Pool[i]->sendProperties();
-        if(EM122Pool[i]) EM122Pool[i]->sendProperties();
-        if(EM220Pool[i]) EM220Pool[i]->sendProperties();
-        if(EM750Pool[i]) EM750Pool[i]->sendProperties();
-        if(EA750Pool[i]) EA750Pool[i]->sendProperties();
+        if(EM1PHPool[i]) EM1PHPool[i]->sendProperties();
+        if(EM3PHPool[i]) EM3PHPool[i]->sendProperties();
         if(PulseMeterPool[i]) PulseMeterPool[i]->sendProperties();
         if(AnalogMeterPool[i]) AnalogMeterPool[i]->sendProperties();
     }
@@ -192,46 +157,93 @@ void DeviceCollectionClass::setDevice(WeidosManager& weidos){
     weidosManager = &weidos;
 }
 
-void DeviceCollectionClass::setDevice(EM110Manager& em){ 
-    int slot = em.getDeviceId();
-    EM110Pool[slot] = &em;
+
+void DeviceCollectionClass::setDevice(EM110Manager* em){ 
+    int slot = em->getDeviceId();
+    EM1PHPool[slot] = em;
 }
 
 
-void DeviceCollectionClass::setDevice(EM111Manager& em){
-    int slot = em.getDeviceId();
-    EM111Pool[slot] = &em;
+void DeviceCollectionClass::setDevice(EM111Manager* em){
+    int slot = em->getDeviceId();
+    EM1PHPool[slot] = em;
 }
 
 
-void DeviceCollectionClass::setDevice(EM120Manager& em){
-    int slot = em.getDeviceId();
-    EM120Pool[slot] = &em;
+void DeviceCollectionClass::setDevice(EM120Manager* em){
+    int slot = em->getDeviceId();
+    EM3PHPool[slot] = em;
 }
 
 
-void DeviceCollectionClass::setDevice(EM122Manager& em){
-    int slot = em.getDeviceId();
-    EM122Pool[slot] = &em;
+void DeviceCollectionClass::setDevice(EM122Manager* em){
+    int slot = em->getDeviceId();
+    EM3PHPool[slot] = em;
 }
 
 
-void DeviceCollectionClass::setDevice(EM220Manager& em){
-    int slot = em.getDeviceId();
-    EM220Pool[slot] = &em;
+void DeviceCollectionClass::setDevice(EM220Manager* em){
+    int slot = em->getDeviceId();
+    EM3PHPool[slot] = em;
 }
 
 
-void DeviceCollectionClass::setDevice(EM750Manager& em){
-    int slot = em.getDeviceId();
-    EM750Pool[slot] = &em;
+void DeviceCollectionClass::setDevice(EM750Manager* em){
+    int slot = em->getDeviceId();
+    EM3PHPool[slot] = em;
 }
 
 
-void DeviceCollectionClass::setDevice(EA750Manager& em){
-    int slot = em.getDeviceId();
-    EA750Pool[slot] = &em;
+void DeviceCollectionClass::setDevice(EA750Manager* em){
+    int slot = em->getDeviceId();
+    EM3PHPool[slot] = em;
 }
+
+
+
+
+
+
+// void DeviceCollectionClass::setDevice(EM110Manager& em){ 
+//     int slot = em.getDeviceId();
+//     EM110Pool[slot] = &em;
+// }
+
+
+// void DeviceCollectionClass::setDevice(EM111Manager& em){
+//     int slot = em.getDeviceId();
+//     EM111Pool[slot] = &em;
+// }
+
+
+// void DeviceCollectionClass::setDevice(EM120Manager& em){
+//     int slot = em.getDeviceId();
+//     EM120Pool[slot] = &em;
+// }
+
+
+// void DeviceCollectionClass::setDevice(EM122Manager& em){
+//     int slot = em.getDeviceId();
+//     EM122Pool[slot] = &em;
+// }
+
+
+// void DeviceCollectionClass::setDevice(EM220Manager& em){
+//     int slot = em.getDeviceId();
+//     EM220Pool[slot] = &em;
+// }
+
+
+// void DeviceCollectionClass::setDevice(EM750Manager& em){
+//     int slot = em.getDeviceId();
+//     EM750Pool[slot] = &em;
+// }
+
+
+// void DeviceCollectionClass::setDevice(EA750Manager& em){
+//     int slot = em.getDeviceId();
+//     EA750Pool[slot] = &em;
+// }
 
 
 void DeviceCollectionClass::setDevice(PulseMeterManager& pulseMeter){

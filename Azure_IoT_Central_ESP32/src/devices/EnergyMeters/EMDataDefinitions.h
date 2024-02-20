@@ -4,14 +4,35 @@
 
 #define NUM_TOTAL_DATA_1PHASE 11
 #define NUM_TOTAL_DATA_3PHASE 60
+
 #define NUM_TOTAL_CONS_DELIV_DATA_1PHASE 4
-#define NUM_TOTAL_CONS_DELIV_DATA_3PHASE 15
-#define NUM_TOTAL_PERIOD_DATA_1PHASE 6
-#define NUM_TOTAL_PERIOD_DATA_3PHASE 24
+#define NUM_TOTAL_CONS_DELIV_DATA_3PHASE 14
+
+#define NUM_TOTAL_VALUE_LINE_CONS_DELIV_DATA_3PHASE 8
+#define NUM_TOTAL_BASIC_LINE_CONS_DELIV_DATA_3PHASE 12
+#define BASIC_LINE_CONS_DELIV_FIRST_INDEX 2
+
+#define NUM_TOTAL_ADJUSTED_DATA_3PHASE 6
+
+#define NUM_TOTAL_INCREMENTAL_DATA_1PHASE 6
+#define NUM_TOTAL_INCREMENTAL_DATA_3PHASE 12
 
 //static const double NO_PREV_DATA_AVAILABLE_ERROR_VALUE = (double)999999999999998;
 //#define NUM_TOTAL_DATA_EM750 60
-
+typedef enum {
+  EM_NONE,
+  EM110_RTU,
+  EM111_RTU,
+  EM120_RTU,
+  EM122_RTU,
+  EM220_RTU,
+  EM110_TCP,
+  EM111_TCP,
+  EM120_TCP,
+  EM122_TCP,
+  EM750_TCP,
+  EA750_TCP,
+} emType_t;
 
 
 typedef enum{
@@ -22,23 +43,6 @@ typedef enum{
   COM_BATCH_3_ERROR,
   COM_BATCH_4_ERROR
 } COM_error_t;
-
-
-
-enum EM1PHDataArrayIndex{
- EM1PH_VOLTAGE_L1N_INDEX,
- EM1PH_CURRENT_L1_INDEX,
- EM1PH_TOTAL_REAL_POWER_INDEX,
- EM1PH_TOTAL_APPARENT_POWER_INDEX,
- EM1PH_TOTAL_REACTIVE_POWER_INDEX,
- EM1PH_TOTAL_POWER_FACTOR_INDEX,
- EM1PH_FREQUENCY_INDEX,
- EM1PH_TOTAL_REAL_ENERGY_INDEX,
- EM1PH_TOTAL_REACTIVE_ENERGY_INDEX,
- EM1PH_ROTATION_FIELD_INDEX,
- EM1PH_TOTAL_APPARENT_ENERGY_INDEX
-};
-
 
 
 
@@ -74,15 +78,15 @@ typedef struct em1phData_struct_t{
     
 
     union{
-      float periodData[NUM_TOTAL_PERIOD_DATA_1PHASE];
+      float incrementalData[NUM_TOTAL_INCREMENTAL_DATA_1PHASE];
 
       struct{
-        float periodRealPowerTotal;
-        float periodApparentPowerTotal;
-        float periodReactivePowerTotal;
-        float periodRealEnergyTotal;
-        float periodApparentEnergyTotal;
-        float periodReactiveEnergyTotal;
+        float incrementalRealPowerTotal;
+        float incrementalApparentPowerTotal;
+        float incrementalReactivePowerTotal;
+        float incrementalRealEnergyTotal;
+        float incrementalApparentEnergyTotal;
+        float incrementalReactiveEnergyTotal;
       };
     };
 } em1phData_t;
@@ -119,20 +123,20 @@ typedef struct em3phData_struct_t{
       };
     };
 
+//Cons/Deliv data
     union{
       float consDelivData[NUM_TOTAL_CONS_DELIV_DATA_3PHASE];
 
       struct{
+        //Data via Modbus
+        float realEnergyConsTotal;
+        float realEnergyDelivTotal;
         float realEnergyConsL1;
         float realEnergyConsL2;
         float realEnergyConsL3;
-        float realEnergyConsTotal;
         float realEnergyDelivL1;
         float realEnergyDelivL2;
         float realEnergyDelivL3;
-        float realEnergyDelivTotal;
-        float realEnergySum;
-        
         float reactiveEnergyConsL1;
         float reactiveEnergyConsL2;
         float reactiveEnergyConsL3;
@@ -142,123 +146,37 @@ typedef struct em3phData_struct_t{
       };
     };
 
+//Adjusted data
     union{
-      float periodData[NUM_TOTAL_PERIOD_DATA_3PHASE];
+      float adjustedData[NUM_TOTAL_ADJUSTED_DATA_3PHASE];
 
       struct{
-        float periodRealPowerL1N;
-        float periodRealPowerL2N;
-        float periodRealPowerL3N;
-        float periodRealPowerTotal;
-        float periodApparentPowerL1N;
-        float periodApparentPowerL2N;
-        float periodApparentPowerL3N;
-        float periodApparentPowerTotal;
-        float periodReactivePowerL1N;
-        float periodReactivePowerL2N;
-        float periodReactivePowerL3N;
-        float periodReactivePowerTotal;
-        float periodRealEnergyL1N;
-        float periodRealEnergyL2N;
-        float periodRealEnergyL3N;
-        float periodRealEnergyTotal;
-        float periodApparentEnergyL1;
-        float periodApparentEnergyL2;
-        float periodApparentEnergyL3;
-        float periodApparentEnergyTotal;
-        float periodReactiveEnergyL1;
-        float periodReactiveEnergyL2;
-        float periodReactiveEnergyL3;
-        float periodReactiveEnergyTotal;
+        float realEnergyAdjustedL1;
+        float realEnergyAdjustedL2;
+        float realEnergyAdjustedL3;
+        float realEnergyAdjustedTotal;
+        float realEnergyConsTotalSum;
+        float realEnergyDelivTotalSum;
       };
     };
+
+  union{
+      float incrementalData[NUM_TOTAL_INCREMENTAL_DATA_3PHASE];
+
+      struct{
+        float incrementalRealEnergyAdjustedL1;
+        float incrementalRealEnergyAdjustedL2;
+        float incrementalRealEnergyAdjustedL3;
+        float incrementalRealEnergyAdjustedTotal;
+        float incrementalApparentEnergyL1;
+        float incrementalApparentEnergyL2;
+        float incrementalApparentEnergyL3;
+        float incrementalApparentEnergyTotal;
+        float incrementalReactiveEnergyL1;
+        float incrementalReactiveEnergyL2;
+        float incrementalReactiveEnergyL3;
+        float incrementalReactiveEnergyTotal;
+      };
+    };
+    
 } em3phData_t;
-
-
-
-enum EM3PHDataArrayIndex{
-  EM3PH_VOLTAGE_L1N_INDEX,
-  EM3PH_VOLTAGE_L2N_INDEX,
-  EM3PH_VOLTAGE_L3N_INDEX,
-  EM3PH_CURRENT_L1_INDEX,
-  EM3PH_CURRENT_L2_INDEX,
-  EM3PH_CURRENT_L3_INDEX,
-  EM3PH_REAL_POWER_L1N_INDEX,
-  EM3PH_REAL_POWER_L2N_INDEX,
-  EM3PH_REAL_POWER_L3N_INDEX,
-  EM3PH_APPARENT_POWER_L1N_INDEX,
-  EM3PH_APPARENT_POWER_L2N_INDEX,
-  EM3PH_APPARENT_POWER_L3N_INDEX,
-  EM3PH_REACTIVE_POWER_L1N_INDEX,
-  EM3PH_REACTIVE_POWER_L2N_INDEX,
-  EM3PH_REACTIVE_POWER_L3N_INDEX,
-  EM3PH_POWER_FACTOR_L1N_INDEX,
-  EM3PH_POWER_FACTOR_L2N_INDEX,
-  EM3PH_POWER_FACTOR_L3N_INDEX,
-  EM3PH_COS_PHI_L1_INDEX,
-  EM3PH_COS_PHI_L2_INDEX,
-  EM3PH_COS_PHI_L3_INDEX,
-  EM3PH_AVG_VOLTAGE_LN_INDEX,
-  EM3PH_AVG_CURRENTL_INDEX,
-  EM3PH_CURRENT_TOTAL_INDEX,
-  EM3PH_REAL_POWER_TOTAL_INDEX,
-  EM3PH_APPARENT_POWER_TOTAL_INDEX,
-  EM3PH_REACTIVE_POWER_TOTAL_INDEX,
-  EM3PH_POWER_FACTOR_TOTAL_INDEX,//
-  EM3PH_AVG_COS_PHI_INDEX,
-  EM3PH_FREQUENCY_INDEX,
-  EM3PH_APPARENT_ENERGY_TOTAL_INDEX,
-  EM3PH_VOLTAGE_L1L2_INDEX,
-  EM3PH_VOLTAGE_L2L3_INDEX,
-  EM3PH_VOLTAGE_L1L3_INDEX,
-  EM3PH_AVG_VOLTAGE_LL_INDEX,
-  EM3PH_CURRENT_NEUTRAL_INDEX,
-  EM3PH_THD_VOLTS_L1N_INDEX,
-  EM3PH_THD_VOLTS_L2N_INDEX,
-  EM3PH_THD_VOLTS_L3N_INDEX,
-  EM3PH_THD_CURRENT_L1N_INDEX,
-  EM3PH_THD_CURRENT_L2N_INDEX,
-  EM3PH_THD_CURRENT_L3N_INDEX,
-  EM3PH_AVG_THD_VOLTS_LN_INDEX,
-  EM3PH_AVG_THD_CURRENT_LN_INDEX,
-  EM3PH_THD_VOLTS_L1L2_INDEX,
-  EM3PH_THD_VOLTS_L2L3_INDEX,
-  EM3PH_THD_VOLTS_L1L3_INDEX,
-  EM3PH_AVG_THD_VOLTS_LL_INDEX,
-  EM3PH_REAL_ENERGY_TOTAL_INDEX,
-  EM3PH_REACTIVE_ENERGY_TOTAL_INDEX,
-  EM3PH_REAL_ENERGY_L1N_INDEX,
-  EM3PH_REAL_ENERGY_L2N_INDEX,
-  EM3PH_REAL_ENERGY_L3N_INDEX,
-  EM3PH_REACTIVE_ENERGY_L1_INDEX,
-  EM3PH_REACTIVE_ENERGY_L2_INDEX,
-  EM3PH_REACTIVE_ENERGY_L3_INDEX,
-  EM3PH_APPARENT_ENERGY_L1_INDEX,
-  EM3PH_APPARENT_ENERGY_L2_INDEX,
-  EM3PH_APPARENT_ENERGY_L3_INDEX,
-  EM3PH_ROT_FIELD_INDEX,
-  EM3PH_PERIOD_REAL_POWER_L1N,
-  EM3PH_PERIOD_REAL_POWER_L2N,
-  EM3PH_PERIOD_REAL_POWER_L3N,
-  EM3PH_PERIOD_REAL_POWER_TOTAL,
-  EM3PH_PERIOD_APPARENT_POWER_L1N,
-  EM3PH_PERIOD_APPARENT_POWER_L2N,
-  EM3PH_PERIOD_APPARENT_POWER_L3N,
-  EM3PH_PERIOD_APPARENT_POWER_TOTAL,
-  EM3PH_PERIOD_REACTIVE_POWER_L1N,
-  EM3PH_PERIOD_REACTIVE_POWER_L2N,
-  EM3PH_PERIOD_REACTIVE_POWER_L3N,
-  EM3PH_PERIOD_REACTIVE_POWER_TOTAL,
-  EM3PH_PERIOD_REAL_ENERGY_L1N,
-  EM3PH_PERIOD_REAL_ENERGY_L2N,
-  EM3PH_PERIOD_REAL_ENERGY_L3N,
-  EM3PH_PERIOD_REAL_ENERGY_TOTAL,
-  EM3PH_PERIOD_APPARENT_ENERGY_L1,
-  EM3PH_PERIOD_APPARENT_ENERGY_L2,
-  EM3PH_PERIOD_APPARENT_ENERGY_L3,
-  EM3PH_PERIOD_APPARENT_ENERGY_TOTAL,
-  EM3PH_PERIOD_REACTIVE_ENERGY_L1,
-  EM3PH_PERIOD_REACTIVE_ENERGY_L2,
-  EM3PH_PERIOD_REACTIVE_ENERGY_L3,
-  EM3PH_PERIOD_REACTIVE_ENERGY_TOTAL
-};

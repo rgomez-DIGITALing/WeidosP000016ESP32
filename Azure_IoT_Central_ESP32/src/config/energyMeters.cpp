@@ -14,36 +14,20 @@
 #if defined BATCH_TEST && defined FLOW_METER_TEST
 PulseMeterManager pulseMeterManager(1, DI_7, 3.0f);
 PulseMeterManager pulseMeterManager2(2, DI_6, 3.0f);
+TriggerClass weidosESP32Trigger(0);
 TriggerClass pulseMeterTrigger(0);
 TriggerClass pulseMeter2Trigger(1);
 //AnalogMeterManager analogMeterManager(2, ADI_1, 3.0f);
 #endif
 
 
+
 #if defined BATCH_TEST && defined EM750_TEST
 static EthernetClient ethernetClientModbus(7);
 static ModbusTCPClient modbusTCPClient(ethernetClientModbus);
 
-IPAddress ipLineaEmpaquetado(10, 88, 47, 221);          //Linea Empaquetado
-IPAddress ipModula4(10, 88, 47, 222);        //Modula 4
-IPAddress ipModula11(10, 88, 47, 223);        //Modula 11
-IPAddress ipCompresorAireComprimido(10, 88, 47, 203);        //Compresor aire comprimido
-IPAddress ipAcOficinas(10, 88, 47, 241);        //Compresor aire comprimido
-
-EM750 lineaEmpaquetadoEM(modbusTCPClient, ipLineaEmpaquetado);
-EM750 modula4EM(modbusTCPClient, ipModula4);
-EM750 modula11EM(modbusTCPClient, ipModula11);
-EM750 compresorAireComprimidoEM(modbusTCPClient, ipCompresorAireComprimido);
-EM750 acOficinasEM(modbusTCPClient, ipAcOficinas);
-
-EM750Manager lineaEmpaquetado(lineaEmpaquetadoEM, 1, MODBUS_NUMBER_TRIES);
-EM750Manager modula4(modula4EM, 2, MODBUS_NUMBER_TRIES);
-EM750Manager modula11(modula11EM, 3, MODBUS_NUMBER_TRIES);
-EM750Manager compresorAireComprimido(compresorAireComprimidoEM, 4, MODBUS_NUMBER_TRIES);
-EM750Manager acOficinas(acOficinasEM, 5, MODBUS_NUMBER_TRIES);
-
 TriggerClass weidosESP32Trigger(0);
-TriggerClass lineaEmpaquetadoTrigger(1);
+TriggerClass generalTrigger(1);
 TriggerClass modula4Trigger(2);
 TriggerClass modula11Trigger(3);
 TriggerClass compresorAireComprimidoTrigger(4);
@@ -51,6 +35,14 @@ TriggerClass acOficinasTrigger(5);
 #endif
 
 
+#if defined BATCH_TEST && defined RTU_TEST
+TriggerClass weidosESP32Trigger(0);
+TriggerClass barcelonaTrigger(1);
+TriggerClass automationTrigger(2);
+TriggerClass parisMilanTrigger(3);
+TriggerClass rackTrigger(5);
+TriggerClass saiTrigger(5);
+#endif
 
 
 #if defined BATCH_GENERAL_ROBOT
@@ -196,12 +188,25 @@ void setTriggers(){
 
   #if defined BATCH_TEST && defined EM750_TEST
   TriggerCollection.setTrigger(weidosESP32Trigger);
-  TriggerCollection.setTrigger(lineaEmpaquetadoTrigger);
+  TriggerCollection.setTrigger(generalTrigger);
   TriggerCollection.setTrigger(modula4Trigger);
   TriggerCollection.setTrigger(modula11Trigger);
   TriggerCollection.setTrigger(compresorAireComprimidoTrigger);
   TriggerCollection.setTrigger(acOficinasTrigger);
   #endif
+
+  #if defined BATCH_TEST && defined  RTU_TEST
+  TriggerCollection.setTrigger(weidosESP32Trigger);
+  TriggerCollection.setTrigger(barcelonaTrigger);
+  TriggerCollection.setTrigger(automationTrigger);
+  TriggerCollection.setTrigger(parisMilanTrigger);
+  TriggerCollection.setTrigger(rackTrigger);
+  TriggerCollection.setTrigger(saiTrigger);
+  #endif
+
+
+
+
 
 
 
@@ -275,6 +280,9 @@ void setTriggers(){
 }
 
 
+
+
+
 void configureDeviceCollection(){
 
   #if defined BATCH_TEST && defined FLOW_METER_TEST
@@ -284,11 +292,38 @@ void configureDeviceCollection(){
   #endif
 
   #if defined BATCH_TEST && defined EM750_TEST
-  DeviceCollection.setDevice(lineaEmpaquetado);
+  IPAddress ipGeneral(10, 88, 47, 202);        //General
+  IPAddress ipModula4(10, 88, 47, 222);        //Modula 4
+  IPAddress ipModula11(10, 88, 47, 223);        //Modula 11
+  IPAddress ipCompresorAireComprimido(10, 88, 47, 203);        //Compresor aire comprimido
+  IPAddress ipAcOficinas(10, 88, 47, 241);        //Compresor aire comprimido
+
+  EA750Manager* general = new EA750Manager(modbusTCPClient, ipGeneral, 1);
+  EM750Manager* modula4 = new EM750Manager(modbusTCPClient, ipModula4, 2);
+  EM750Manager* modula11 = new EM750Manager(modbusTCPClient, ipModula11, 3);
+  EM750Manager* compresorAireComprimido = new EM750Manager(modbusTCPClient, ipCompresorAireComprimido, 4);
+  EM750Manager* acOficinas = new EM750Manager(modbusTCPClient, ipAcOficinas, 5);
+  DeviceCollection.setDevice(general);
   DeviceCollection.setDevice(modula4);
   DeviceCollection.setDevice(modula11);
   DeviceCollection.setDevice(compresorAireComprimido);
   DeviceCollection.setDevice(acOficinas);
+  #endif
+
+  #if defined BATCH_TEST && defined RTU_TEST
+  
+  EM122Manager* barcelona = new EM122Manager(1);
+  EM220Manager* automation = new EM220Manager(2);
+  EM120Manager* parisMilan = new EM120Manager(3, 20, 1);
+  EM120Manager* rack = new EM120Manager(4, 50, 1);
+  EM120Manager* sai = new EM120Manager(5, 50, 1);
+
+  
+  DeviceCollection.setDevice(barcelona);
+  DeviceCollection.setDevice(automation);
+  DeviceCollection.setDevice(parisMilan);
+  DeviceCollection.setDevice(rack);
+  DeviceCollection.setDevice(sai);
   #endif
 
 
@@ -363,36 +398,39 @@ void setEnergyMeterProperties(){
   #endif
 
   #if defined BATCH_TEST && defined EM750_TEST
-  EM750* energyMeter = nullptr;
-  energyMeter = lineaEmpaquetado.getEnergyMeter();
-  energyMeter->setAsset(ASSET_LINEA_EMPAQUETADO);
-  energyMeter->setIdentifier(IDENTIFIER_LINEA_EMPAQUETADO);
-  energyMeter->setLocation1(LOCATION_NAVE_400);
-  energyMeter->setLocation2(LOCATION_CUADRO_ALMACEN);
 
-  energyMeter = modula4.getEnergyMeter();
-  energyMeter->setAsset(ASSET_MODULA_4);
-  energyMeter->setIdentifier(IDENTIFIER_MODULA_4);
-  energyMeter->setLocation1(LOCATION_NAVE_400);
-  energyMeter->setLocation2(LOCATION_CUADRO_ALMACEN);
 
-  energyMeter = modula11.getEnergyMeter();
-  energyMeter->setAsset(ASSET_MODULA_11);
-  energyMeter->setIdentifier(IDENTIFIER_MODULA_11);
-  energyMeter->setLocation1(LOCATION_NAVE_400);
-  energyMeter->setLocation2(LOCATION_CUADRO_ALMACEN);
 
-  energyMeter = compresorAireComprimido.getEnergyMeter();
-  energyMeter->setAsset(ASSET_AIRE_COMPRIMIDO);
-  energyMeter->setIdentifier(IDENTIFIER_AIRE_COMPRIMIDO);
-  energyMeter->setLocation1(LOCATION_NAVE_400);
-  energyMeter->setLocation2(LOCATION_CUADRO_LETS_CONNECT);
+  // EM750* energyMeter = nullptr;
+  // energyMeter = lineaEmpaquetado.getEnergyMeter();
+  // energyMeter->setAsset(ASSET_LINEA_EMPAQUETADO);
+  // energyMeter->setIdentifier(IDENTIFIER_LINEA_EMPAQUETADO);
+  // energyMeter->setLocation1(LOCATION_NAVE_400);
+  // energyMeter->setLocation2(LOCATION_CUADRO_ALMACEN);
 
-  energyMeter = acOficinas.getEnergyMeter();
-  energyMeter->setAsset(ASSET_AIRE_ACONDICIONADO);
-  energyMeter->setIdentifier(IDENTIFIER_AIRE_ACONDICIONADO);
-  energyMeter->setLocation1(LOCATION_NAVE_400);
-  energyMeter->setLocation2(LOCATION_CUADRO_ENTRADA);
+  // energyMeter = modula4.getEnergyMeter();
+  // energyMeter->setAsset(ASSET_MODULA_4);
+  // energyMeter->setIdentifier(IDENTIFIER_MODULA_4);
+  // energyMeter->setLocation1(LOCATION_NAVE_400);
+  // energyMeter->setLocation2(LOCATION_CUADRO_ALMACEN);
+
+  // energyMeter = modula11.getEnergyMeter();
+  // energyMeter->setAsset(ASSET_MODULA_11);
+  // energyMeter->setIdentifier(IDENTIFIER_MODULA_11);
+  // energyMeter->setLocation1(LOCATION_NAVE_400);
+  // energyMeter->setLocation2(LOCATION_CUADRO_ALMACEN);
+
+  // energyMeter = compresorAireComprimido.getEnergyMeter();
+  // energyMeter->setAsset(ASSET_AIRE_COMPRIMIDO);
+  // energyMeter->setIdentifier(IDENTIFIER_AIRE_COMPRIMIDO);
+  // energyMeter->setLocation1(LOCATION_NAVE_400);
+  // energyMeter->setLocation2(LOCATION_CUADRO_LETS_CONNECT);
+
+  // energyMeter = acOficinas.getEnergyMeter();
+  // energyMeter->setAsset(ASSET_AIRE_ACONDICIONADO);
+  // energyMeter->setIdentifier(IDENTIFIER_AIRE_ACONDICIONADO);
+  // energyMeter->setLocation1(LOCATION_NAVE_400);
+  // energyMeter->setLocation2(LOCATION_CUADRO_ENTRADA);
   #endif
 
 

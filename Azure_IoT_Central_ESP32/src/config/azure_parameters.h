@@ -6,13 +6,14 @@
 //#define BATCH_LINEA_EMPAQUETADO_AC_OFICINAS
 //#define BATCH_LETS_CONNECT
 //#define BATCH_IT_SOPORTE
-#define BATCH_BARCELONA_SAI
+// #define BATCH_BARCELONA_SAI
 //#define BATCH_GAC_LETS_CONNECT
 //#define BATCH_ELEVADOR
 //#define BATCH_TRANSELEVADORES_FAST
-//#define BATCH_TEST
-//#define FLOW_METER_TEST
-//#define EM750_TEST
+#define BATCH_TEST
+// #define FLOW_METER_TEST
+#define EM750_TEST
+// #define RTU_TEST
 
 
 // Azure IoT Central
