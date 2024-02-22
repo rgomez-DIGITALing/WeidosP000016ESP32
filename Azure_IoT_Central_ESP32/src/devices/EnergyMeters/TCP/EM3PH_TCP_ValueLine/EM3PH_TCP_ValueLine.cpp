@@ -10,8 +10,8 @@
 #define NUM_REGISTERS_BATCH_1       122
 #define NUM_DATA_BATCH_1            NUM_REGISTERS_BATCH_1/2
 
-#define REG_ADDRESS_BATCH_2         828
-#define NUM_REGISTERS_BATCH_2       20
+#define REG_ADDRESS_BATCH_2         826
+#define NUM_REGISTERS_BATCH_2       21
 #define NUM_DATA_BATCH_2            NUM_REGISTERS_BATCH_2/2
 
 #define REG_ADDRESS_BATCH_3         10085
@@ -153,6 +153,7 @@ void EM3PH_TCP_ValueLine::assignData(){
 }
 
 void EM3PH_TCP_ValueLine::assignData2(){
+    cosPhiTotal = getNextData();
     powerFactorL1N = getNextData();
     powerFactorL2N = getNextData();
     powerFactorL3N = getNextData();
@@ -174,9 +175,9 @@ void EM3PH_TCP_ValueLine::computeData(){
     avgVoltageLL = (voltageL1L2 + voltageL2L3 + voltageL1L3)/3.0f;
     avgCurrentL = (currentL1 + currentL2 + currentL3)/3.0f;
 
-    if(apparentPowerTotal != 0) avgCosPhi = realPowerTotal/apparentPowerTotal;
-    else avgCosPhi = -1;
-    if(isnan(avgCosPhi)) avgCosPhi = -1;  //Check if, after all, it is still NaN
+    // if(apparentPowerTotal != 0) avgCosPhi = realPowerTotal/apparentPowerTotal;
+    // else avgCosPhi = -1;
+    // if(isnan(avgCosPhi)) avgCosPhi = -1;  //Check if, after all, it is still NaN
 
     avgTHDVoltsLN = (THDVoltsL1N + THDVoltsL2N + THDVoltsL3N)/3.0f;
     avgTHDCurrentLN = (THDCurrentL1N + THDCurrentL2N + THDCurrentL3N)/3.0f;
@@ -201,10 +202,10 @@ float EM3PH_TCP_ValueLine::getNextData(){
 
 
 void EM3PH_TCP_ValueLine::updatePreviousValues(){
-  prevRealEnergyAdjustedL1 = realEnergyL1;
-  prevRealEnergyAdjustedL2 = realEnergyL2;
-  prevRealEnergyAdjustedL3 = realEnergyL3;
-  prevRealEnergyAdjustedTotal = realEnergyTotal;
+  prevRealEnergyAdjustedL1 = realEnergyAdjustedL1;
+  prevRealEnergyAdjustedL2 = realEnergyAdjustedL2;
+  prevRealEnergyAdjustedL3 = realEnergyAdjustedL3;
+  prevRealEnergyAdjustedTotal = realEnergyAdjustedTotal;
   prevApparentEnergyL1 = apparentEnergyL1;
   prevApparentEnergyL2 = apparentEnergyL2;
   prevApparentEnergyL3 = apparentEnergyL3;

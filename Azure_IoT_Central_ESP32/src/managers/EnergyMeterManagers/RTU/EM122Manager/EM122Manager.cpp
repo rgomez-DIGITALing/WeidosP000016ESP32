@@ -5,8 +5,8 @@
 #include "../../../../collections/AzureIoTCollection/AzureIoTCollection.h"
 
 
-EM122Manager::EM122Manager(int deviceId) : EM3PHManager_BaseClass(deviceId) {
-  Serial.println("Let's create an EM750 Manager");
+EM122Manager::EM122Manager(uint8_t deviceId) : EM3PHManager_BaseClass(deviceId) {
+  Serial.println("Let's create an EM122 Manager");
   em3ph = new EM3PH_RTU_BasicLine(deviceId);
 }
 

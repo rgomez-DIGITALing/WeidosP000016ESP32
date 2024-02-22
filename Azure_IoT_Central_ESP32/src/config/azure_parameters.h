@@ -3,17 +3,17 @@
 
 
 // #define BATCH_GENERAL_ROBOT
-//#define BATCH_LINEA_EMPAQUETADO_AC_OFICINAS
-//#define BATCH_LETS_CONNECT
-//#define BATCH_IT_SOPORTE
+// #define BATCH_LINEA_EMPAQUETADO_AC_OFICINAS
+// #define BATCH_LETS_CONNECT
+// #define BATCH_IT_SOPORTE
 // #define BATCH_BARCELONA_SAI
-//#define BATCH_GAC_LETS_CONNECT
-//#define BATCH_ELEVADOR
-//#define BATCH_TRANSELEVADORES_FAST
+// #define BATCH_GAC_LETS_CONNECT
+// #define BATCH_ELEVADOR
+// #define BATCH_TRANSELEVADORES_FAST
 #define BATCH_TEST
 // #define FLOW_METER_TEST
-#define EM750_TEST
-// #define RTU_TEST
+// #define EM750_TEST
+#define RTU_TEST
 
 
 // Azure IoT Central
@@ -41,22 +41,6 @@
 #endif
 
 
-#ifdef BATCH_TRANSELEVADORES_FAST
-#define IOT_CONFIG_DEVICE_GATEWAY_ID "cesql7bg96"     //Gateway 
-#define IOT_CONFIG_DEVICE_1_ID "1sbmjyrz1oa"           //Transelevador 1
-#define IOT_CONFIG_DEVICE_2_ID "1b66i9vydmw"            //Transelevador 2
-#define IOT_CONFIG_DEVICE_3_ID "oahkpmo0i1"            //Transelevador 3
-#define IOT_CONFIG_DEVICE_4_ID "unusedDevic"           //Unused
-#define IOT_CONFIG_DEVICE_5_ID "unusedDevic"           //Unused
-
-#define IOT_CONFIG_DEVICE_GATEWAY_KEY "cDluf2IWbhMz8wHGJQtA94pJrHTSFzAlP/2ZvLxomOo="    //Gateway 
-#define IOT_CONFIG_DEVICE_1_KEY "ZCJOH3zvqDBusCCTdtMHO2rcv4qWgVq5bzgkxwwIQIM="          //Transelevador 1
-#define IOT_CONFIG_DEVICE_2_KEY "FH7ktxpbRgW2Nq/ms0eANQS2ZKEpdKQorBa98xpM3+E="          //Transelevador 2
-#define IOT_CONFIG_DEVICE_3_KEY "afq88WexxzEbz26qV9WNv+ZqdSE5BePaZOyjR9zVGjw="          //Transelevador 3
-#define IOT_CONFIG_DEVICE_4_KEY "unusedunusedunusedunusedunusedunusedunusedun"          //Unused
-#define IOT_CONFIG_DEVICE_5_KEY "unusedunusedunusedunusedunusedunusedunusedun"          //Unused
-#endif
-
 
 
 #ifdef BATCH_LINEA_EMPAQUETADO_AC_OFICINAS
@@ -74,6 +58,7 @@
 #define IOT_CONFIG_DEVICE_4_KEY "rjUQAd80tnTiBVITw8FjbdmNUxqNCJqetSEljngkBho="          //Compresor aire comprimido (2)
 #define IOT_CONFIG_DEVICE_5_KEY "YFcaJRjCNx/AOYPcmXZh1toVzXe7JBUz/ap45zWR+OY="          //AC oficinas (General por conductos) (2)
 #endif
+
 
 
 #ifdef BATCH_LETS_CONNECT
@@ -107,6 +92,25 @@
 #define IOT_CONFIG_DEVICE_4_KEY "Fv31jlILxgZ0W2+hfXr12lOhneE1jA4hTkwaY+Jpb9I="          //Ascensor
 #define IOT_CONFIG_DEVICE_5_KEY "unusedunusedunusedunusedunusedunusedunusedun"          //Unused
 #endif
+
+
+#ifdef BATCH_TRANSELEVADORES_FAST
+#define IOT_CONFIG_DEVICE_GATEWAY_ID "cesql7bg96"     //Gateway
+#define IOT_CONFIG_DEVICE_1_ID "1sbmjyrz1oa"           //Transelevador 1
+#define IOT_CONFIG_DEVICE_2_ID "1b66i9vydmw"            //Transelevador 2
+#define IOT_CONFIG_DEVICE_3_ID "oahkpmo0i1"            //Transelevador 3
+#define IOT_CONFIG_DEVICE_4_ID "unusedDevic"           //Unused
+#define IOT_CONFIG_DEVICE_5_ID "unusedDevic"           //Unused
+
+#define IOT_CONFIG_DEVICE_GATEWAY_KEY "cDluf2IWbhMz8wHGJQtA94pJrHTSFzAlP/2ZvLxomOo="    //Gateway 
+#define IOT_CONFIG_DEVICE_1_KEY "ZCJOH3zvqDBusCCTdtMHO2rcv4qWgVq5bzgkxwwIQIM="          //Transelevador 1
+#define IOT_CONFIG_DEVICE_2_KEY "FH7ktxpbRgW2Nq/ms0eANQS2ZKEpdKQorBa98xpM3+E="          //Transelevador 2
+#define IOT_CONFIG_DEVICE_3_KEY "afq88WexxzEbz26qV9WNv+ZqdSE5BePaZOyjR9zVGjw="          //Transelevador 3
+#define IOT_CONFIG_DEVICE_4_KEY "unusedunusedunusedunusedunusedunusedunusedun"          //Unused
+#define IOT_CONFIG_DEVICE_5_KEY "unusedunusedunusedunusedunusedunusedunusedun"          //Unused
+#endif
+
+
 
 
 #ifdef BATCH_TEST

@@ -4,7 +4,7 @@
 
 class EM1PH_RTU_BasicLine : public EM1PH_BaseClass{
   public:
-    EM1PH_RTU_BasicLine();
+    EM1PH_RTU_BasicLine(uint8_t modbusId);
   
   /**
    * Begin Modbus RTU Client with default Configuration (Baudrate = 9600 and config = SERIAL_8N1).
@@ -46,7 +46,7 @@ class EM1PH_RTU_BasicLine : public EM1PH_BaseClass{
     void computeValues();
     /**
      * Read two bytes from the Modbus Client and join them to cast it into a float variable.
-     *  
+     *
      * @return Register's data.
      */
     float getNextData();

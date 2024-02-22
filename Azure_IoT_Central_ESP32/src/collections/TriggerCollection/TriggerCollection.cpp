@@ -39,5 +39,14 @@ void TriggerCollectionClass::setTrigger(TriggerClass& trigger){
 }
 
 
+void TriggerCollectionClass::setTrigger(TriggerClass* trigger){
+    uint8_t slot = trigger->getSlot();
+    Serial.print("Setting trigger in slot: ");
+    Serial.println(slot);
+    triggers[slot] = trigger;
+    return;
+}
+
+
 
 TriggerCollectionClass TriggerCollection;

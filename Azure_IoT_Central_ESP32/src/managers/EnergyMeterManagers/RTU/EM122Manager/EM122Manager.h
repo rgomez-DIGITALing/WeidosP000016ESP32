@@ -4,7 +4,7 @@
 
 class EM122Manager : public EM3PHManager_BaseClass{
     public:
-    EM122Manager(int deviceId);
+    EM122Manager(uint8_t deviceId);
     ~EM122Manager();
     bool sendProperties();
 };

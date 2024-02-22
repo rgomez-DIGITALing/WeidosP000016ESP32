@@ -14,7 +14,7 @@
 
 #define NUM_TOTAL_ADJUSTED_DATA_3PHASE 6
 
-#define NUM_TOTAL_INCREMENTAL_DATA_1PHASE 6
+#define NUM_TOTAL_INCREMENTAL_DATA_1PHASE 3
 #define NUM_TOTAL_INCREMENTAL_DATA_3PHASE 12
 
 //static const double NO_PREV_DATA_AVAILABLE_ERROR_VALUE = (double)999999999999998;
@@ -31,7 +31,7 @@ typedef enum {
   EM120_TCP,
   EM122_TCP,
   EM750_TCP,
-  EA750_TCP,
+  EA750_TCP
 } emType_t;
 
 
@@ -41,7 +41,8 @@ typedef enum{
   COM_BATCH_1_ERROR,
   COM_BATCH_2_ERROR,
   COM_BATCH_3_ERROR,
-  COM_BATCH_4_ERROR
+  COM_BATCH_4_ERROR,
+  COM_BATCH_5_ERROR
 } COM_error_t;
 
 
@@ -55,8 +56,8 @@ typedef struct em1phData_struct_t{
       struct{
         float voltageL1N;
         float currentL1;
-        float realPowerTotal, apparentPowerTotal, reactivePowerTotal;
-        float powerFactorTotal;
+        float realPowerL1N, apparentPowerL1N, reactivePowerL1N;
+        float powerFactorL1N;
         float frequency;
         float realEnergyTotal, reactiveEnergyTotal;
         float rotField;
@@ -75,15 +76,10 @@ typedef struct em1phData_struct_t{
       };
     };
 
-    
-
     union{
       float incrementalData[NUM_TOTAL_INCREMENTAL_DATA_1PHASE];
 
       struct{
-        float incrementalRealPowerTotal;
-        float incrementalApparentPowerTotal;
-        float incrementalReactivePowerTotal;
         float incrementalRealEnergyTotal;
         float incrementalApparentEnergyTotal;
         float incrementalReactiveEnergyTotal;

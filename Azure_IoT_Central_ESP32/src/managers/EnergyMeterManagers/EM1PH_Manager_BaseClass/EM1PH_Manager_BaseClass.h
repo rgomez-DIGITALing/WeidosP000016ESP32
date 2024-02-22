@@ -7,7 +7,9 @@
 
 class EM1PHManager_BaseClass{
   public:
+  
     EM1PHManager_BaseClass(uint8_t deviceId);
+    EM1PHManager_BaseClass(uint8_t deviceId, int ctPrimary, int ctSecondary);
     virtual ~EM1PHManager_BaseClass(){};
 
     void triggerUpdate(){ state = UPDATE_ENERGY_METER; }

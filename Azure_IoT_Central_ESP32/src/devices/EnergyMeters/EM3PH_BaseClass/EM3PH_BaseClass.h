@@ -48,7 +48,8 @@ class EM3PH_BaseClass{
         float cosPhiL1, cosPhiL2, cosPhiL3;
         float avgVoltageLN, avgCurrentL;
         float currentTotal, realPowerTotal, apparentPowerTotal, reactivePowerTotal, powerFactorTotal;
-        float avgCosPhi, frequency;
+        float cosPhiTotal, frequency;
+        // float avgCosPhi, frequency;
         float apparentEnergyTotal;
         float voltageL1L2, voltageL2L3, voltageL1L3, avgVoltageLL;
         float currentNeutral;

@@ -9,6 +9,7 @@ class TriggerCollectionClass{
         void init();
         void loop(bool connectionUp);
         void setTrigger(TriggerClass& trigger);
+        void setTrigger(TriggerClass* trigger);
         TriggerClass* getTrigger(int slot){ return triggers[slot]; }
 
 

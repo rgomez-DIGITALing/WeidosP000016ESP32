@@ -4,7 +4,8 @@
 
 class EM110Manager : public EM1PHManager_BaseClass{
     public:
-    EM110Manager(ModbusTCPClient& client, IPAddress ip, int deviceId);
+    EM110Manager(uint8_t deviceId);
+    EM110Manager(uint8_t deviceId, int ctPrimary, int ctSecondary);
     ~EM110Manager();
     bool sendProperties();
 };

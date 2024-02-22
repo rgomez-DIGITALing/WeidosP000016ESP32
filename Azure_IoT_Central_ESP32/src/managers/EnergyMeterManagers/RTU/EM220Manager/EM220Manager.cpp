@@ -6,8 +6,8 @@
 
 
 
-EM220Manager::EM220Manager(int deviceId) : EM3PHManager_BaseClass(deviceId) {
-  Serial.println("Let's create an EM750 Manager");
+EM220Manager::EM220Manager(uint8_t deviceId) : EM3PHManager_BaseClass(deviceId) {
+  Serial.println("Let's create an EM220 Manager");
   em3ph = new EM3PH_RTU_BasicLine(deviceId);
 }
 

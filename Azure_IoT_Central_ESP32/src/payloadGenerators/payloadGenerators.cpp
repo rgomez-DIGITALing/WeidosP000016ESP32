@@ -1014,9 +1014,7 @@ int ea750_generete_properties(az_iot_hub_client const* hub_client,
   //char* location1 = emManager->getLocation1();
   //char* location2 = emManager->getLocation2();
   char* identifier = "";
-  char* asset = "";
-  char* location1 = "";
-  char* location2 = "";
+
   char* model = EA750_MODEL_NAME;
   char* partNumber = EA750_PART_NUMBER;
   EM3PH_BaseClass* energyMeter = emManager->getEnergyMeter();
@@ -1039,21 +1037,6 @@ int ea750_generete_properties(az_iot_hub_client const* hub_client,
   rc = az_json_writer_append_property_name(&jw, az_span_create_from_str(EM_IDENTIFIER_PROPERTY_NAME));
   EXIT_IF_AZ_FAILED2(rc, RESULT_ERROR, F("Failed adding EM_BRAND_PROPERTY_NAME to payload."));
   rc = az_json_writer_append_string(&jw, az_span_create_from_str(identifier));
-  EXIT_IF_AZ_FAILED2(rc, RESULT_ERROR, F("Failed adding EM_BRAND_PROPERTY_NAME to payload. "));
-
-  rc = az_json_writer_append_property_name(&jw, az_span_create_from_str(EM_ASSET_PROPERTY_NAME));
-  EXIT_IF_AZ_FAILED2(rc, RESULT_ERROR, F("Failed adding EM_BRAND_PROPERTY_NAME to payload."));
-  rc = az_json_writer_append_string(&jw, az_span_create_from_str(asset));
-  EXIT_IF_AZ_FAILED2(rc, RESULT_ERROR, F("Failed adding EM_BRAND_PROPERTY_NAME to payload. "));
-
-  rc = az_json_writer_append_property_name(&jw, az_span_create_from_str(EM_LOCATION_1_PROPERTY_NAME));
-  EXIT_IF_AZ_FAILED2(rc, RESULT_ERROR, F("Failed adding EM_BRAND_PROPERTY_NAME to payload."));
-  rc = az_json_writer_append_string(&jw, az_span_create_from_str(location1));
-  EXIT_IF_AZ_FAILED2(rc, RESULT_ERROR, F("Failed adding EM_BRAND_PROPERTY_NAME to payload. "));
-
-  rc = az_json_writer_append_property_name(&jw, az_span_create_from_str(EM_LOCATION_2_PROPERTY_NAME));
-  EXIT_IF_AZ_FAILED2(rc, RESULT_ERROR, F("Failed adding EM_BRAND_PROPERTY_NAME to payload."));
-  rc = az_json_writer_append_string(&jw, az_span_create_from_str(location2));
   EXIT_IF_AZ_FAILED2(rc, RESULT_ERROR, F("Failed adding EM_BRAND_PROPERTY_NAME to payload. "));
 
 

@@ -134,7 +134,7 @@ void EM3PH_RTU_BasicLine::assignData(){
   reactivePowerTotal = getNextData();
   powerFactorTotal = getNextData();
   getNextData();
-  avgCosPhi = cos(getNextData() * PI/180.0);
+  cosPhiTotal = cos(getNextData() * PI/180.0);
   getNextData();
   frequency = getNextData();
   return;
@@ -144,7 +144,7 @@ void EM3PH_RTU_BasicLine::assignData2(){
   voltageL1L2 = getNextData();
   voltageL2L3 = getNextData();
   voltageL1L3 = getNextData();
-  avgVoltageLL = getNextData(); 
+  avgVoltageLL = getNextData();
   getNextData();
   getNextData();
   getNextData();
@@ -222,6 +222,6 @@ float EM3PH_RTU_BasicLine::getNextData(){
     long msb = ModbusRTUClient.read();
     long lsb =  ModbusRTUClient.read();
     uint32_t rawData = (msb << 16) + lsb; // Bit Shift operation to join both registers
-    float data = *(float *)&rawData; 
+    float data = *(float *)&rawData;
     return data;
 }

@@ -9,7 +9,6 @@
 
 #define MODBUS_TIMEOUT_BATCH_1      600
 #define REG_ADDRESS_BATCH_1         0
-#define NUM_REGISTERS_BATCH_1       72
 #define NUM_REGISTERS_BATCH_1       80
 #define NUM_DATA_BATCH_1            NUM_REGISTERS_BATCH_1/2
 
@@ -26,7 +25,12 @@
 
 
 
-EM1PH_RTU_BasicLine::EM1PH_RTU_BasicLine(){
+// EM1PH_RTU_BasicLine::EM1PH_RTU_BasicLine(){
+//   for(int i=0; i<NUM_TOTAL_DATA_1PHASE; i++) data[i] = 0;
+// }
+
+
+EM1PH_RTU_BasicLine::EM1PH_RTU_BasicLine(uint8_t modbusId) : EM1PH_BaseClass(modbusId){
   for(int i=0; i<NUM_TOTAL_DATA_1PHASE; i++) data[i] = 0;
 }
 
@@ -97,16 +101,16 @@ void EM1PH_RTU_BasicLine::assignData(){
   currentL1 = getNextData();
   getNextData();
   getNextData();
-  realPowerTotal = getNextData();
+  realPowerL1N = getNextData();
   getNextData();
   getNextData();
-  apparentPowerTotal = getNextData();
+  apparentPowerL1N = getNextData();
   getNextData();
   getNextData();
-  reactivePowerTotal = getNextData();
+  reactivePowerL1N = getNextData();
   getNextData();
   getNextData();
-  powerFactorTotal = getNextData();
+  powerFactorL1N = getNextData();
   getNextData();
   getNextData();
   getNextData();
@@ -147,8 +151,8 @@ void EM1PH_RTU_BasicLine::assignData2(){
 void EM1PH_RTU_BasicLine::computeValues(){
   //apparentEnergyTotal = realEnergyTotal/powerFactorTotal;
   apparentEnergyTotal = sqrt(pow(realEnergyTotal,2) + pow(reactiveEnergyTotal,2));
-  rotField = (powerFactorTotal>=0) ? rotField = 1 : rotField = -1;
-  if(powerFactorTotal == 0.0f) rotField = 0;
+  rotField = (powerFactorL1N>=0) ? rotField = 1 : rotField = -1;
+  if(powerFactorL1N == 0.0f) rotField = 0;
 
   return;
 }

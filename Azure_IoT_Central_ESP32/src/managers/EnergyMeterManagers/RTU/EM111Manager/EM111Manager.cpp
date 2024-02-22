@@ -5,6 +5,18 @@
 #include "../../../../collections/AzureIoTCollection/AzureIoTCollection.h"
 
 
+
+EM111Manager::EM111Manager(uint8_t deviceId) : EM1PHManager_BaseClass(deviceId) {
+  Serial.println("Let's create an EM111 Manager");
+  em1ph = new EM1PH_RTU_BasicLine(deviceId);
+}
+
+
+EM111Manager::~EM111Manager(){
+  delete em1ph;
+}
+
+
 bool EM111Manager::sendProperties(){
   AzureIoTDevice* azureDevice = AzureIoTCollection[deviceId];
 

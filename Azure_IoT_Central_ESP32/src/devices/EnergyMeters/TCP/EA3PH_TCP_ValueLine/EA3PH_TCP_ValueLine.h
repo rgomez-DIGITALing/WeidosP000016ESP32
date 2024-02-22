@@ -63,6 +63,11 @@ class EA3PH_TCP_ValueLine : public EM3PH_BaseClass{
      * registers corresponding to the forth batch.
      */
     void assignData4();
+    /**
+     * Read from the Modbus Client buffer and assign all bytes to its corresponding variable for the
+     * registers corresponding to the forth batch.
+     */
+    void assignData5();
 
     void computeData();
     /**

@@ -36,10 +36,12 @@ void EM3PH_BaseClass::getData(em3phData_t& payload){
     payload.incrementalRealEnergyAdjustedL2 = realEnergyAdjustedL2 - prevRealEnergyAdjustedL2;
     payload.incrementalRealEnergyAdjustedL3 = realEnergyAdjustedL3 - prevRealEnergyAdjustedL3;
     payload.incrementalRealEnergyAdjustedTotal = realEnergyAdjustedTotal - prevRealEnergyAdjustedTotal;
+    
     payload.incrementalApparentEnergyL1 = apparentEnergyL1 - prevApparentEnergyL1;
     payload.incrementalApparentEnergyL2 = apparentEnergyL2 - prevApparentEnergyL2;
     payload.incrementalApparentEnergyL3 = apparentEnergyL3 - prevApparentEnergyL3;
     payload.incrementalApparentEnergyTotal = apparentEnergyTotal - prevApparentEnergyTotal;
+
     payload.incrementalReactiveEnergyL1 = reactiveEnergyL1 - prevReactiveEnergyL1;
     payload.incrementalReactiveEnergyL2 = reactiveEnergyL2 - prevReactiveEnergyL2;
     payload.incrementalReactiveEnergyL3 = reactiveEnergyL3 - prevReactiveEnergyL3;

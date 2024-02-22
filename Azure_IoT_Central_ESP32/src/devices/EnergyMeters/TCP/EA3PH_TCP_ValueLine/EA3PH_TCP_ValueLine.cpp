@@ -18,9 +18,14 @@
 #define NUM_REGISTERS_BATCH_3       6
 #define NUM_DATA_BATCH_3            NUM_REGISTERS_BATCH_3/2
 
-#define REG_ADDRESS_BATCH_4         10085
+// #define REG_ADDRESS_BATCH_4         10085
+#define REG_ADDRESS_BATCH_4         3859
 #define NUM_REGISTERS_BATCH_4       2
 #define NUM_DATA_BATCH_4            NUM_REGISTERS_BATCH_4/2
+
+#define REG_ADDRESS_BATCH_5         3929
+#define NUM_REGISTERS_BATCH_5       2
+#define NUM_DATA_BATCH_5            NUM_REGISTERS_BATCH_5/2
 
 
 EA3PH_TCP_ValueLine::EA3PH_TCP_ValueLine(ModbusTCPClient& client, IPAddress ipAddress) : _client(client), EM3PH_BaseClass(ipAddress){}
@@ -34,7 +39,7 @@ int EA3PH_TCP_ValueLine::begin(){
     if(_client.begin(ipAddress)) return 1;
 
     comError = COM_BEGIN_ERROR;
-    return 0; 
+    return 0;
 }
 
 void EA3PH_TCP_ValueLine::stop(){
@@ -77,6 +82,15 @@ int EA3PH_TCP_ValueLine::update(){
         return 0;
     }
     assignData4();
+
+
+    response = _client.requestFrom(modbusId, INPUT_REGISTERS, REG_ADDRESS_BATCH_5, NUM_REGISTERS_BATCH_5);  
+    if(response != NUM_REGISTERS_BATCH_5)
+    {
+        comError = COM_BATCH_5_ERROR;
+        return 0;
+    }
+    assignData5();
 
     computeData();
     
@@ -177,6 +191,10 @@ void EA3PH_TCP_ValueLine::assignData4(){
     currentNeutral = getNextData();
 }
 
+void EA3PH_TCP_ValueLine::assignData5(){
+    cosPhiTotal = getNextData();
+}
+
 void EA3PH_TCP_ValueLine::computeData(){
     powerFactorTotal = powerFactorL1N + powerFactorL2N + powerFactorL3N; //Check that
 
@@ -184,9 +202,9 @@ void EA3PH_TCP_ValueLine::computeData(){
     avgVoltageLL = (voltageL1L2 + voltageL2L3 + voltageL1L3)/3.0f;
     avgCurrentL = (currentL1 + currentL2 + currentL3)/3.0f;
 
-    if(apparentPowerTotal != 0) avgCosPhi = realPowerTotal/apparentPowerTotal;
-    else avgCosPhi = -1;
-    if(isnan(avgCosPhi)) avgCosPhi = -1;  //Check if, after all, it is still NaN
+    // if(apparentPowerTotal != 0) cosPhiTotal = realPowerTotal/apparentPowerTotal;
+    // else cosPhiTotal = -1;
+    // if(isnan(cosPhiTotal)) cosPhiTotal = -1;  //Check if, after all, it is still NaN
 
     avgTHDVoltsLN = (THDVoltsL1N + THDVoltsL2N + THDVoltsL3N)/3.0f;
     avgTHDCurrentLN = (THDCurrentL1N + THDCurrentL2N + THDCurrentL3N)/3.0f;
@@ -211,10 +229,10 @@ float EA3PH_TCP_ValueLine::getNextData(){
 };
 
 void EA3PH_TCP_ValueLine::updatePreviousValues(){
-  prevRealEnergyAdjustedL1 = realEnergyL1;
-  prevRealEnergyAdjustedL2 = realEnergyL2;
-  prevRealEnergyAdjustedL3 = realEnergyL3;
-  prevRealEnergyAdjustedTotal = realEnergyTotal;
+  prevRealEnergyAdjustedL1 = realEnergyAdjustedL1;
+  prevRealEnergyAdjustedL2 = realEnergyAdjustedL2;
+  prevRealEnergyAdjustedL3 = realEnergyAdjustedL3;
+  prevRealEnergyAdjustedTotal = realEnergyAdjustedTotal;
   prevApparentEnergyL1 = apparentEnergyL1;
   prevApparentEnergyL2 = apparentEnergyL2;
   prevApparentEnergyL3 = apparentEnergyL3;

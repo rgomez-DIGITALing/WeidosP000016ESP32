@@ -8,12 +8,15 @@
 #include "../../../collections/AzureIoTCollection/AzureIoTCollection.h"
 
 
-
-
 EM1PHManager_BaseClass::EM1PHManager_BaseClass(uint8_t deviceId) : deviceId(deviceId)
 {
 }
 
+EM1PHManager_BaseClass::EM1PHManager_BaseClass(uint8_t deviceId, int ctPrimary, int ctSecondary) : deviceId(deviceId),
+  ctPrimary(ctPrimary),
+  ctSecondary(ctSecondary)
+{
+}
 
 
 EnergyMeterUpdateState_t EM1PHManager_BaseClass::loop(){

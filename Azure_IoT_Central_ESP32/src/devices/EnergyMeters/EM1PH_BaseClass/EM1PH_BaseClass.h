@@ -7,7 +7,11 @@
 
 class EM1PH_BaseClass{
   public:
-  
+  EM1PH_BaseClass(){};
+  EM1PH_BaseClass(IPAddress ip);
+  EM1PH_BaseClass(uint8_t modbusId);
+  EM1PH_BaseClass(uint8_t modbusId, IPAddress ip);
+
   virtual int begin() = 0;
   virtual void stop() = 0;
   virtual int update() = 0;
@@ -42,8 +46,8 @@ class EM1PH_BaseClass{
       struct{
         float voltageL1N;
         float currentL1;
-        float realPowerTotal, apparentPowerTotal, reactivePowerTotal;
-        float powerFactorTotal;
+        float realPowerL1N, apparentPowerL1N, reactivePowerL1N;
+        float powerFactorL1N;
         float frequency;
         float realEnergyTotal, reactiveEnergyTotal;
         float rotField;
