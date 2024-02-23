@@ -29,7 +29,7 @@ class EM3PH_RTU_BasicLine : public EM3PH_BaseClass{
     
     void validateData();
 
-
+    void updatePreviousValues() override;
 
   
 

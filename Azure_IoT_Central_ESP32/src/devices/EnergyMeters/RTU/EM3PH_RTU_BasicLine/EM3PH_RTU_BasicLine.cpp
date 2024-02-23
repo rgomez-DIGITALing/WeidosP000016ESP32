@@ -220,9 +220,16 @@ void EM3PH_RTU_BasicLine::computeValues(){
   rotField = (powerFactorTotal>0) ? rotField = 1 : rotField = -1 ;
   if(powerFactorTotal == 0.0f) rotField = 0;
 
+  realEnergyConsTotalSum = realEnergyConsL1 + realEnergyConsL2 + realEnergyConsL3;
+  realEnergyDelivTotalSum = realEnergyDelivL1 + realEnergyDelivL2 + realEnergyDelivL3;
+  
+  realEnergyAdjustedL1 = realEnergyL1;
+  realEnergyAdjustedL2 = realEnergyL2;
+  realEnergyAdjustedL3 = realEnergyL3;
+  realEnergyAdjustedTotal = realEnergyTotal;
 
-  realEnergyConsTotal = 0;
-  realEnergyDelivTotal = 0;
+  realEnergyConsTotal = FLOAT_NO_PREV_DATA_AVAILABLE_ERROR_VALUE;
+  realEnergyDelivTotal = FLOAT_NO_PREV_DATA_AVAILABLE_ERROR_VALUE;
 
   return;
 }
@@ -233,4 +240,25 @@ float EM3PH_RTU_BasicLine::getNextData(){
     uint32_t rawData = (msb << 16) + lsb; // Bit Shift operation to join both registers
     float data = *(float *)&rawData;
     return data;
+}
+
+
+void EM3PH_RTU_BasicLine::updatePreviousValues(){
+  Serial.println("Override method!");
+  prevRealEnergyAdjustedL1 = realEnergyL1;
+  prevRealEnergyAdjustedL2 = realEnergyL2;
+  prevRealEnergyAdjustedL3 = realEnergyL3;
+  prevRealEnergyAdjustedTotal = realEnergyAdjustedTotal;
+  prevApparentEnergyL1 = apparentEnergyL1;
+  prevApparentEnergyL2 = apparentEnergyL2;
+  prevApparentEnergyL3 = apparentEnergyL3;
+  prevApparentEnergyTotal = apparentEnergyTotal;
+  prevReactiveEnergyL1 = reactiveEnergyL1;
+  prevReactiveEnergyL2 = reactiveEnergyL2;
+  prevReactiveEnergyL3 = reactiveEnergyL3;
+  prevReactiveEnergyTotal = reactiveEnergyTotal;
+
+  
+
+  prevDataAvailable = true;
 }

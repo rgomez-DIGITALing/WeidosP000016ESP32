@@ -30,3 +30,10 @@ void EM1PH_BaseClass::getData(em1phData_t& payload){
   }
   return;
 }
+
+void EM1PH_BaseClass::updatePreviousValues(){
+  prevRealEnergyTotal = realEnergyTotal;
+  prevApparentEnergyTotal = apparentEnergyTotal;
+  prevReactiveEnergyTotal = reactiveEnergyTotal;
+  prevDataAvailable = true;
+}

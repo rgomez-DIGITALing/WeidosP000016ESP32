@@ -79,6 +79,7 @@ EnergyMeterUpdateState_t EM3PHManager_BaseClass::loop(){
         
         msg.deviceId = deviceId;
         msg.timestamp = systemClock.getEpochTime();
+        msg.dataSourceStatus = 0;
         em3ph->resetPrevValues();
         em3ph->getData(msg.payload);
         LogInfo("Pushing data for device ID: %i", deviceId);

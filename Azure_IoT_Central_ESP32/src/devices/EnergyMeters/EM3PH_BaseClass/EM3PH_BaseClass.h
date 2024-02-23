@@ -19,7 +19,7 @@ class EM3PH_BaseClass{
   void copyData(float* buffer, int bufferSize);
   void getData(em3phData_t& payload);
   void resetPrevValues(){ prevDataAvailable = false; }
-  void updatePreviousValues();
+  virtual void updatePreviousValues();
   
 
   void setModbusId(uint8_t id){ this->modbusId = modbusId; }

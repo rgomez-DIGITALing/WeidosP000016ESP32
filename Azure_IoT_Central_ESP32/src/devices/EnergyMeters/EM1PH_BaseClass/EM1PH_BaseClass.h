@@ -18,8 +18,8 @@ class EM1PH_BaseClass{
 
   void copyData(float* buffer, int bufferSize);
   void getData(em1phData_t& payload);
-  void resetPrevValues(){ }
-  void updatePreviousValues(){};
+  void resetPrevValues(){ prevDataAvailable = false; }
+  virtual void updatePreviousValues();
 
   // emType_t getEmType(){ return emType; }
   void setModbusId(uint8_t modbusId){ this->modbusId = modbusId; }
@@ -54,4 +54,10 @@ class EM1PH_BaseClass{
         float apparentEnergyTotal;
       };
     };
+
+    //Incremental variables
+    bool prevDataAvailable = false;
+    float prevRealEnergyTotal;
+    float prevApparentEnergyTotal;
+    float prevReactiveEnergyTotal;
 };
