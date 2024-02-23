@@ -11,7 +11,7 @@
 #define NUM_DATA_BATCH_1            NUM_REGISTERS_BATCH_1/2
 
 #define REG_ADDRESS_BATCH_2         826
-#define NUM_REGISTERS_BATCH_2       21
+#define NUM_REGISTERS_BATCH_2       22
 #define NUM_DATA_BATCH_2            NUM_REGISTERS_BATCH_2/2
 
 #define REG_ADDRESS_BATCH_3         10085
@@ -164,6 +164,15 @@ void EM3PH_TCP_ValueLine::assignData2(){
     THDVoltsL1L2 = getNextData();
     THDVoltsL2L3 = getNextData();
     THDVoltsL1L3 = getNextData();
+
+
+    Serial.println("[assignData EM]");
+    Serial.print("THDVoltsL1L2: ");
+    Serial.println(THDVoltsL1L2);
+    Serial.print("THDVoltsL2L3: ");
+    Serial.println(THDVoltsL2L3);
+    Serial.print("THDVoltsL1L3: ");
+    Serial.println(THDVoltsL1L3);
 }
 
 void EM3PH_TCP_ValueLine::assignData3(){
@@ -183,6 +192,7 @@ void EM3PH_TCP_ValueLine::computeData(){
     avgTHDCurrentLN = (THDCurrentL1N + THDCurrentL2N + THDCurrentL3N)/3.0f;
     avgTHDVoltsLL = (THDVoltsL1L2 + THDVoltsL2L3 + THDVoltsL1L3)/3.0f;
 
+    
     realEnergyAdjustedL1 = realEnergyConsL1 + realEnergyDelivL1;
     realEnergyAdjustedL2 = realEnergyConsL2 + realEnergyDelivL2;
     realEnergyAdjustedL3 = realEnergyConsL3 + realEnergyDelivL3;
@@ -190,6 +200,20 @@ void EM3PH_TCP_ValueLine::computeData(){
 
     realEnergyConsTotalSum = realEnergyConsL1 + realEnergyConsL2 + realEnergyConsL3;
     realEnergyDelivTotalSum = realEnergyDelivL1 + realEnergyDelivL2 + realEnergyDelivL3;
+
+    // Serial.println("[comptueData]");
+    // Serial.print("realEnergyConsL1: ");
+    // Serial.println(realEnergyConsL1);
+    // Serial.print("realEnergyConsL2: ");
+    // Serial.println(realEnergyConsL2);
+    // Serial.print("realEnergyConsL3: ");
+    // Serial.println(realEnergyConsL3);
+    // Serial.print("realEnergyAdjustedL1: ");
+    // Serial.println(realEnergyAdjustedL1);
+    // Serial.print("realEnergyAdjustedL2: ");
+    // Serial.println(realEnergyAdjustedL2);
+    // Serial.print("realEnergyAdjustedL3: ");
+    // Serial.println(realEnergyAdjustedL3);
 }
 
 float EM3PH_TCP_ValueLine::getNextData(){

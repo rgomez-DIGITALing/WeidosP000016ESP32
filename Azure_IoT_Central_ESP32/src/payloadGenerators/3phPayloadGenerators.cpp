@@ -88,6 +88,11 @@ int em3ph_valueLine_generete_payload(uint8_t* payload_buffer, size_t payload_buf
 
     rc = writeIncrementalData(jw, emData);
     EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed writting Incremental Data");
+
+    rc = az_json_writer_append_property_name(&jw, az_span_create_from_str(TELEMETRY_PROP_NAME_CURRENT_TOTAL));
+    EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding timestamp property name to telemetry payload.");
+    rc = az_json_writer_append_int32(&jw, emData.payload.currentTotal);
+    EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding timestamp property value to telemetry payload. ");
     
   }
   else{
@@ -160,11 +165,16 @@ int em3ph_basicLine_generete_payload(uint8_t* payload_buffer, size_t payload_buf
     rc = writeBasicLineConsDelivData(jw, emData);
     EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed writting Basic Line Cons/Deliv Data");
 
-    rc = writeAdjustedData(jw, emData);
-    EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed writting Adjusted Data");
+    // rc = writeAdjustedData(jw, emData);
+    // EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed writting Adjusted Data");
 
     rc = writeIncrementalData(jw, emData);
     EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed writting Incremental Data");
+
+    rc = az_json_writer_append_property_name(&jw, az_span_create_from_str(TELEMETRY_PROP_NAME_PHASE_CURRENT_SUM));
+    EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding timestamp property name to telemetry payload.");
+    rc = az_json_writer_append_int32(&jw, emData.payload.phaseCurrentSum);
+    EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding timestamp property value to telemetry payload. ");
   }
   else{
     rc = writeBasicLineNullValues(jw, emData);
@@ -222,8 +232,12 @@ int writeNormalData(az_json_writer& jw, em3phManagerData_t& emData){
     az_result rc;
     float* data = emData.payload.data;
     int dataErrorCounter = 0;
+    Serial.println("[writeNormalData]");
 
     for(int i=0; i<NUM_TOTAL_DATA_3PHASE; i++){
+      // Serial.print(EM3PH_DATA_TELEMETRY_NAMES[i]);
+      // Serial.print(": ");
+      // Serial.println(data[i]);
       rc = az_json_writer_append_property_name(&jw, az_span_create_from_str(EM3PH_DATA_TELEMETRY_NAMES[i]));
       EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding %s property name to telemetry payload.", EM3PH_DATA_TELEMETRY_NAMES[i]);
       int dataError = isEMDataValid(data[i]);
@@ -236,6 +250,7 @@ int writeNormalData(az_json_writer& jw, em3phManagerData_t& emData){
       EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding %s property value to telemetry payload.", EM3PH_DATA_TELEMETRY_NAMES[i]);
     }
 
+    
     rc = az_json_writer_append_property_name(&jw, az_span_create_from_str(TELEMETRY_PROP_NAME_DATA_ERROR_COUNTER));
     EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding %s property name to telemetry payload.", TELEMETRY_PROP_NAME_DATA_ERROR_COUNTER);
     rc = az_json_writer_append_int32(&jw, dataErrorCounter);
@@ -255,9 +270,9 @@ int writeValueLineConsDelivData(az_json_writer& jw, em3phManagerData_t& emData){
       rc = az_json_writer_append_property_name(&jw, az_span_create_from_str(EM3PH_CONS_DELIV_DATA_TELEMETRY_NAMES[i]));
       EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding %s property name to telemetry payload.", EM3PH_CONS_DELIV_DATA_TELEMETRY_NAMES[i]);
       int dataError = isEMDataValid(consDelivData[i]);
-      Serial.print(EM3PH_CONS_DELIV_DATA_TELEMETRY_NAMES[i]);
-      Serial.print(": ");
-      Serial.println(consDelivData[i]);
+      // Serial.print(EM3PH_CONS_DELIV_DATA_TELEMETRY_NAMES[i]);
+      // Serial.print(": ");
+      // Serial.println(consDelivData[i]);
       if(dataError){
         consDelivDataErrorCounter++;
         double errorValue = getEMErrorValue(dataError);
@@ -287,9 +302,9 @@ int writeBasicLineConsDelivData(az_json_writer& jw, em3phManagerData_t& emData){
       rc = az_json_writer_append_property_name(&jw, az_span_create_from_str(EM3PH_CONS_DELIV_DATA_TELEMETRY_NAMES[i]));
       EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding %s property name to telemetry payload.", EM3PH_CONS_DELIV_DATA_TELEMETRY_NAMES[i]);
       int dataError = isEMDataValid(consDelivData[i]);
-      Serial.print(EM3PH_CONS_DELIV_DATA_TELEMETRY_NAMES[i]);
-      Serial.print(": ");
-      Serial.println(consDelivData[i]);
+      // Serial.print(EM3PH_CONS_DELIV_DATA_TELEMETRY_NAMES[i]);
+      // Serial.print(": ");
+      // Serial.println(consDelivData[i]);
       if(dataError){
         consDelivDataErrorCounter++;
         double errorValue = getEMErrorValue(dataError);
@@ -315,13 +330,13 @@ int writeAdjustedData(az_json_writer& jw, em3phManagerData_t& emData){
     int adjustedDataErrorCounter = 0;
 
     //Consumed/Delivered Data
-    for(int i=0; i<NUM_TOTAL_CONS_DELIV_DATA_3PHASE; i++){
+    for(int i=0; i<NUM_TOTAL_ADJUSTED_DATA_3PHASE; i++){
       rc = az_json_writer_append_property_name(&jw, az_span_create_from_str(EM3PH_ADJUSTED_DATA_TELEMETRY_NAMES[i]));
       EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding %s property name to telemetry payload.", EM3PH_ADJUSTED_DATA_TELEMETRY_NAMES[i]);
       int dataError = isEMDataValid(adjustedData[i]);
-      Serial.print(EM3PH_ADJUSTED_DATA_TELEMETRY_NAMES[i]);
-      Serial.print(": ");
-      Serial.println(adjustedData[i]);
+      // Serial.print(EM3PH_ADJUSTED_DATA_TELEMETRY_NAMES[i]);
+      // Serial.print(": ");
+      // Serial.println(adjustedData[i]);
       if(dataError){
         adjustedDataErrorCounter++;
         double errorValue = getEMErrorValue(dataError);
@@ -403,6 +418,11 @@ int writeValueLineNullValues(az_json_writer& jw, em3phManagerData_t& emData){
     EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding %s property value to telemetry payload.", EM3PH_INCREMENTAL_DATA_TELEMETRY_NAMES[i]);
   }
 
+  rc = az_json_writer_append_property_name(&jw, az_span_create_from_str(TELEMETRY_PROP_NAME_CURRENT_TOTAL));
+  EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding %s property name to telemetry payload.", TELEMETRY_PROP_NAME_CURRENT_TOTAL);
+  rc = az_json_writer_append_null(&jw);
+  EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding %s property value to telemetry payload.", TELEMETRY_PROP_NAME_CURRENT_TOTAL);
+
 
   return RESULT_OK;
 }
@@ -425,12 +445,12 @@ int writeBasicLineNullValues(az_json_writer& jw, em3phManagerData_t& emData){
     EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding %s property value to telemetry payload.", EM3PH_CONS_DELIV_DATA_TELEMETRY_NAMES[i]);
   }
 
-  for(int i=0; i<NUM_TOTAL_ADJUSTED_DATA_3PHASE; i++){
-    rc = az_json_writer_append_property_name(&jw, az_span_create_from_str(EM3PH_ADJUSTED_DATA_TELEMETRY_NAMES[i]));
-    EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding %s property name to telemetry payload.", EM3PH_ADJUSTED_DATA_TELEMETRY_NAMES[i]);
-    rc = az_json_writer_append_null(&jw);
-    EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding %s property value to telemetry payload.", EM3PH_ADJUSTED_DATA_TELEMETRY_NAMES[i]);
-  }
+  // for(int i=0; i<NUM_TOTAL_ADJUSTED_DATA_3PHASE; i++){
+  //   rc = az_json_writer_append_property_name(&jw, az_span_create_from_str(EM3PH_ADJUSTED_DATA_TELEMETRY_NAMES[i]));
+  //   EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding %s property name to telemetry payload.", EM3PH_ADJUSTED_DATA_TELEMETRY_NAMES[i]);
+  //   rc = az_json_writer_append_null(&jw);
+  //   EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding %s property value to telemetry payload.", EM3PH_ADJUSTED_DATA_TELEMETRY_NAMES[i]);
+  // }
 
   for(int i=0; i<NUM_TOTAL_INCREMENTAL_DATA_3PHASE; i++){
     rc = az_json_writer_append_property_name(&jw, az_span_create_from_str(EM3PH_INCREMENTAL_DATA_TELEMETRY_NAMES[i]));
@@ -438,6 +458,12 @@ int writeBasicLineNullValues(az_json_writer& jw, em3phManagerData_t& emData){
     rc = az_json_writer_append_null(&jw);
     EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding %s property value to telemetry payload.", EM3PH_INCREMENTAL_DATA_TELEMETRY_NAMES[i]);
   }
+
+
+  rc = az_json_writer_append_property_name(&jw, az_span_create_from_str(TELEMETRY_PROP_NAME_PHASE_CURRENT_SUM));
+  EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding %s property name to telemetry payload.", TELEMETRY_PROP_NAME_PHASE_CURRENT_SUM);
+  rc = az_json_writer_append_null(&jw);
+  EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding %s property value to telemetry payload.", TELEMETRY_PROP_NAME_PHASE_CURRENT_SUM);
 
 
   return RESULT_OK;

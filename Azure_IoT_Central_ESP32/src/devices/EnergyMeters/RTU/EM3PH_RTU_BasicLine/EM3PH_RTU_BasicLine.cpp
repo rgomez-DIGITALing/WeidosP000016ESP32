@@ -125,7 +125,8 @@ void EM3PH_RTU_BasicLine::assignData(){
 
   getNextData();
   avgCurrentL = getNextData();
-  currentTotal = getNextData();
+  // currentTotal = getNextData();
+  phaseCurrentSum = getNextData();
   getNextData();
   realPowerTotal = getNextData();
   getNextData();
@@ -174,6 +175,14 @@ void EM3PH_RTU_BasicLine::assignData3(){
   THDVoltsL1L2 = getNextData();
   THDVoltsL2L3 = getNextData();
   THDVoltsL1L3 = getNextData();
+  Serial.println("[assignData3]");
+  Serial.print("THDVoltsL1L2: ");
+  Serial.println(THDVoltsL1L2);
+  Serial.print("THDVoltsL2L3: ");
+  Serial.println(THDVoltsL2L3);
+  Serial.print("THDVoltsL1L3: ");
+  Serial.println(THDVoltsL1L3);
+
   avgTHDVoltsLL = getNextData();
   realEnergyTotal = getNextData();
   reactiveEnergyTotal = getNextData();

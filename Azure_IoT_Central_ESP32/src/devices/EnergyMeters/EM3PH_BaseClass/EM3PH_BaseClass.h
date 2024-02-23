@@ -47,7 +47,7 @@ class EM3PH_BaseClass{
         float powerFactorL1N, powerFactorL2N, powerFactorL3N;
         float cosPhiL1, cosPhiL2, cosPhiL3;
         float avgVoltageLN, avgCurrentL;
-        float currentTotal, realPowerTotal, apparentPowerTotal, reactivePowerTotal, powerFactorTotal;
+        float realPowerTotal, apparentPowerTotal, reactivePowerTotal, powerFactorTotal;
         float cosPhiTotal, frequency;
         // float avgCosPhi, frequency;
         float apparentEnergyTotal;
@@ -64,8 +64,9 @@ class EM3PH_BaseClass{
         float rotField;
       };
     };
-
-
+    
+    float currentTotal; //Variable for the Value Line ONLY!
+    float phaseCurrentSum; //Variable for the Basic Line ONLY!
 
 //Cons/Deliv variables
     union{

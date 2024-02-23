@@ -176,6 +176,7 @@ static ModbusTCPClient modbusTCPClient(ethernetClientModbus);
 
 
 void configureDeviceCollection(){
+  DeviceCollection.setDevice(weidosESP32Manager);
   #if defined BATCH_GENERAL_ROBOT
   IPAddress ipGeneral(10, 88, 47, 202);        //General
   IPAddress ipTranselevador1(10, 88, 47, 242);        //Transelevador 1

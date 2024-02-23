@@ -179,6 +179,13 @@ void EA3PH_TCP_ValueLine::assignData2(){
     THDVoltsL1L2 = getNextData();
     THDVoltsL2L3 = getNextData();
     THDVoltsL1L3 = getNextData();
+    Serial.println("[assignData2 EA]");
+    Serial.print("THDVoltsL1L2: ");
+    Serial.println(THDVoltsL1L2);
+    Serial.print("THDVoltsL2L3: ");
+    Serial.println(THDVoltsL2L3);
+    Serial.print("THDVoltsL1L3: ");
+    Serial.println(THDVoltsL1L3);
 }
 
 void EA3PH_TCP_ValueLine::assignData3(){
@@ -196,7 +203,7 @@ void EA3PH_TCP_ValueLine::assignData5(){
 }
 
 void EA3PH_TCP_ValueLine::computeData(){
-    powerFactorTotal = powerFactorL1N + powerFactorL2N + powerFactorL3N; //Check that
+    powerFactorTotal = realPowerTotal/apparentPowerTotal;
 
     avgVoltageLN = (voltageL1N + voltageL2N + voltageL3N)/3.0f;
     avgVoltageLL = (voltageL1L2 + voltageL2L3 + voltageL1L3)/3.0f;
