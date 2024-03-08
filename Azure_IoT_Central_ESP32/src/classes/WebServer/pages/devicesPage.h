@@ -2,4 +2,4 @@
 
 
 void sendDevicesPage(AsyncResponseStream *response);
-void sendDeviceFormPage(AsyncResponseStream *response);
+void sendDeviceFormPage(AsyncResponseStream *response, int slot);

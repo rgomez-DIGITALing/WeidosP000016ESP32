@@ -15,6 +15,8 @@
 
 #define NUM_TOTAL_ADJUSTED_DATA_3PHASE 6
 
+#define NUM_TOTAL_HARMONIC_DATA_3PHASE 77
+
 #define NUM_TOTAL_INCREMENTAL_DATA_1PHASE 3
 #define NUM_TOTAL_INCREMENTAL_DATA_3PHASE 12
 
@@ -43,7 +45,17 @@ typedef enum{
   COM_BATCH_2_ERROR,
   COM_BATCH_3_ERROR,
   COM_BATCH_4_ERROR,
-  COM_BATCH_5_ERROR
+  COM_BATCH_5_ERROR,
+  COM_BATCH_6_ERROR,
+  COM_BATCH_7_ERROR,
+  COM_BATCH_8_ERROR,
+  COM_BATCH_9_ERROR,
+  COM_BATCH_10_ERROR,
+  COM_BATCH_11_ERROR,
+  COM_BATCH_12_ERROR,
+  COM_BATCH_13_ERROR,
+  COM_BATCH_14_ERROR,
+  COM_BATCH_15_ERROR
 } COM_error_t;
 
 
@@ -109,8 +121,8 @@ typedef struct em3phData_struct_t{
         float voltageL1L2, voltageL2L3, voltageL1L3, avgVoltageLL;
         float currentNeutral;
         float THDVoltsL1N, THDVoltsL2N, THDVoltsL3N;
-        float THDCurrentL1N, THDCurrentL2N, THDCurrentL3N;
-        float avgTHDVoltsLN, avgTHDCurrentLN;
+        float THDCurrentL1, THDCurrentL2, THDCurrentL3;
+        float avgTHDVoltsLN, avgTHDCurrentL;
         float THDVoltsL1L2, THDVoltsL2L3, THDVoltsL1L3, avgTHDVoltsLL;
         float realEnergyTotal, reactiveEnergyTotal;
         float realEnergyL1, realEnergyL2, realEnergyL3;
@@ -177,5 +189,103 @@ typedef struct em3phData_struct_t{
         float incrementalReactiveEnergyTotal;
       };
     };
+
+
+
+  union{
+    float harmonicData[NUM_TOTAL_HARMONIC_DATA_3PHASE];
+
+    struct{
+      float THDVolts3L1;
+      float THDVolts5L1;
+      float THDVolts7L1;
+      float THDVolts9L1;
+      float THDVolts11L1;
+      float THDVolts13L1;
+      float THDVolts15L1;
+
+      float THDVolts3L2;
+      float THDVolts5L2;
+      float THDVolts7L2;
+      float THDVolts9L2;
+      float THDVolts11L2;
+      float THDVolts13L2;
+      float THDVolts15L2;
+
+      float THDVolts3L3;
+      float THDVolts5L3;
+      float THDVolts7L3;
+      float THDVolts9L3;
+      float THDVolts11L3;
+      float THDVolts13L3;
+      float THDVolts15L3;
+
+      float THDVolts3L4;
+      float THDVolts5L4;
+      float THDVolts7L4;
+      float THDVolts9L4;
+      float THDVolts11L4;
+      float THDVolts13L4;
+      float THDVolts15L4;
+
+      float THDVolts3L1L2;
+      float THDVolts5L1L2;
+      float THDVolts7L1L2;
+      float THDVolts9L1L2;
+      float THDVolts11L1L2;
+      float THDVolts13L1L2;
+      float THDVolts15L1L2;
+
+      float THDVolts3L2L3;
+      float THDVolts5L2L3;
+      float THDVolts7L2L3;
+      float THDVolts9L2L3;
+      float THDVolts11L2L3;
+      float THDVolts13L2L3;
+      float THDVolts15L2L3;
+
+      float THDVolts3L3L1;
+      float THDVolts5L3L1;
+      float THDVolts7L3L1;
+      float THDVolts9L3L1;
+      float THDVolts11L3L1;
+      float THDVolts13L3L1;
+      float THDVolts15L3L1;
+
+
+
+      float THDCurrent3L1;
+      float THDCurrent5L1;
+      float THDCurrent7L1;
+      float THDCurrent9L1;
+      float THDCurrent11L1;
+      float THDCurrent13L1;
+      float THDCurrent15L1;
+
+      float THDCurrent3L2;
+      float THDCurrent5L2;
+      float THDCurrent7L2;
+      float THDCurrent9L2;
+      float THDCurrent11L2;
+      float THDCurrent13L2;
+      float THDCurrent15L2;
+
+      float THDCurrent3L3;
+      float THDCurrent5L3;
+      float THDCurrent7L3;
+      float THDCurrent9L3;
+      float THDCurrent11L3;
+      float THDCurrent13L3;
+      float THDCurrent15L3;
+
+      float THDCurrent3L4;
+      float THDCurrent5L4;
+      float THDCurrent7L4;
+      float THDCurrent9L4;
+      float THDCurrent11L4;
+      float THDCurrent13L4;
+      float THDCurrent15L4;
+    };
+  };
     
 } em3phData_t;

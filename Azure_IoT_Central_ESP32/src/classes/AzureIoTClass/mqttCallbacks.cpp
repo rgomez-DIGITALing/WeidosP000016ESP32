@@ -4,7 +4,8 @@
 #include <Arduino.h>
 #include <LogModule.h>
 #include "../../collections/TriggerCollection/TriggerCollection.h"
-
+#include "../../collections/DataHubCollection/DataHubCollection.h"
+#include "../../payloadGenerators/3phPayloadGenerators.h"
 
 #define COMMAND_RESPONSE_CODE_ACCEPTED 202
 #define COMMAND_RESPONSE_CODE_REJECTED 404
@@ -106,6 +107,8 @@ static az_span COMMAND_NAME_TOGGLE_D0_2 = AZ_SPAN_FROM_STR("DO_2");
 static az_span COMMAND_NAME_TOGGLE_D0_3 = AZ_SPAN_FROM_STR("DO_3");
 static az_span COMMAND_NAME_REBOOT = AZ_SPAN_FROM_STR("reboot");
 static az_span COMMAND_NAME_BOOST = AZ_SPAN_FROM_STR("boost");
+static az_span COMMAND_NAME_HARMONIC_ON = AZ_SPAN_FROM_STR("harmonicOn");
+static az_span COMMAND_NAME_HARMONIC_OFF = AZ_SPAN_FROM_STR("harmonicOff");
 
 
 int default_handle_command_request(AzureIoTDevice* azureIoTDevice, command_request_t command){
@@ -226,9 +229,23 @@ int device_handle_command_request(AzureIoTDevice* azureIoTDevice, command_reques
  //_az_PRECONDITION_NOT_NULL(azure_iot);
   azure_iot_t* azure_iot = azureIoTDevice->getAzureIoT();
   uint16_t response_code;
+  uint8_t slot = azureIoTDevice->getSlot();
 
-  
-  if (az_span_is_content_equal(command.command_name, COMMAND_NAME_BOOST))
+  if(az_span_is_content_equal(command.command_name, COMMAND_NAME_HARMONIC_ON)){
+    DataHubCollection.setPayloadGenerator2(slot, em3ph_harmonic_generete_payload);
+    DataHubCollection.setPayloadGenerator2(slot, em3ph_harmonic_generete_payload);
+    DataHubCollection.setPayloadGenerator2(slot, em3ph_harmonic_generete_payload);
+    DataHubCollection.setPayloadGenerator2(slot, em3ph_harmonic_generete_payload);
+    DataHubCollection.setPayloadGenerator2(slot, em3ph_harmonic_generete_payload);
+  }
+  else if(az_span_is_content_equal(command.command_name, COMMAND_NAME_HARMONIC_OFF)){
+    DataHubCollection.setPayloadGenerator2(slot, nullptr);
+    DataHubCollection.setPayloadGenerator2(slot, nullptr);
+    DataHubCollection.setPayloadGenerator2(slot, nullptr);
+    DataHubCollection.setPayloadGenerator2(slot, nullptr);
+    DataHubCollection.setPayloadGenerator2(slot, nullptr);
+  }
+  else if (az_span_is_content_equal(command.command_name, COMMAND_NAME_BOOST))
   {
     Serial.println("BOOST command has been recieved");
     Serial.print("Payload: ");
@@ -236,32 +253,28 @@ int device_handle_command_request(AzureIoTDevice* azureIoTDevice, command_reques
 
     az_json_reader out_json_reader;
 
-    az_json_reader_init(&out_json_reader, command.payload, NULL);
-  
-    uint8_t slot = azureIoTDevice->getSlot();
     uint32_t frequency = 0;
+    az_json_reader_init(&out_json_reader, command.payload, NULL);
     jsonGetUint32(&out_json_reader, "frequency", frequency);
+ 
 
-    if(jsonGetUint32(&out_json_reader, "frequency", frequency)){
-      Serial.print("Frequency out funciton: ");
-      Serial.println(frequency);
-    }
+    uint32_t test = 0;
+    az_json_reader_init(&out_json_reader, command.payload, NULL);
+    jsonGetUint32(&out_json_reader, "test", test);
 
     uint32_t duration = 0;
+    az_json_reader_init(&out_json_reader, command.payload, NULL);
     jsonGetUint32(&out_json_reader, "duration", duration);
     
-    if(jsonGetUint32(&out_json_reader, "duration", duration)){
-      Serial.print("Frequency out funciton: ");
-      Serial.println(frequency);
-    }
-
 
 
     if(frequency && duration){
+      Serial.println("Frequency and duration given");
       TriggerClass* trigger = TriggerCollection.getTrigger(slot);
       if(trigger) trigger->boost(frequency, duration);
     }
     else if(frequency){
+      Serial.println("ONLY Frequency given");
       TriggerClass* trigger = TriggerCollection.getTrigger(slot);
       if(trigger) trigger->boost(frequency);
     }
@@ -275,7 +288,7 @@ int device_handle_command_request(AzureIoTDevice* azureIoTDevice, command_reques
   else
   {
     LogError(
-        "Command not recognized LOL (%.*s).",
+        "Command not recognized (%.*s).",
         az_span_size(command.command_name),
         az_span_ptr(command.command_name));
     response_code = COMMAND_RESPONSE_CODE_REJECTED;
@@ -291,13 +304,15 @@ int device_handle_command_request(AzureIoTDevice* azureIoTDevice, command_reques
 
 bool jsonGetUint32(az_json_reader* json_reader, char* key, uint32_t& value){
   az_json_token token = json_reader->token;
-
+  Serial.print("Searching for key: ");
+  Serial.println(key);
   bool keyReached = false;
 
   while(az_json_reader_next_token(json_reader) == AZ_OK){
     az_json_token token = json_reader->token;
 
     if(az_json_token_is_text_equal(&token, az_span_create_from_str(key))){
+      Serial.println("Key found!!");
       keyReached = true;
       continue;
     }
@@ -305,6 +320,8 @@ bool jsonGetUint32(az_json_reader* json_reader, char* key, uint32_t& value){
     if(keyReached){
       if((token.kind == AZ_JSON_TOKEN_NUMBER)){
         az_json_token_get_uint32(&token, &value);
+        Serial.print("Getting value: ");
+        Serial.println(value);
         return true;
       }
     }

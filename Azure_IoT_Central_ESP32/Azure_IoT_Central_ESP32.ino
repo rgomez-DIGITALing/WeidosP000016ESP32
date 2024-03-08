@@ -77,7 +77,7 @@ void setup()
   Serial.begin(SERIAL_LOGGER_BAUD_RATE);
   set_logging_function(logging_function);
   set_logging_function_2(logging_function_2);
-  // delay(10000);
+  delay(1000);
   Serial.println("Welcome!");
 
   EthernetModule.init();
@@ -87,12 +87,15 @@ void setup()
   DataHubCollection.init();
   DeviceCollection.init();
   AzureIoTCollection.init();
+  // AzureIoTCollection.configure();
+  // while(1){}
   SDBackupSenderCollection.init();
   TriggerCollection.init();
 
   // WebServer.setAP();
   // WebServer.setServer();
   // while(1){}
+
   createObjects();
   configureAzureDevices();
   setAzureIoTCollectionDevices();
@@ -101,6 +104,10 @@ void setup()
   setEnergyMeterProperties();
   configureDeviceCollection();
   setTriggers();
+
+  // WebServer.setAP();
+  // WebServer.setServer();
+  // while(1){}
   // SDBackupSenderCollection.begin();
   //DeviceCollection.initFlowMeters();
   esp_task_wdt_init(WDT_TIMEOUT, true); //enable panic so ESP32 restarts
@@ -135,10 +142,13 @@ void loop()
   //   EthernetModule.loop();
     
   // }
-
+ 
   EthernetModule.loop();
+
   networkUp = EthernetModule.isNetworkUp();
+
   systemClock.loop(networkUp);
+
   clockRunning = systemClock.clockRunning();
 
   if(!networkUp){
@@ -147,7 +157,9 @@ void loop()
 
   if(clockRunning) TriggerCollection.loop(networkUp);
 
+
   if(clockRunning) DeviceCollection.loopDevicesNoNetwork();
+
   if(networkUp){
     weidosESP32Manager.loop();
     DeviceCollection.loopDevices();
@@ -170,6 +182,7 @@ void loop()
 
   if(millis()-prevTime>DELTA_TIME){
     prevTime = millis();
-    LogInfo("Link status: %i", Ethernet.linkStatus()); 
+    LogInfo("Link status: %i", Ethernet.linkStatus());
   }
+
 }

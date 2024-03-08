@@ -39,6 +39,7 @@ void DataHubCollectionClass::loop(){
 }
 
 
+
 void DataHubCollectionClass::setDataHub(DataHub<WeidosManagerData_t, WEIDOS_METADATA_RING_BUFFER_SIZE>& dataHub){ 
     weidosDataHub = &dataHub;
 }
@@ -55,6 +56,8 @@ void DataHubCollectionClass::setDataHub(DataHub<flowMeterManagerData_t, ENERGY_M
     flowMeterDataHubPool[slot] = &dataHub;
 }
 
-
+void DataHubCollectionClass::setPayloadGenerator2(uint8_t slot, payloadGenerator3ph generatePayload){
+    if(em3phDataHubPool[slot]) em3phDataHubPool[slot]->setPayloadGenerator2(generatePayload);
+}
 
 DataHubCollectionClass DataHubCollection;

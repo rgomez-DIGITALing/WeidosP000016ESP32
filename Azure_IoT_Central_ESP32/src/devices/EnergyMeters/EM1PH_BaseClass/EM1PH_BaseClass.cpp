@@ -28,6 +28,17 @@ void EM1PH_BaseClass::getData(em1phData_t& payload){
   for(int i=0; i<NUM_TOTAL_INCREMENTAL_DATA_1PHASE; i++){
       payload.incrementalData[i] = FLOAT_NO_PREV_DATA_AVAILABLE_ERROR_VALUE;
   }
+
+  if(prevDataAvailable){
+    payload.incrementalRealEnergyTotal = realEnergyTotal - prevRealEnergyTotal;
+    payload.incrementalApparentEnergyTotal = apparentEnergyTotal - prevApparentEnergyTotal;
+    payload.incrementalReactiveEnergyTotal = reactiveEnergyTotal - prevReactiveEnergyTotal;
+  }else{
+    for(int i=0; i<NUM_TOTAL_INCREMENTAL_DATA_1PHASE; i++){
+      payload.incrementalData[i] = FLOAT_NO_PREV_DATA_AVAILABLE_ERROR_VALUE;
+    }
+  }
+
   return;
 }
 

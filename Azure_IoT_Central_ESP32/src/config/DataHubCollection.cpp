@@ -176,6 +176,12 @@ void setDataHubsPayloadGenerators(){
     emDataHub3.setPayloadGenerator(em3ph_valueLine_generete_payload);
     emDataHub4.setPayloadGenerator(em3ph_valueLine_generete_payload);
     emDataHub5.setPayloadGenerator(em3ph_valueLine_generete_payload);
+
+    // emDataHub1.setPayloadGenerator2(em3ph_harmonic_generete_payload);
+    // emDataHub2.setPayloadGenerator2(em3ph_harmonic_generete_payload);
+    // emDataHub3.setPayloadGenerator2(em3ph_harmonic_generete_payload);
+    // emDataHub4.setPayloadGenerator2(em3ph_harmonic_generete_payload);
+    // emDataHub5.setPayloadGenerator2(em3ph_harmonic_generete_payload);
     #endif
 
 
@@ -195,6 +201,12 @@ void setDataHubsPayloadGenerators(){
     emDataHub3.setPayloadGenerator(em3ph_valueLine_generete_payload);
     emDataHub4.setPayloadGenerator(em3ph_valueLine_generete_payload);
     emDataHub5.setPayloadGenerator(em3ph_valueLine_generete_payload);
+
+    emDataHub1.setPayloadGenerator2(em3ph_harmonic_generete_payload);
+    emDataHub2.setPayloadGenerator2(em3ph_harmonic_generete_payload);
+    emDataHub3.setPayloadGenerator2(em3ph_harmonic_generete_payload);
+    emDataHub4.setPayloadGenerator2(em3ph_harmonic_generete_payload);
+    emDataHub5.setPayloadGenerator2(em3ph_harmonic_generete_payload);
     #endif
 
     #ifdef BATCH_TRANSELEVADORES_FAST

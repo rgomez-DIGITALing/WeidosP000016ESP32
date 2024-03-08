@@ -18,10 +18,11 @@ EM750Manager::~EM750Manager(){
 
 
 bool EM750Manager::sendProperties(){
-  AzureIoTDevice* azureDevice = AzureIoTCollection[deviceId];
 
+  AzureIoTDevice* azureDevice = AzureIoTCollection[deviceId];
   if(propertiesSent) return propertiesSent;
   //propertiesSent = true;
+  
   if(azureDevice->getStatus() == azure_iot_connected){
     size_t payload_buffer_length = 0;
     uint8_t* payload_buffer = azureDevice->getDataBuffer2();

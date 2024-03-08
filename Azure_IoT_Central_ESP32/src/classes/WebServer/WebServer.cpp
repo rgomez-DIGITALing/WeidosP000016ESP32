@@ -389,15 +389,17 @@ void WebServerClass::setServer()
   
   server.on("/deviceForm", HTTP_GET, [](AsyncWebServerRequest *request)
     {
+      AsyncResponseStream *response = request->beginResponseStream("text/html");
+      
       if(request->hasParam("slot")){
         Serial.println("Yes it has");
-        String slot = request->getParam("slot")->value();
-        int slotInt = slot.toInt();
+        String slotParam = request->getParam("slot")->value();
+        int slotInt = slotParam.toInt();
         Serial.print("Slot is: ");
         Serial.println(slotInt);
+        sendDeviceFormPage(response, slotInt);
+       
        } else Serial.println("No, it hasn't");
-      AsyncResponseStream *response = request->beginResponseStream("text/html");
-      sendDeviceFormPage(response);
       request->send(response);
       //request->send_P(200, "text/html", homePage);
     });

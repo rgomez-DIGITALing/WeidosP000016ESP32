@@ -31,12 +31,17 @@ void EM3PH_BaseClass::getData(em3phData_t& payload){
     payload.adjustedData[i] = adjustedData[i];
   }
 
+  for(int i=0; i<NUM_TOTAL_HARMONIC_DATA_3PHASE; i++){
+    payload.harmonicData[i] = harmonicData[i];
+  }
+
+
   if(prevDataAvailable){
     payload.incrementalRealEnergyAdjustedL1 = realEnergyAdjustedL1 - prevRealEnergyAdjustedL1;
     payload.incrementalRealEnergyAdjustedL2 = realEnergyAdjustedL2 - prevRealEnergyAdjustedL2;
     payload.incrementalRealEnergyAdjustedL3 = realEnergyAdjustedL3 - prevRealEnergyAdjustedL3;
     payload.incrementalRealEnergyAdjustedTotal = realEnergyAdjustedTotal - prevRealEnergyAdjustedTotal;
-    
+
     payload.incrementalApparentEnergyL1 = apparentEnergyL1 - prevApparentEnergyL1;
     payload.incrementalApparentEnergyL2 = apparentEnergyL2 - prevApparentEnergyL2;
     payload.incrementalApparentEnergyL3 = apparentEnergyL3 - prevApparentEnergyL3;
@@ -51,6 +56,9 @@ void EM3PH_BaseClass::getData(em3phData_t& payload){
       payload.incrementalData[i] = FLOAT_NO_PREV_DATA_AVAILABLE_ERROR_VALUE;
     }
   }
+
+  payload.currentTotal = currentTotal;
+  payload.phaseCurrentSum = phaseCurrentSum;
   
   return;
 }

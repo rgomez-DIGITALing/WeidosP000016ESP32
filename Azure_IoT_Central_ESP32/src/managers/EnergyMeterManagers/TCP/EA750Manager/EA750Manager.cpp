@@ -16,8 +16,8 @@ EA750Manager::~EA750Manager(){
 
 bool EA750Manager::sendProperties(){
   AzureIoTDevice* azureDevice = AzureIoTCollection[deviceId];
-
   if(propertiesSent) return propertiesSent;
+
   // propertiesSent = true;
   if(azureDevice->getStatus() == azure_iot_connected){
     size_t payload_buffer_length = 0;

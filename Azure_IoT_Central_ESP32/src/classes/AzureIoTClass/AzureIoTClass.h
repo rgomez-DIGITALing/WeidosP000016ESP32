@@ -12,7 +12,9 @@ enum securityType_t{
 };
 
 #define AZ_IOT_DATA_BUFFER_SIZE 3000
+// #define AZ_IOT_DATA_BUFFER_SIZE 1000
 #define DATA_BUFFER_SIZE 5000
+// #define DATA_BUFFER_SIZE 1000
 
 static const int MQTT_KEEP_ALIVE = 60;
 static const int MQTT_TIMEOUT = 5000;
@@ -20,7 +22,7 @@ static const int MQTT_TIMEOUT = 5000;
 
 class AzureIoTDevice{
     public:
-        AzureIoTDevice() : mqttClient(nullptr), client(nullptr){};
+        AzureIoTDevice(uint8_t slot) : slot(slot), mqttClient(nullptr), client(nullptr){};
         AzureIoTDevice(uint8_t slot, MQTTClient& mqttClient, Client& client) : slot(slot), mqttClient(&mqttClient), client(&client){};
         AzureIoTDevice(uint8_t slot, MQTTClient& mqttClient, Client* client) : slot(slot), mqttClient(&mqttClient), client(client){};
         AzureIoTDevice(uint8_t slot, MQTTClient* mqttClient, Client* client) : slot(slot), mqttClient(mqttClient), client(client){};
@@ -36,6 +38,7 @@ class AzureIoTDevice{
         void setModelId(char* modelId);
         void usingCertificate(char* certificate, char* privateKey);
         void usingSasToken(char* key);
+        char* getSasKey(){ return (char*)az_span_ptr(azure_iot_config.device_key); }
         int sendMessage(az_span message);
         int sendProperties(az_span message);
         azure_iot_t* getAzureIoT(){ return &azure_iot; }

@@ -155,7 +155,8 @@ void AzureIoTDevice::usingCertificate(char* certificate, char* privateKey){
 void AzureIoTDevice::usingSasToken(char* key){
   azure_iot_config.device_certificate = AZ_SPAN_EMPTY;
   azure_iot_config.device_certificate_private_key = AZ_SPAN_EMPTY;
-  azure_iot_config.device_key = az_span_create_from_str(key);
+  if(!key) azure_iot_config.device_key = AZ_SPAN_EMPTY;
+  else azure_iot_config.device_key = az_span_create_from_str(key);
   securityType = SAS_TOKEN;
 }
 
@@ -270,7 +271,7 @@ int AzureIoTDevice::mqtt_client_deinit(mqtt_client_handle_t mqtt_client_handle)
  * See the documentation of `mqtt_client_subscribe_function_t` in AzureIoT.h for details.
  */
 int AzureIoTDevice::mqtt_client_subscribe(mqtt_client_handle_t mqtt_client_handle, az_span topic, mqtt_qos_t qos)
-{   
+{
   int result;
 
   bool subscribed = mqttClient->subscribe((const char*)az_span_ptr(topic), (uint8_t)qos);

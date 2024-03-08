@@ -54,8 +54,8 @@ class EM3PH_BaseClass{
         float voltageL1L2, voltageL2L3, voltageL1L3, avgVoltageLL;
         float currentNeutral;
         float THDVoltsL1N, THDVoltsL2N, THDVoltsL3N;
-        float THDCurrentL1N, THDCurrentL2N, THDCurrentL3N;
-        float avgTHDVoltsLN, avgTHDCurrentLN;
+        float THDCurrentL1, THDCurrentL2, THDCurrentL3;
+        float avgTHDVoltsLN, avgTHDCurrentL;
         float THDVoltsL1L2, THDVoltsL2L3, THDVoltsL1L3, avgTHDVoltsLL;
         float realEnergyTotal, reactiveEnergyTotal;
         float realEnergyL1, realEnergyL2, realEnergyL3;
@@ -121,4 +121,106 @@ class EM3PH_BaseClass{
     float prevReactiveEnergyL2;
     float prevReactiveEnergyL3;
     float prevReactiveEnergyTotal;
+
+
+
+    //Harmonic variables
+    union{
+      float harmonicData[NUM_TOTAL_HARMONIC_DATA_3PHASE];
+
+      struct{
+        float HVolts3L1;
+        float HVolts5L1;
+        float HVolts7L1;
+        float HVolts9L1;
+        float HVolts11L1;
+        float HVolts13L1;
+        float HVolts15L1;
+
+        float HVolts3L2;
+        float HVolts5L2;
+        float HVolts7L2;
+        float HVolts9L2;
+        float HVolts11L2;
+        float HVolts13L2;
+        float HVolts15L2;
+
+        float HVolts3L3;
+        float HVolts5L3;
+        float HVolts7L3;
+        float HVolts9L3;
+        float HVolts11L3;
+        float HVolts13L3;
+        float HVolts15L3;
+
+        float HVolts3L4;
+        float HVolts5L4;
+        float HVolts7L4;
+        float HVolts9L4;
+        float HVolts11L4;
+        float HVolts13L4;
+        float HVolts15L4;
+
+
+        float HVolts3L1L2;
+        float HVolts5L1L2;
+        float HVolts7L1L2;
+        float HVolts9L1L2;
+        float HVolts11L1L2;
+        float HVolts13L1L2;
+        float HVolts15L1L2;
+
+
+        float HVolts3L2L3;
+        float HVolts5L2L3;
+        float HVolts7L2L3;
+        float HVolts9L2L3;
+        float HVolts11L2L3;
+        float HVolts13L2L3;
+        float HVolts15L2L3;
+
+        float HVolts3L3L1;
+        float HVolts5L3L1;
+        float HVolts7L3L1;
+        float HVolts9L3L1;
+        float HVolts11L3L1;
+        float HVolts13L3L1;
+        float HVolts15L3L1;
+
+
+
+
+        float HCurrent3L1;
+        float HCurrent5L1;
+        float HCurrent7L1;
+        float HCurrent9L1;
+        float HCurrent11L1;
+        float HCurrent13L1;
+        float HCurrent15L1;
+
+        float HCurrent3L2;
+        float HCurrent5L2;
+        float HCurrent7L2;
+        float HCurrent9L2;
+        float HCurrent11L2;
+        float HCurrent13L2;
+        float HCurrent15L2;
+
+        float HCurrent3L3;
+        float HCurrent5L3;
+        float HCurrent7L3;
+        float HCurrent9L3;
+        float HCurrent11L3;
+        float HCurrent13L3;
+        float HCurrent15L3;
+
+        float HCurrent3L4;
+        float HCurrent5L4;
+        float HCurrent7L4;
+        float HCurrent9L4;
+        float HCurrent11L4;
+        float HCurrent13L4;
+        float HCurrent15L4;
+      };
+    };
 };

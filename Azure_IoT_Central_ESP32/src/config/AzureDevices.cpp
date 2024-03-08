@@ -22,6 +22,7 @@ AzureIoTDevice* Azure5 = nullptr;
 
 
 #define MQTT_CLIENT_BUFFER_SIZE 3000
+// #define MQTT_CLIENT_BUFFER_SIZE 50
 
 void createObjects(){
     uint8_t* bufferPtr = nullptr;
@@ -96,6 +97,8 @@ void configureAzureDevices(){
   
     Azure1->usingSasToken(IOT_CONFIG_DEVICE_1_KEY);
     Azure1->setDeviceId(IOT_CONFIG_DEVICE_1_ID);
+    // Azure1->usingSasToken(nullptr);
+    // Azure1->setDeviceId(nullptr);
     Azure1->setDpsScopeId(scopeId);
     Azure1->setGatewayId(gatewayId);
     Azure1->setModelId(emptyModelId);
@@ -144,7 +147,10 @@ void setAzureIoTCollectionDevices(){
     AzureIoTCollection.setAzureIoTDevice(Azure4, 4);
     AzureIoTCollection.setAzureIoTDevice(Azure5, 5);
     #endif
-
+    Serial.println("Let's configure AzureIotCollection and see if they are null pointers hehehe");
+    if(Azure1 == nullptr) Serial.println("Is null pointer saps?");
+    if(Azure2 == nullptr) Serial.println("Is null pointer saps?");
+    if(Azure3 == nullptr) Serial.println("Is null pointer saps?");
     #if defined BATCH_GENERAL_ROBOT || defined BATCH_LINEA_EMPAQUETADO_AC_OFICINAS
     AzureIoTCollection.setAzureIoTDevice(Azure1, 1);
     AzureIoTCollection.setAzureIoTDevice(Azure2, 2);
@@ -153,7 +159,7 @@ void setAzureIoTCollectionDevices(){
     AzureIoTCollection.setAzureIoTDevice(Azure5, 5);
     #endif
 
-    #if defined BATCH_TRANSELEVADORES_FAST 
+    #if defined BATCH_TRANSELEVADORES_FAST
     AzureIoTCollection.setAzureIoTDevice(Azure1, 1);
     AzureIoTCollection.setAzureIoTDevice(Azure2, 2);
     AzureIoTCollection.setAzureIoTDevice(Azure3, 3);

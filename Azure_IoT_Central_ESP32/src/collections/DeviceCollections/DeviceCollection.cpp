@@ -51,9 +51,36 @@ void DeviceCollectionClass::init(){
 //     return String("None");
 // }
 
+uint8_t testList[] = {0,7,8,4,5,2};
 
+int DeviceCollectionClass::getDeviceType(uint8_t slot){ 
+    if(slot>MAX_ALLOWED_DEVICES) return 0;
+    // return deviceList[slot];
+    return testList[slot];
+}
 
+char* DeviceCollectionClass::gerDeviceName(uint8_t slot){
+    // int deviceType = deviceList[slot];
+    int deviceType = testList[slot];
+    char* deviceTypeName = nullptr;
 
+    if(deviceType == 1) return "EM110";
+    if(deviceType == 2) return "EM111";
+    if(deviceType == 3) return "EM120";
+    if(deviceType == 4) return "EM122";
+    if(deviceType == 5) return "EM220";
+    if(deviceType == 6) return "EM750";
+    if(deviceType == 7) return "EA750";
+    if(deviceType == 8) return "Pulse Meter";
+    if(deviceType == 9) return "Analog Meter";
+    return "None";
+}
+
+bool DeviceCollectionClass::isEnergyMeter(uint8_t slot){
+    int deviceType = deviceList[slot];
+    // if(deviceType<)
+
+}
 
 
 void DeviceCollectionClass::loopDevices(){

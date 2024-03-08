@@ -162,12 +162,12 @@ void EM3PH_RTU_BasicLine::assignData2(){
   THDVoltsL1N = getNextData();
   THDVoltsL2N = getNextData();
   THDVoltsL3N = getNextData();
-  THDCurrentL1N = getNextData();
-  THDCurrentL2N = getNextData();
-  THDCurrentL3N = getNextData();
+  THDCurrentL1 = getNextData();
+  THDCurrentL2 = getNextData();
+  THDCurrentL3 = getNextData();
   getNextData();
   avgTHDVoltsLN = getNextData();
-  avgTHDCurrentLN = getNextData();
+  avgTHDCurrentL = getNextData();
   return;
 }
 

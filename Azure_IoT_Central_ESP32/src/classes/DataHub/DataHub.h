@@ -40,13 +40,15 @@ class DataHub{
     void push(T data);
     int getSize(){ return dataBuffer.size();}
     void setPayloadGenerator(payloadGenerator generatePayload){ this->generatePayload = generatePayload;}
+    void setPayloadGenerator2(payloadGenerator generatePayload){ this->generatePayload2 = generatePayload;}
 
     
   private:
       RingBuf<T,N> dataBuffer;
 
       int state = GET_DATA_FROM_FIFO;
-      payloadGenerator generatePayload;
+      payloadGenerator generatePayload = nullptr;
+      payloadGenerator generatePayload2 = nullptr;
       int numSendTries = 0;
       T currentPayload;
 };
@@ -98,6 +100,7 @@ template <class T, int N>
 void DataHub<T,N>::loop(){
     uint8_t deviceId = 0;
     char* filePath;
+    AzureIoTDevice* azureDevice = nullptr;
     switch(state){
         case GET_DATA_FROM_FIFO:
             if(dataBuffer.pop(currentPayload)){
@@ -109,25 +112,43 @@ void DataHub<T,N>::loop(){
             break;
 
         case MOVE_MESSAGE:
+        {
             deviceId = currentPayload.deviceId;
             LogInfo2(F("Moving Info for device ID: %i"), deviceId);
-            //Serial.println("[DataHub<T,N>::loop()] --- 1");
-            if(AzureIoTCollection[deviceId]->getStatus() == azure_iot_connected){
-                size_t payload_buffer_length = 0;
-                //Serial.println("[DataHub<T,N>::loop()] --- 2");
-                uint8_t* payload_buffer = AzureIoTCollection[deviceId]->getDataBuffer2();
-                //Serial.println("[DataHub<T,N>::loop()] --- 3");
-                generatePayload(payload_buffer, AZ_IOT_DATA_BUFFER_SIZE, &payload_buffer_length, currentPayload);
-                //Serial.println("[DataHub<T,N>::loop()] --- 4");
-                int error = AzureIoTCollection[deviceId]->sendMessage(az_span_create(payload_buffer, payload_buffer_length));
-                //Serial.println("[DataHub<T,N>::loop()] --- 5");
-                if(!error) state = TELEMETRY_SENT;
-                //else state = TELEMETRY_SENT;
-                else state = TELEMETRY_SEND_FAILURE;
-            }else state = TELEMETRY_SEND_FAILURE;
-            //}else state = TELEMETRY_SENT;
-            //Serial.println("[DataHub<T,N>::loop()] --- break");
+            azureDevice = AzureIoTCollection[deviceId];
+            if(!azureDevice){
+                state = TELEMETRY_SEND_FAILURE;
+                break;
+            }
+
+            if(azureDevice->getStatus() != azure_iot_connected){
+                state = TELEMETRY_SEND_FAILURE;
+                break;
+            }
+            
+            size_t payload_buffer_length = 0;
+            uint8_t* payload_buffer = azureDevice->getDataBuffer2();
+            generatePayload(payload_buffer, AZ_IOT_DATA_BUFFER_SIZE, &payload_buffer_length, currentPayload);
+            int error = azureDevice->sendMessage(az_span_create(payload_buffer, payload_buffer_length));
+            if(error){
+                state = TELEMETRY_SEND_FAILURE;
+                break;
+            }
+
+            if(!generatePayload2) Serial.println("PayloadGenerator 2 is not set hehehhee");
+            else{
+                generatePayload2(payload_buffer, AZ_IOT_DATA_BUFFER_SIZE, &payload_buffer_length, currentPayload);
+                error = azureDevice->sendMessage(az_span_create(payload_buffer, payload_buffer_length));
+                if(error){
+                    state = TELEMETRY_SEND_FAILURE;
+                    break;
+                }
+            }
+            
+            
+            state = TELEMETRY_SENT;
             break;
+        }
 
         case TELEMETRY_SENT:
             LogInfo2(F("Message successfully sent for ID: %i. Required number of tries: %i"), deviceId, numSendTries);

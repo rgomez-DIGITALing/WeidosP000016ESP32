@@ -9,7 +9,12 @@
 #define ENERGY_METER_RING_BUFFER_SIZE 15
 #define WEIDOS_METADATA_RING_BUFFER_SIZE 15
 
+
+typedef int (*payloadGenerator3ph)(uint8_t* payload_buffer, size_t payload_buffer_size, size_t* payload_buffer_length, em3phManagerData_t& data);
+
 class DataHubCollectionClass{
+    
+
     public:
         void init();
         void push(WeidosManagerData_t data);
@@ -22,6 +27,7 @@ class DataHubCollectionClass{
         void setDataHub(DataHub<em1phManagerData_t, ENERGY_METER_RING_BUFFER_SIZE>& dataHub, int slot);
         void setDataHub(DataHub<em3phManagerData_t, ENERGY_METER_RING_BUFFER_SIZE>& dataHub, int slot);
         void setDataHub(DataHub<flowMeterManagerData_t, ENERGY_METER_RING_BUFFER_SIZE>& dataHub, int slot);
+        void setPayloadGenerator2(uint8_t slot, payloadGenerator3ph generatePayload);
 
 
     private:

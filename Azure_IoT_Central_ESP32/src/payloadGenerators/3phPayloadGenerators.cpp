@@ -53,9 +53,11 @@ int writeValueLineConsDelivData(az_json_writer& jw, em3phManagerData_t& emData);
 int writeBasicLineConsDelivData(az_json_writer& jw, em3phManagerData_t& emData);
 int writeAdjustedData(az_json_writer& jw, em3phManagerData_t& emData);
 int writeIncrementalData(az_json_writer& jw, em3phManagerData_t& emData);
+int writeHarmonicData(az_json_writer& jw, em3phManagerData_t& emData);
 int writeBasicLineIncrementalData(az_json_writer& jw, em3phManagerData_t& emData);
 
 int writeValueLineNullValues(az_json_writer& jw, em3phManagerData_t& emData);
+int writeHarmonicNullValues(az_json_writer& jw, em3phManagerData_t& emData);
 int writeBasicLineNullValues(az_json_writer& jw, em3phManagerData_t& emData);
 
 
@@ -90,9 +92,12 @@ int em3ph_valueLine_generete_payload(uint8_t* payload_buffer, size_t payload_buf
     rc = writeIncrementalData(jw, emData);
     EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed writting Incremental Data");
 
+    // rc = writeHarmonicData(jw, emData);
+    // EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed writting Harmonic Data");
+
     rc = az_json_writer_append_property_name(&jw, az_span_create_from_str(TELEMETRY_PROP_NAME_CURRENT_TOTAL));
     EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding timestamp property name to telemetry payload.");
-    rc = az_json_writer_append_int32(&jw, emData.payload.currentTotal);
+    rc = az_json_writer_append_double(&jw, emData.payload.currentTotal, TRIPLE_DECIMAL_PLACE_DIGITS);
     EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding timestamp property value to telemetry payload. ");
     
   }
@@ -137,6 +142,7 @@ int em3ph_valueLine_generete_payload(uint8_t* payload_buffer, size_t payload_buf
   payload_buffer[az_span_size(payload_buffer_span)] = null_terminator;
   *payload_buffer_length = az_span_size(payload_buffer_span);
   
+  Serial.println("Doncs ja estaria!");
   return RESULT_OK;
     
 }
@@ -174,7 +180,7 @@ int em3ph_basicLine_generete_payload(uint8_t* payload_buffer, size_t payload_buf
 
     rc = az_json_writer_append_property_name(&jw, az_span_create_from_str(TELEMETRY_PROP_NAME_PHASE_CURRENT_SUM));
     EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding timestamp property name to telemetry payload.");
-    rc = az_json_writer_append_int32(&jw, emData.payload.phaseCurrentSum);
+    rc = az_json_writer_append_double(&jw, emData.payload.phaseCurrentSum, TRIPLE_DECIMAL_PLACE_DIGITS);
     EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding timestamp property value to telemetry payload. ");
   }
   else{
@@ -223,6 +229,70 @@ int em3ph_basicLine_generete_payload(uint8_t* payload_buffer, size_t payload_buf
 }
 
 
+int em3ph_harmonic_generete_payload(uint8_t* payload_buffer, size_t payload_buffer_size, size_t* payload_buffer_length, em3phManagerData_t& emData){
+    az_json_writer jw;
+    az_result rc;
+    az_span payload_buffer_span = az_span_create(payload_buffer, payload_buffer_size);
+    az_span json_span;
+
+    unsigned long timestamp = emData.timestamp;
+    int comError = emData.payload.comError;
+    
+    rc = az_json_writer_init(&jw, payload_buffer_span, NULL);
+    EXIT_IF_AZ_FAILED2(rc, RESULT_ERROR, F("Failed initializing json writer for telemetry."));
+
+    rc = az_json_writer_append_begin_object(&jw);
+    EXIT_IF_AZ_FAILED2(rc, RESULT_ERROR, F("Failed setting telemetry json root."));
+
+
+  if(!comError){
+    rc = writeHarmonicData(jw, emData);
+    EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed writting Harmonic Data");    
+  }
+  else{
+    rc = writeHarmonicNullValues(jw, emData);
+    EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed writting NULL values");
+  }
+
+
+  
+  rc = az_json_writer_append_property_name(&jw, az_span_create_from_str(TELEMETRY_PROP_NAME_DATA_SOURCE_STATUS));
+  EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding timestamp property name to telemetry payload.");
+  rc = az_json_writer_append_int32(&jw, emData.dataSourceStatus);
+  EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding timestamp property value to telemetry payload. ");
+
+  rc = az_json_writer_append_property_name(&jw, az_span_create_from_str(TELEMETRY_PROP_NAME_COM_ERROR));
+  EXIT_IF_AZ_FAILED2(rc, RESULT_ERROR, F("Failed adding timestamp property name to telemetry payload."));
+  rc = az_json_writer_append_double(&jw, comError, TRIPLE_DECIMAL_PLACE_DIGITS);
+  EXIT_IF_AZ_FAILED2(rc, RESULT_ERROR, F("Failed adding timestamp property value to telemetry payload."));
+
+  rc = az_json_writer_append_property_name(&jw, AZ_SPAN_FROM_STR(WEIDOS_TELEMETRY_PROP_NAME_TIMESTAMP));
+  EXIT_IF_AZ_FAILED2(rc, RESULT_ERROR, F("Failed adding timestamp property name to telemetry payload."));
+  DateTime date = DateTime(timestamp);
+  char dateFormat[] = "YYYY-MM-DDThh:mm:ss.000Z";
+  date.toString(dateFormat);
+  rc = az_json_writer_append_string(&jw, az_span_create_from_str(dateFormat));
+  EXIT_IF_AZ_FAILED2(rc, RESULT_ERROR, F("Failed adding timestamp property value to telemetry payload. "));
+
+
+
+  rc = az_json_writer_append_end_object(&jw);
+  EXIT_IF_AZ_FAILED2(rc, RESULT_ERROR, F("Failed closing telemetry json payload."));
+
+  payload_buffer_span = az_json_writer_get_bytes_used_in_destination(&jw);
+
+  if ((payload_buffer_size - az_span_size(payload_buffer_span)) < 1)
+  {
+    LogError("Insufficient space for telemetry payload null terminator.");
+    return RESULT_ERROR;
+  }
+
+  payload_buffer[az_span_size(payload_buffer_span)] = null_terminator;
+  *payload_buffer_length = az_span_size(payload_buffer_span);
+  
+  return RESULT_OK;
+}
+
 
 
 
@@ -256,6 +326,7 @@ int writeNormalData(az_json_writer& jw, em3phManagerData_t& emData){
     EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding %s property name to telemetry payload.", TELEMETRY_PROP_NAME_DATA_ERROR_COUNTER);
     rc = az_json_writer_append_int32(&jw, dataErrorCounter);
     EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding %s property value to telemetry payload. ", TELEMETRY_PROP_NAME_DATA_ERROR_COUNTER);
+    Serial.println("All fine!");
     return RESULT_OK;
 }
 
@@ -288,6 +359,7 @@ int writeValueLineConsDelivData(az_json_writer& jw, em3phManagerData_t& emData){
     rc = az_json_writer_append_int32(&jw, consDelivDataErrorCounter);
     EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding %s property value to telemetry payload. ", TELEMETRY_PROP_NAME_CONS_DELIV_DATA_ERROR_COUNTER);
   //End Consumed/Delivered Data
+  Serial.println("All fine!");
   return RESULT_OK;
 }
 
@@ -352,11 +424,13 @@ int writeAdjustedData(az_json_writer& jw, em3phManagerData_t& emData){
     rc = az_json_writer_append_int32(&jw, adjustedDataErrorCounter);
     EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding %s property value to telemetry payload. ", TELEMETRY_PROP_NAME_ADJUSTED_DATA_ERROR_COUNTER);
   //End Consumed/Delivered Data
+  Serial.println("All fine!");
   return RESULT_OK;
 }
 
 
 int writeIncrementalData(az_json_writer& jw, em3phManagerData_t& emData){
+    Serial.println("[writeIncrementalData]");
     az_result rc;
     float* incrementalData = emData.payload.incrementalData;
     int incrementalDataErrorCounter = 0;
@@ -366,6 +440,9 @@ int writeIncrementalData(az_json_writer& jw, em3phManagerData_t& emData){
       rc = az_json_writer_append_property_name(&jw, az_span_create_from_str(EM3PH_INCREMENTAL_DATA_TELEMETRY_NAMES[i]));
       EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding %s property name to telemetry payload.", EM3PH_INCREMENTAL_DATA_TELEMETRY_NAMES[i]);
       int dataError = isEMDataValid(incrementalData[i]);
+      // Serial.print(EM3PH_INCREMENTAL_DATA_TELEMETRY_NAMES[i]);
+      // Serial.print(": ");
+      // Serial.println(incrementalData[i]);
       if(dataError){
         incrementalDataErrorCounter++;
         double errorValue = getEMErrorValue(dataError);
@@ -380,8 +457,51 @@ int writeIncrementalData(az_json_writer& jw, em3phManagerData_t& emData){
     rc = az_json_writer_append_int32(&jw, incrementalDataErrorCounter);
     EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding %s property value to telemetry payload. ", TELEMETRY_PROP_NAME_INCREMENTAL_DATA_ERROR_COUNTER);
   //End Period Data
+  Serial.println("All fine!");
   return RESULT_OK;
 }
+
+
+
+int writeHarmonicData(az_json_writer& jw, em3phManagerData_t& emData){
+  Serial.println("[writeHarmonicData]");
+    az_result rc;
+    float* harmonicData = emData.payload.harmonicData;
+    int harmonicDataDataErrorCounter = 0;
+
+    //Incremental Data
+    for(int i=0; i<NUM_TOTAL_HARMONIC_DATA_3PHASE; i++){
+      // Serial.print(EM3PH_HARMONIC_DATA_TELEMETRY_NAMES[i]);
+      // Serial.print(": ");
+      // Serial.println(harmonicData[i]);
+      rc = az_json_writer_append_property_name(&jw, az_span_create_from_str(EM3PH_HARMONIC_DATA_TELEMETRY_NAMES[i]));
+      // rc = az_json_writer_append_property_name(&jw, az_span_create_from_str("TestPropertyNameRaroDoncs"));
+      // Serial.print("Azure result: ");
+      // Serial.println(rc);
+      // EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding %s property name to telemetry payload.", "TestPropertyNameRaroDoncs");
+      EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding %s property name to telemetry payload.", EM3PH_HARMONIC_DATA_TELEMETRY_NAMES[i]);
+      int dataError = isEMDataValid(harmonicData[i]);
+      
+      if(dataError){
+        harmonicDataDataErrorCounter++;
+        double errorValue = getEMErrorValue(dataError);
+        rc = az_json_writer_append_double(&jw, errorValue, DOUBLE_DECIMAL_PLACE_DIGITS);
+      }
+      else rc = az_json_writer_append_double(&jw, harmonicData[i], TRIPLE_DECIMAL_PLACE_DIGITS);
+      EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding %s property value to telemetry payload.", EM3PH_HARMONIC_DATA_TELEMETRY_NAMES[i]);
+    }
+
+    rc = az_json_writer_append_property_name(&jw, az_span_create_from_str(TELEMETRY_PROP_NAME_HARMONIC_DATA_ERROR_COUNTER));
+    EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding %s property name to telemetry payload.", TELEMETRY_PROP_NAME_HARMONIC_DATA_ERROR_COUNTER);
+    rc = az_json_writer_append_int32(&jw, harmonicDataDataErrorCounter);
+    EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding %s property value to telemetry payload. ", TELEMETRY_PROP_NAME_HARMONIC_DATA_ERROR_COUNTER);
+  //End Period Data
+  Serial.println("All fine!");
+  return RESULT_OK;
+}
+
+
+
 
 
 
@@ -499,3 +619,17 @@ int writeBasicLineNullValues(az_json_writer& jw, em3phManagerData_t& emData){
 }
 
 
+
+int writeHarmonicNullValues(az_json_writer& jw, em3phManagerData_t& emData){
+  az_result rc;
+
+  for(int i=0; i<NUM_TOTAL_HARMONIC_DATA_3PHASE; i++){
+    rc = az_json_writer_append_property_name(&jw, az_span_create_from_str(EM3PH_HARMONIC_DATA_TELEMETRY_NAMES[i]));
+    EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding %s property name to telemetry payload.", EM3PH_HARMONIC_DATA_TELEMETRY_NAMES[i]);
+    rc = az_json_writer_append_null(&jw);
+    EXIT_IF_AZ_FAILED(rc, RESULT_ERROR, "Failed adding %s property value to telemetry payload.", EM3PH_HARMONIC_DATA_TELEMETRY_NAMES[i]);
+  }
+
+  
+  return RESULT_OK;
+}

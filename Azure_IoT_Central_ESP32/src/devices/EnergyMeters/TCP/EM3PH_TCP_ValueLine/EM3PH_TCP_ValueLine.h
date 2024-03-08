@@ -47,20 +47,19 @@ class EM3PH_TCP_ValueLine : public EM3PH_BaseClass{
      * registers corresponding to the first batch.
      */
     void assignData();
-    /**
-     * Read from the Modbus Client buffer and assign all bytes to its corresponding variable for the
-     * registers corresponding to the second batch.
-     */
     void assignData2();
-    /**
-     * Read from the Modbus Client buffer and assign all bytes to its corresponding variable for the
-     * registers corresponding to the third batch.
-     */
     void assignData3();
-    /**
-     * Read from the Modbus Client buffer and assign all bytes to its corresponding variable for the
-     * registers corresponding to the second batch.
-     */
+    void assignData4();
+    void assignData5();
+    void assignData6();
+    void assignData7();
+    void assignData8();
+    void assignData9();
+    void assignData10();
+    void assignData11();
+    void assignData12();
+    void assignData13();
+    
     void computeData();
     /**
      * Read two bytes from the Modbus Client and join them to cast it into a float variable.

@@ -35,6 +35,10 @@ class DeviceCollectionClass{
         void sendDevicesProperties();
         void initFlowMeters();
 
+        int getDeviceType(uint8_t slot);
+        char* gerDeviceName(uint8_t slot);
+        bool isEnergyMeter(uint8_t slot);
+
         void setDevice(WeidosManager& weidos);
         void setDevice(EM110Manager* em);
         void setDevice(EM111Manager* em);

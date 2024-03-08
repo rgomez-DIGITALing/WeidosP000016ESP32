@@ -1,4 +1,6 @@
 #include "devicesPage.h"
+#include "../../../collections/DeviceCollections/DeviceCollection.h"
+#include "../../../collections/AzureIoTCollection/AzureIoTCollection.h"
 
 
 
@@ -31,7 +33,7 @@ void writeTitle(AsyncResponseStream *response, char* title){
 
 
 void sendDevicesPage(AsyncResponseStream *response){
-  
+
 
     response->print(R"rawliteral(
         <!DOCTYPE html>
@@ -107,7 +109,7 @@ void sendDevicesPage(AsyncResponseStream *response){
             response->print(R"rawliteral(:</h3><a class="deviceButton" href="/deviceForm?slot=)rawliteral");
             response->print(i);
             response->print("\">");
-            response->print(namesTest[i]);
+            response->print(DeviceCollection.gerDeviceName(i));
             response->print(R"rawliteral(</a></div>)rawliteral");
         }
         response->print(R"rawliteral(</div></main></div>)rawliteral");
@@ -139,14 +141,15 @@ char* deviceFormContent = R"rawliteral(<h1>Device Form</h1>
             <label for="device">Select a Device:</label>
             <select name="device" id="deviceSelect"  onchange="showDeviceFields()">
                 <option value="0">Select a device...</option>
-                <option value="1" selected>EM110</option>
+                <option value="1">EM110</option>
                 <option value="2">EM111</option>
                 <option value="3">EM120</option>
                 <option value="4">EM122</option>
-                <option value="5">EM750</option>
-                <option value="6">EA750</option>
-                <option value="7">Pulse Meter</option>
-                <option value="8">Analog Meter</option>
+                <option value="5">EM220</option>
+                <option value="6">EM750</option>
+                <option value="7">EA750</option>
+                <option value="8">Pulse Meter</option>
+                <option value="9">Analog Meter</option>
             </select>
         </div>
 
@@ -154,43 +157,43 @@ char* deviceFormContent = R"rawliteral(<h1>Device Form</h1>
 
         <div class="userInput" id="azureId">
             <label for="azureId">Azure ID:</label>
-            <input type="text" name="azureId" id="azureIdInput">
+            <input type="text" name="azureId" id="azureIdInput" value="%s">
         </div>
 
 
 
         <div class="userInput" id="azureSasKey">
             <label for="azureSasKey">Azure SAS Key:</label>
-            <input type="text" name="azureSasKey" id="azureSasKeyInput">
+            <input type="text" name="azureSasKey" id="azureSasKeyInput" value="%s">
         </div>
 
 
         <div class="userInput" id="ipAddress">
             <label for="ipAddress">IP Address:</label>
-            <input type="text" name="ipAddress" id="ipAddressInput">
+            <input type="text" name="ipAddress" id="ipAddressInput" value="%s">
         </div>
 
 
 
         <div class="userInput" id="modbusAddress">
             <label for="modbusAddress">Modbus Address:</label>
-            <input type="number" name="modbusAddress"  id="modbusAddressInput" value="1" readonly>
+            <input type="number" name="modbusAddress"  id="modbusAddressInput" value="%i" readonly>
         </div>
   
 
         <div class="userInput" id="cpPrimary" >
             <label for="cpPrimary">CP Primary:</label>
-            <input type="text" name="cpPrimary" id="cpPrimaryInput">
+            <input type="text" name="cpPrimary" id="cpPrimaryInput" value="%i">
         </div>
 
 
         <div class="userInput" id="cpSecondary">
             <label for="cpSecondary">CP Secondary:</label>
-            <input type="text" name="cpSecondary" id="cpSecondaryInput">
+            <input type="text" name="cpSecondary" id="cpSecondaryInput" value="%i">
         </div>
 
 
-        <div class="userInput" id="digitalPin">    
+        <div class="userInput" id="digitalPin">
             <label for="digitalPin">Digital Pin:</label>
             <select name="digitalPin" id="digitalPinInput">
                 <option value=""></option>
@@ -200,11 +203,11 @@ char* deviceFormContent = R"rawliteral(<h1>Device Form</h1>
                 <option value="DI_7">DI_7</option>
             </select>
         </div>
-  
+
 
         <div class="userInput" id="conversionFactor">
             <label for="conversionFactor">Conversion Factor:</label>
-            <input type="number" name="conversionFactor" id="conversionFactorInput"  required step="0.01">
+            <input type="number" name="conversionFactor" id="conversionFactorInput"  value="%f" required step="0.01">
         </div>
 
 
@@ -225,6 +228,9 @@ char* deviceFormScripts = R"rawliteral(<script>
             var deviceSelect = document.getElementById("deviceSelect");
             deviceSelect.value = selectedItemIs;
             console.log("On load Body!");
+            document.getElementById('deviceSelect').selectedIndex = %i;
+            document.getElementById('digitalPinInput').selectedIndex = %i;
+
             var event = new Event("change");
             deviceSelect.dispatchEvent(event);
         });
@@ -239,23 +245,23 @@ char* deviceFormScripts = R"rawliteral(<script>
             if(inputTag.hasAttribute('required')) inputTag.removeAttribute('required', '');
         });
 
-        
+
   
         var selectedDevice = document.getElementById("deviceSelect").value;
         if(selectedDevice != ""){
             showInput("azureId");
             showInput("azureSasKey");
         }
-        if(selectedDevice === "1" || selectedDevice === "2" || selectedDevice === "3" || selectedDevice === "4"){
+        if(selectedDevice === "1" || selectedDevice === "2" || selectedDevice === "3" || selectedDevice === "4" || selectedDevice === "5"){
             showInput("modbusAddress");
-        } 
+        }
 
-        if(selectedDevice === "5" || selectedDevice === "6"){
+        if(selectedDevice === "6" || selectedDevice === "7"){
             showInput("ipAddress");
             showInput("modbusAddress");
         }
 
-        if(selectedDevice === "7" || selectedDevice === "8"){
+        if(selectedDevice === "8" || selectedDevice === "9"){
             showInput("digitalPin");
             showInput("conversionFactor");
         }
@@ -274,16 +280,44 @@ char* deviceFormScripts = R"rawliteral(<script>
 
 
 
-void sendDeviceFormPage(AsyncResponseStream *response){
+void sendDeviceFormPage(AsyncResponseStream *response, int slot){
+    
+
+    char* azureId = "";
+    char* azureSasKey = "";
+    IPAddress ipAddress = IPAddress(255, 255, 255, 255);
+    char*  ip = "255.255.255.255";
+    int modbusAddress = 0;
+    int ctPrimary = 0;
+    int ctSecondary = 0;
+    float conversionFactor = 5.0;
+
+    
+    AzureIoTDevice* azureDevice = AzureIoTCollection[slot];
+    if(azureDevice){
+        Serial.println("Azure is set kinda lol neng");
+        azureId = azureDevice->getDeviceId();
+        azureSasKey = azureDevice->getSasKey();
+    }
+
+    
+
+    uint8_t deviceType = DeviceCollection.getDeviceType(slot);
+    // if(DeviceCollection.isEnergyMeter(slot))
+    Serial.println("··Serving for a  device hehe");
+
     response->print(documentBegin);
     writeTitle(response, "Device Form");
     response->print(generalStyle);
     response->print(deviceFormStyle);
     response->print(headEnd);
     response->print(bodyBegin);
-    response->print(deviceFormContent);
+    response->printf(deviceFormContent, azureId, azureSasKey, ip, modbusAddress, ctPrimary, ctSecondary, conversionFactor);
     response->print(footer);
     response->print(bodyEnd);
-    response->print(deviceFormScripts);
+
+
+
+    response->printf(deviceFormScripts, DeviceCollection.getDeviceType(slot), 1);
     response->print(documentEnd);
 }

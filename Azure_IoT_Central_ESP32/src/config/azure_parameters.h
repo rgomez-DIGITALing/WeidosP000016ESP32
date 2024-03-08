@@ -3,16 +3,16 @@
 
 
 // #define BATCH_GENERAL_ROBOT
-#define BATCH_LINEA_EMPAQUETADO_AC_OFICINAS
+// #define BATCH_LINEA_EMPAQUETADO_AC_OFICINAS
 // #define BATCH_LETS_CONNECT
 // #define BATCH_IT_SOPORTE
 // #define BATCH_BARCELONA_SAI
 // #define BATCH_GAC_LETS_CONNECT
 // #define BATCH_ELEVADOR
 // #define BATCH_TRANSELEVADORES_FAST
-// #define BATCH_TEST
+#define BATCH_TEST
 // #define FLOW_METER_TEST
-// #define EM750_TEST
+#define EM750_TEST
 // #define RTU_TEST
 
 
@@ -209,4 +209,4 @@
 
 // For how long the MQTT password (SAS token) is valid, in minutes.
 // After that, the sample automatically generates a new password and re-connects.
-#define MQTT_PASSWORD_LIFETIME_IN_MINUTES 60
+#define MQTT_PASSWORD_LIFETIME_IN_MINUTES 2*60

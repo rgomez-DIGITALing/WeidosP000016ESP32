@@ -28,6 +28,194 @@
 #define NUM_DATA_BATCH_5            NUM_REGISTERS_BATCH_5/2
 
 
+
+//Batches for Harmonics
+//L1L2 Voltage harmonics
+#define REG_ADDRESS_BATCH_6         17
+#define NUM_REGISTERS_BATCH_6       26
+#define NUM_DATA_BATCH_6            NUM_REGISTERS_BATCH_6/2
+
+//L2L3 Voltage harmonics
+#define REG_ADDRESS_BATCH_7         143
+#define NUM_REGISTERS_BATCH_7       26
+#define NUM_DATA_BATCH_7            NUM_REGISTERS_BATCH_7/2
+
+//L3L1 Voltage harmonics
+#define REG_ADDRESS_BATCH_8         269
+#define NUM_REGISTERS_BATCH_8       26
+#define NUM_DATA_BATCH_8            NUM_REGISTERS_BATCH_8/2
+
+//L1 Voltage harmonics
+#define REG_ADDRESS_BATCH_9         395
+#define NUM_REGISTERS_BATCH_9       26
+#define NUM_DATA_BATCH_9            NUM_REGISTERS_BATCH_9/2
+
+
+//L2 Voltage harmonics
+#define REG_ADDRESS_BATCH_10         521
+#define NUM_REGISTERS_BATCH_10       26
+#define NUM_DATA_BATCH_10            NUM_REGISTERS_BATCH_10/2
+
+
+//L3 Voltage harmonics
+#define REG_ADDRESS_BATCH_11         647
+#define NUM_REGISTERS_BATCH_11       26
+#define NUM_DATA_BATCH_11            NUM_REGISTERS_BATCH_11/2
+
+//L4 Voltage harmonics
+#define REG_ADDRESS_BATCH_12         773
+#define NUM_REGISTERS_BATCH_12       26
+#define NUM_DATA_BATCH_12            NUM_REGISTERS_BATCH_12/2
+
+//L1 Current harmonics
+#define REG_ADDRESS_BATCH_13         899
+#define NUM_REGISTERS_BATCH_13       26
+#define NUM_DATA_BATCH_13            NUM_REGISTERS_BATCH_13/2
+
+//L2 Current harmonics
+#define REG_ADDRESS_BATCH_14         1025
+#define NUM_REGISTERS_BATCH_14       26
+#define NUM_DATA_BATCH_14            NUM_REGISTERS_BATCH_14/2
+
+//L3 Current harmonics
+#define REG_ADDRESS_BATCH_15         1151
+#define NUM_REGISTERS_BATCH_15       26
+#define NUM_DATA_BATCH_15            NUM_REGISTERS_BATCH_15/2
+
+//L4 Current harmonics
+#define REG_ADDRESS_BATCH_16         1277
+#define NUM_REGISTERS_BATCH_16       26
+#define NUM_DATA_BATCH_16            NUM_REGISTERS_BATCH_16/2
+
+
+
+
+
+
+
+
+
+void EA3PH_TCP_ValueLine::assignData6(){
+    HVolts3L1L2 = getNextData();
+    HVolts5L1L2 = getNextData();
+    HVolts7L1L2 = getNextData();
+    HVolts9L1L2 = getNextData();
+    HVolts11L1L2 = getNextData();
+    HVolts13L1L2 = getNextData();
+    HVolts15L1L2 = getNextData();
+
+}
+
+void EA3PH_TCP_ValueLine::assignData7(){
+    HVolts3L2L3 = getNextData();
+    HVolts5L2L3 = getNextData();
+    HVolts7L2L3 = getNextData();
+    HVolts9L2L3 = getNextData();
+    HVolts11L2L3 = getNextData();
+    HVolts13L2L3 = getNextData();
+    HVolts15L2L3 = getNextData();
+}
+
+void EA3PH_TCP_ValueLine::assignData8(){
+    HVolts3L3L1 = getNextData();
+    HVolts5L3L1 = getNextData();
+    HVolts7L3L1 = getNextData();
+    HVolts9L3L1 = getNextData();
+    HVolts11L3L1 = getNextData();
+    HVolts13L3L1 = getNextData();
+    HVolts15L3L1 = getNextData();
+}
+
+void EA3PH_TCP_ValueLine::assignData9(){
+    HVolts3L1 = getNextData();
+    HVolts5L1 = getNextData();
+    HVolts7L1 = getNextData();
+    HVolts9L1 = getNextData();
+    HVolts11L1 = getNextData();
+    HVolts13L1 = getNextData();
+    HVolts15L1 = getNextData();
+}
+
+void EA3PH_TCP_ValueLine::assignData10(){
+    HVolts3L2 = getNextData();
+    HVolts5L2 = getNextData();
+    HVolts7L2 = getNextData();
+    HVolts9L2 = getNextData();
+    HVolts11L2 = getNextData();
+    HVolts13L2 = getNextData();
+    HVolts15L2 = getNextData(); 
+}
+
+void EA3PH_TCP_ValueLine::assignData11(){
+
+    HVolts3L3 = getNextData();
+    HVolts5L3 = getNextData();
+    HVolts7L3 = getNextData();
+    HVolts9L3 = getNextData();
+    HVolts11L3 = getNextData();
+    HVolts13L3 = getNextData();
+    HVolts15L3 = getNextData();
+}
+
+void EA3PH_TCP_ValueLine::assignData12(){
+
+    HVolts3L4 = getNextData();
+    HVolts5L4 = getNextData();
+    HVolts7L4 = getNextData();
+    HVolts9L4 = getNextData();
+    HVolts11L4 = getNextData();
+    HVolts13L4 = getNextData();
+    HVolts15L4 = getNextData();
+}
+
+void EA3PH_TCP_ValueLine::assignData13(){
+    HCurrent3L1 = getNextData();
+    HCurrent5L1 = getNextData();
+    HCurrent7L1 = getNextData();
+    HCurrent9L1 = getNextData();
+    HCurrent11L1 = getNextData();
+    HCurrent13L1 = getNextData();
+    HCurrent15L1 = getNextData();
+}
+
+void EA3PH_TCP_ValueLine::assignData14(){
+    HCurrent3L2 = getNextData();
+    HCurrent5L2 = getNextData();
+    HCurrent7L2 = getNextData();
+    HCurrent9L2 = getNextData();
+    HCurrent11L2 = getNextData();
+    HCurrent13L2 = getNextData();
+    HCurrent15L2 = getNextData();
+
+}
+
+void EA3PH_TCP_ValueLine::assignData15(){
+    HCurrent3L3 = getNextData();
+    HCurrent5L3 = getNextData();
+    HCurrent7L3 = getNextData();
+    HCurrent9L3 = getNextData();
+    HCurrent11L3 = getNextData();
+    HCurrent13L3 = getNextData();
+    HCurrent15L3 = getNextData();
+
+}
+
+void EA3PH_TCP_ValueLine::assignData16(){
+    HCurrent3L4 = getNextData();
+    HCurrent5L4 = getNextData();
+    HCurrent7L4 = getNextData();
+    HCurrent9L4 = getNextData();
+    HCurrent11L4 = getNextData();
+    HCurrent13L4 = getNextData();
+    HCurrent15L4 = getNextData();
+}
+
+
+
+
+
+
+
 EA3PH_TCP_ValueLine::EA3PH_TCP_ValueLine(ModbusTCPClient& client, IPAddress ipAddress) : _client(client), EM3PH_BaseClass(ipAddress){}
 EA3PH_TCP_ValueLine::EA3PH_TCP_ValueLine(uint8_t modbusId, ModbusTCPClient& client, IPAddress ipAddress) : _client(client), EM3PH_BaseClass(modbusId, ipAddress){}
 
@@ -92,7 +280,90 @@ int EA3PH_TCP_ValueLine::update(){
     }
     assignData5();
 
+    response = _client.requestFrom(modbusId, INPUT_REGISTERS, REG_ADDRESS_BATCH_6, NUM_REGISTERS_BATCH_6);  
+    if(response != NUM_REGISTERS_BATCH_6)
+    {
+        comError = COM_BATCH_6_ERROR;
+        return 0;
+    }
+    assignData6();
+
+    response = _client.requestFrom(modbusId, INPUT_REGISTERS, REG_ADDRESS_BATCH_7, NUM_REGISTERS_BATCH_7);  
+    if(response != NUM_REGISTERS_BATCH_7)
+    {
+        comError = COM_BATCH_7_ERROR;
+        return 0;
+    }
+    assignData7();
+
+    response = _client.requestFrom(modbusId, INPUT_REGISTERS, REG_ADDRESS_BATCH_8, NUM_REGISTERS_BATCH_8);  
+    if(response != NUM_REGISTERS_BATCH_8)
+    {
+        comError = COM_BATCH_8_ERROR;
+        return 0;
+    }
+    assignData8();
+
+    response = _client.requestFrom(modbusId, INPUT_REGISTERS, REG_ADDRESS_BATCH_9, NUM_REGISTERS_BATCH_9);  
+    if(response != NUM_REGISTERS_BATCH_9)
+    {
+        comError = COM_BATCH_9_ERROR;
+        return 0;
+    }
+    assignData9();
+
+    response = _client.requestFrom(modbusId, INPUT_REGISTERS, REG_ADDRESS_BATCH_10, NUM_REGISTERS_BATCH_10);  
+    if(response != NUM_REGISTERS_BATCH_10)
+    {
+        comError = COM_BATCH_10_ERROR;
+        return 0;
+    }
+    assignData10();
+
+    response = _client.requestFrom(modbusId, INPUT_REGISTERS, REG_ADDRESS_BATCH_11, NUM_REGISTERS_BATCH_11);  
+    if(response != NUM_REGISTERS_BATCH_11)
+    {
+        comError = COM_BATCH_11_ERROR;
+        return 0;
+    }
+    assignData11();
+
+    response = _client.requestFrom(modbusId, INPUT_REGISTERS, REG_ADDRESS_BATCH_12, NUM_REGISTERS_BATCH_12);  
+    if(response != NUM_REGISTERS_BATCH_12)
+    {
+        comError = COM_BATCH_12_ERROR;
+        return 0;
+    }
+    assignData12();
+
+    response = _client.requestFrom(modbusId, INPUT_REGISTERS, REG_ADDRESS_BATCH_13, NUM_REGISTERS_BATCH_13);  
+    if(response != NUM_REGISTERS_BATCH_13)
+    {
+        comError = COM_BATCH_13_ERROR;
+        return 0;
+    }
+    assignData13();
+
+    response = _client.requestFrom(modbusId, INPUT_REGISTERS, REG_ADDRESS_BATCH_14, NUM_REGISTERS_BATCH_14);  
+    if(response != NUM_REGISTERS_BATCH_14)
+    {
+        comError = COM_BATCH_14_ERROR;
+        return 0;
+    }
+    assignData14();
+
+    response = _client.requestFrom(modbusId, INPUT_REGISTERS, REG_ADDRESS_BATCH_15, NUM_REGISTERS_BATCH_15);  
+    if(response != NUM_REGISTERS_BATCH_15)
+    {
+        comError = COM_BATCH_15_ERROR;
+        return 0;
+    }
+    assignData15();
+
+
     computeData();
+
+
     
     return 1;
 }
@@ -122,6 +393,8 @@ void EA3PH_TCP_ValueLine::assignData(){
     currentL2 = getNextData();
     currentL3 = getNextData();
     currentTotal = getNextData();
+    Serial.print("Current Total Modbus: ");
+    Serial.println(currentTotal);
     realPowerL1N = getNextData();
     realPowerL2N = getNextData();
     realPowerL3N = getNextData();
@@ -170,9 +443,9 @@ void EA3PH_TCP_ValueLine::assignData(){
     THDVoltsL1N = getNextData();
     THDVoltsL2N = getNextData();
     THDVoltsL3N = getNextData();
-    THDCurrentL1N = getNextData();
-    THDCurrentL2N = getNextData();
-    THDCurrentL3N = getNextData();
+    THDCurrentL1 = getNextData();
+    THDCurrentL2 = getNextData();
+    THDCurrentL3 = getNextData();
 }
 
 void EA3PH_TCP_ValueLine::assignData2(){
@@ -214,7 +487,7 @@ void EA3PH_TCP_ValueLine::computeData(){
     // if(isnan(cosPhiTotal)) cosPhiTotal = -1;  //Check if, after all, it is still NaN
 
     avgTHDVoltsLN = (THDVoltsL1N + THDVoltsL2N + THDVoltsL3N)/3.0f;
-    avgTHDCurrentLN = (THDCurrentL1N + THDCurrentL2N + THDCurrentL3N)/3.0f;
+    avgTHDCurrentL = (THDCurrentL1 + THDCurrentL2 + THDCurrentL3)/3.0f;
     avgTHDVoltsLL = (THDVoltsL1L2 + THDVoltsL2L3 + THDVoltsL1L3)/3.0f;
 
 

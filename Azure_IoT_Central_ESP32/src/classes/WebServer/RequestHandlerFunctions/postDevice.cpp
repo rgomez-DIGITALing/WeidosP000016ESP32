@@ -2,6 +2,7 @@
 #include "handlerFunctions.h"
 #include "../pages/devicesPage.h"
 #include "../../../globalDefinitions/globalConfiguration.h"
+#include "../../PersistentData/PersistentDataClass.h"
 
 #include <ESPAsyncWebServer.h>
 
@@ -51,6 +52,7 @@ void sendErrorPage(uint8_t errorNumber){
 void onDevicePost(AsyncWebServerRequest *request){
     Serial.println("POST request sent to the weidos by the user.");
 
+    //Check Slot input
     uint8_t err = 0;
     err = checkSlot(request);
     if(err){
@@ -58,7 +60,7 @@ void onDevicePost(AsyncWebServerRequest *request){
         return;
     }
 
-
+    //Check Device Type
     err = checkDeviceType(request);
     if(err){
         sendErrorPage(err);
@@ -73,14 +75,18 @@ void onDevicePost(AsyncWebServerRequest *request){
         sendErrorPage(err);
         return;
     }
+    Serial.println("All input values are OK. Let's save them on EEPROM");
+    
 
-    Serial.println("Que?");
-
-
+    int slot = request->getParam(PARAMETER_SLOT)->value().toInt();
+    String azureId = request->getParam(PARAMETER_AZURE_ID)->value();
+    PersistentDataModule.saveAzureId(azureId, slot);
+    String azureSasKey = request->getParam(PARAMETER_AZURE_SAS_KEY)->value();
+    PersistentDataModule.saveAzureSasKey(azureSasKey, slot);
 
 
     AsyncResponseStream *response = request->beginResponseStream("text/html");
-    sendDeviceFormPage(response);
+    sendDeviceFormPage(response, 2);
     request->send(response);
 
 }
