@@ -15,7 +15,7 @@
 #define NUM_DATA_BATCH_2            NUM_REGISTERS_BATCH_2/2
 
 #define REG_ADDRESS_BATCH_3         10085
-#define NUM_REGISTERS_BATCH_3       2
+#define NUM_REGISTERS_BATCH_3       4
 #define NUM_DATA_BATCH_3            NUM_REGISTERS_BATCH_3/2
 
 
@@ -330,6 +330,21 @@ int EM3PH_TCP_ValueLine::update(){
 //   return;
 // }
 
+void EM3PH_TCP_ValueLine::setSkipVariables(){
+        HVolts3L4 = SKIP_DATA_VALUE;
+        HVolts5L4 = SKIP_DATA_VALUE;
+        HVolts7L4 = SKIP_DATA_VALUE;
+        HVolts9L4 = SKIP_DATA_VALUE;
+        HVolts11L4 = SKIP_DATA_VALUE;
+        HVolts13L4 = SKIP_DATA_VALUE;
+        HVolts15L4 = SKIP_DATA_VALUE;
+        
+        THDVoltsL4N = SKIP_DATA_VALUE;
+
+        return;
+}
+
+
 
 float* EM3PH_TCP_ValueLine::getData(){
   return data;
@@ -346,8 +361,6 @@ void EM3PH_TCP_ValueLine::assignData(){
     currentL2 = getNextData();
     currentL3 = getNextData();
     currentTotal = getNextData();
-    Serial.print("Current Total Modbus: ");
-    Serial.println(currentTotal);
     realPowerL1N = getNextData();
     realPowerL2N = getNextData();
     realPowerL3N = getNextData();
@@ -415,21 +428,11 @@ void EM3PH_TCP_ValueLine::assignData2(){
     THDVoltsL1L2 = getNextData();
     THDVoltsL2L3 = getNextData();
     THDVoltsL1L3 = getNextData();
-
-
-    Serial.println("[assignData EM]");
-    Serial.print("THDVoltsL1L2: ");
-    Serial.println(THDVoltsL1L2);
-    Serial.print("THDVoltsL2L3: ");
-    Serial.println(THDVoltsL2L3);
-    Serial.print("THDVoltsL1L3: ");
-    Serial.println(THDVoltsL1L3);
 }
 
 void EM3PH_TCP_ValueLine::assignData3(){
     currentNeutral = getNextData();
-    Serial.print("Current Neutral: ");
-    Serial.println(currentNeutral);
+    THDCurrentL4 = getNextData();
 }
 
 void EM3PH_TCP_ValueLine::computeData(){
@@ -453,27 +456,6 @@ void EM3PH_TCP_ValueLine::computeData(){
 
     realEnergyConsTotalSum = realEnergyConsL1 + realEnergyConsL2 + realEnergyConsL3;
     realEnergyDelivTotalSum = realEnergyDelivL1 + realEnergyDelivL2 + realEnergyDelivL3;
-
-    HVolts3L4 = FLOAT_NO_PREV_DATA_AVAILABLE_ERROR_VALUE;
-    HVolts5L4 = FLOAT_NO_PREV_DATA_AVAILABLE_ERROR_VALUE;
-    HVolts7L4 = FLOAT_NO_PREV_DATA_AVAILABLE_ERROR_VALUE;
-    HVolts9L4 = FLOAT_NO_PREV_DATA_AVAILABLE_ERROR_VALUE;
-    HVolts11L4 = FLOAT_NO_PREV_DATA_AVAILABLE_ERROR_VALUE;
-    HVolts13L4 = FLOAT_NO_PREV_DATA_AVAILABLE_ERROR_VALUE;
-    HVolts15L4 = FLOAT_NO_PREV_DATA_AVAILABLE_ERROR_VALUE;
-    // Serial.println("[comptueData]");
-    // Serial.print("realEnergyConsL1: ");
-    // Serial.println(realEnergyConsL1);
-    // Serial.print("realEnergyConsL2: ");
-    // Serial.println(realEnergyConsL2);
-    // Serial.print("realEnergyConsL3: ");
-    // Serial.println(realEnergyConsL3);
-    // Serial.print("realEnergyAdjustedL1: ");
-    // Serial.println(realEnergyAdjustedL1);
-    // Serial.print("realEnergyAdjustedL2: ");
-    // Serial.println(realEnergyAdjustedL2);
-    // Serial.print("realEnergyAdjustedL3: ");
-    // Serial.println(realEnergyAdjustedL3);
 }
 
 float EM3PH_TCP_ValueLine::getNextData(){

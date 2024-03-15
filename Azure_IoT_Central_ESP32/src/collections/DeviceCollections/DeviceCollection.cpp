@@ -1,5 +1,5 @@
 #include "DeviceCollection.h"
-
+#include "../../classes/PersistentData/PersistentDataClass.h"
 
 
 
@@ -17,7 +17,7 @@ DeviceCollectionClass::DeviceCollectionClass(){
 
 
 void DeviceCollectionClass::init(){
-    // PersistentDataModule.getDeviceConfiguration(deviceList, MAX_ALLOWED_DEVICES);
+    PersistentDataModule.getDeviceConfiguration(deviceList, MAX_ALLOWED_DEVICES);
     // createDeviceObjects();
     return;
 }
@@ -55,13 +55,14 @@ uint8_t testList[] = {0,7,8,4,5,2};
 
 int DeviceCollectionClass::getDeviceType(uint8_t slot){ 
     if(slot>MAX_ALLOWED_DEVICES) return 0;
-    // return deviceList[slot];
-    return testList[slot];
+
+    return deviceList[slot];
+    // return testList[slot];
 }
 
-char* DeviceCollectionClass::gerDeviceName(uint8_t slot){
-    // int deviceType = deviceList[slot];
-    int deviceType = testList[slot];
+char* DeviceCollectionClass::getDeviceName(uint8_t slot){
+    int deviceType = deviceList[slot];
+    // int deviceType = testList[slot];
     char* deviceTypeName = nullptr;
 
     if(deviceType == 1) return "EM110";

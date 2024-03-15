@@ -158,17 +158,17 @@ void setTriggers(){
   #endif
 
 
-  #ifdef BATCH_ELEVADOR
+  #ifdef BATCH_MONTACARGAS
   TriggerClass* weidosESP32Trigger = new TriggerClass(0);
-  TriggerClass* elevador = new TriggerClass(1);
+  TriggerClass* montacargas = new TriggerClass(1);
   TriggerCollection.setTrigger(weidosESP32Trigger);
-  TriggerCollection.setTrigger(elevador);
+  TriggerCollection.setTrigger(montacargas);
   #endif
 }
 
 
 
-#if defined BATCH_GENERAL_ROBOT || defined BATCH_TRANSELEVADORES_FAST || defined BATCH_LINEA_EMPAQUETADO_AC_OFICINAS || defined BATCH_ELEVADOR || defined EM750_TEST
+#if defined BATCH_GENERAL_ROBOT || defined BATCH_TRANSELEVADORES_FAST || defined BATCH_LINEA_EMPAQUETADO_AC_OFICINAS || defined BATCH_MONTACARGAS || defined EM750_TEST
 static EthernetClient ethernetClientModbus(7);
 static ModbusTCPClient modbusTCPClient(ethernetClientModbus);
 #endif
@@ -280,10 +280,10 @@ void configureDeviceCollection(){
   #endif
 
 
-  #if defined BATCH_ELEVADOR
+  #if defined BATCH_MONTACARGAS
   IPAddress ipElevador(10, 88, 47, 225);        //General
-  EM750Manager* elevador = new EM750Manager(modbusTCPClient, ipElevador, 1);
-  DeviceCollection.setDevice(elevador);
+  EM750Manager* montacargas = new EM750Manager(modbusTCPClient, ipElevador, 1);
+  DeviceCollection.setDevice(montacargas);
   #endif
 
 
@@ -585,7 +585,7 @@ void setEnergyMeterProperties(){
 
   // #ifdef BATCH_ELEVADOR
   // EM750* em750 = nullptr;
-  // em750 = elevador.getEnergyMeter();
+  // em750 = montacargas.getEnergyMeter();
   // em750->setAsset(ASSET_ELEVADOR);
   // em750->setIdentifier(IDENTIFIER_ELEVADOR);
   // em750->setLocation1(LOCATION_NAVE_400);

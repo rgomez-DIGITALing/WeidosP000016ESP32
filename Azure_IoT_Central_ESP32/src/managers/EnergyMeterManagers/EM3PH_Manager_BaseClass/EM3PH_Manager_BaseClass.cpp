@@ -38,6 +38,8 @@ EnergyMeterUpdateState_t EM3PHManager_BaseClass::loop(){
 
       case UPDATE_ENERGY_METER:
         //state = ENERGY_METER_UPDATED;
+        em3ph->setSkipVariables();
+
         if(!em3ph->begin()){
          state = ENERGY_METER_RETRY_UPDATE;
          em3ph->stop();
@@ -76,7 +78,7 @@ EnergyMeterUpdateState_t EM3PHManager_BaseClass::loop(){
         break;
 
       case ENERGY_METER_UPDATE_FAILED:
-        
+
         msg.deviceId = deviceId;
         msg.timestamp = systemClock.getEpochTime();
         msg.dataSourceStatus = 0;

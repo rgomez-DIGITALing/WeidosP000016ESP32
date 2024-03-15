@@ -20,6 +20,7 @@ class EM3PH_BaseClass{
   void getData(em3phData_t& payload);
   void resetPrevValues(){ prevDataAvailable = false; }
   virtual void updatePreviousValues();
+  virtual void setSkipVariables() = 0;
   
 
   void setModbusId(uint8_t id){ this->modbusId = modbusId; }
@@ -53,8 +54,8 @@ class EM3PH_BaseClass{
         float apparentEnergyTotal;
         float voltageL1L2, voltageL2L3, voltageL1L3, avgVoltageLL;
         float currentNeutral;
-        float THDVoltsL1N, THDVoltsL2N, THDVoltsL3N;
-        float THDCurrentL1, THDCurrentL2, THDCurrentL3;
+        float THDVoltsL1N, THDVoltsL2N, THDVoltsL3N, THDVoltsL4N;
+        float THDCurrentL1, THDCurrentL2, THDCurrentL3, THDCurrentL4;
         float avgTHDVoltsLN, avgTHDCurrentL;
         float THDVoltsL1L2, THDVoltsL2L3, THDVoltsL1L3, avgTHDVoltsLL;
         float realEnergyTotal, reactiveEnergyTotal;

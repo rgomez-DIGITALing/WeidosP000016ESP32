@@ -12,9 +12,9 @@ enum securityType_t{
 };
 
 #define AZ_IOT_DATA_BUFFER_SIZE 3000
-// #define AZ_IOT_DATA_BUFFER_SIZE 1000
+// #define AZ_IOT_DATA_BUFFER_SIZE 50
 #define DATA_BUFFER_SIZE 5000
-// #define DATA_BUFFER_SIZE 1000
+// #define DATA_BUFFER_SIZE 50
 
 static const int MQTT_KEEP_ALIVE = 60;
 static const int MQTT_TIMEOUT = 5000;

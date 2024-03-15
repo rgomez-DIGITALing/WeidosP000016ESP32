@@ -2,6 +2,7 @@
 #include "azure_parameters.h"
 #include "../collections/DataHubCollection/DataHubCollection.h"
 #include "../collections/SDBackaupSenderCollection/SDBackupSenderCollection.h"
+#include "../classes/PersistentData/PersistentDataClass.h"
 
 
 DataHub<WeidosManagerData_t, WEIDOS_METADATA_RING_BUFFER_SIZE> weidosDataHub;
@@ -13,6 +14,13 @@ DataHub<em3phManagerData_t, ENERGY_METER_RING_BUFFER_SIZE> emDataHub2;
 DataHub<em3phManagerData_t, ENERGY_METER_RING_BUFFER_SIZE> emDataHub3;
 DataHub<em3phManagerData_t, ENERGY_METER_RING_BUFFER_SIZE> emDataHub4;
 DataHub<em3phManagerData_t, ENERGY_METER_RING_BUFFER_SIZE> emDataHub5;
+
+
+SDBackupSenderClass<em3phManagerData_t> sdBackupSender1(1);
+SDBackupSenderClass<em3phManagerData_t> sdBackupSender2(2);
+SDBackupSenderClass<em3phManagerData_t> sdBackupSender3(3);
+SDBackupSenderClass<em3phManagerData_t> sdBackupSender4(4);
+SDBackupSenderClass<em3phManagerData_t> sdBackupSender5(5);
 #endif
 
 #if defined BATCH_TEST && defined RTU_TEST
@@ -77,7 +85,7 @@ DataHub<em1phManagerData_t, ENERGY_METER_RING_BUFFER_SIZE> emDataHub2;
 DataHub<em3phManagerData_t, ENERGY_METER_RING_BUFFER_SIZE> emDataHub3;
 #endif
 
-#ifdef BATCH_ELEVADOR
+#ifdef BATCH_MONTACARGAS
 DataHub<em3phManagerData_t, ENERGY_METER_RING_BUFFER_SIZE> emDataHub1;
 
 #endif
@@ -98,6 +106,12 @@ void setDataHubCollection(){
     DataHubCollection.setDataHub(emDataHub3, 3);
     DataHubCollection.setDataHub(emDataHub4, 4);
     DataHubCollection.setDataHub(emDataHub5, 5);
+
+    SDBackupSenderCollection.setBackupSender(sdBackupSender1, 1);
+    SDBackupSenderCollection.setBackupSender(sdBackupSender2, 2);
+    SDBackupSenderCollection.setBackupSender(sdBackupSender3, 3);
+    SDBackupSenderCollection.setBackupSender(sdBackupSender4, 4);
+    SDBackupSenderCollection.setBackupSender(sdBackupSender5, 5);
     #endif
 
     #if defined BATCH_TEST && defined RTU_TEST
@@ -151,7 +165,7 @@ void setDataHubCollection(){
     #endif
 
 
-    #ifdef BATCH_ELEVADOR
+    #ifdef BATCH_MONTACARGAS
     DataHubCollection.setDataHub(emDataHub1, 1);
     #endif
 
@@ -177,6 +191,33 @@ void setDataHubsPayloadGenerators(){
     emDataHub4.setPayloadGenerator(em3ph_valueLine_generete_payload);
     emDataHub5.setPayloadGenerator(em3ph_valueLine_generete_payload);
 
+    if(PersistentDataModule.isHarmonicAnalysisActivated(1)){
+        emDataHub1.setPayloadGenerator2(em3ph_harmonic_generete_payload);
+        Serial.println("Harmonic is set for 1");
+    } 
+    if(PersistentDataModule.isHarmonicAnalysisActivated(2)){
+        emDataHub2.setPayloadGenerator2(em3ph_harmonic_generete_payload);
+        Serial.println("Harmonic is set for 2");
+    } 
+    if(PersistentDataModule.isHarmonicAnalysisActivated(3)){
+        emDataHub3.setPayloadGenerator2(em3ph_harmonic_generete_payload);
+        Serial.println("Harmonic is set for 3");
+    } 
+    if(PersistentDataModule.isHarmonicAnalysisActivated(4)){
+        emDataHub4.setPayloadGenerator2(em3ph_harmonic_generete_payload);
+        Serial.println("Harmonic is set for 4");
+    } 
+    if(PersistentDataModule.isHarmonicAnalysisActivated(5)){
+        emDataHub5.setPayloadGenerator2(em3ph_harmonic_generete_payload);
+        Serial.println("Harmonic is set for 5");
+    }
+
+
+    sdBackupSender1.setPayloadGenerator(em3ph_valueLine_generete_payload);
+    sdBackupSender2.setPayloadGenerator(em3ph_valueLine_generete_payload);
+    sdBackupSender3.setPayloadGenerator(em3ph_valueLine_generete_payload);
+    sdBackupSender4.setPayloadGenerator(em3ph_valueLine_generete_payload);
+    sdBackupSender5.setPayloadGenerator(em3ph_valueLine_generete_payload);
     // emDataHub1.setPayloadGenerator2(em3ph_harmonic_generete_payload);
     // emDataHub2.setPayloadGenerator2(em3ph_harmonic_generete_payload);
     // emDataHub3.setPayloadGenerator2(em3ph_harmonic_generete_payload);
@@ -202,11 +243,11 @@ void setDataHubsPayloadGenerators(){
     emDataHub4.setPayloadGenerator(em3ph_valueLine_generete_payload);
     emDataHub5.setPayloadGenerator(em3ph_valueLine_generete_payload);
 
-    emDataHub1.setPayloadGenerator2(em3ph_harmonic_generete_payload);
-    emDataHub2.setPayloadGenerator2(em3ph_harmonic_generete_payload);
-    emDataHub3.setPayloadGenerator2(em3ph_harmonic_generete_payload);
-    emDataHub4.setPayloadGenerator2(em3ph_harmonic_generete_payload);
-    emDataHub5.setPayloadGenerator2(em3ph_harmonic_generete_payload);
+    if(PersistentDataModule.isHarmonicAnalysisActivated(1)) emDataHub1.setPayloadGenerator2(em3ph_harmonic_generete_payload);
+    if(PersistentDataModule.isHarmonicAnalysisActivated(2)) emDataHub2.setPayloadGenerator2(em3ph_harmonic_generete_payload);
+    if(PersistentDataModule.isHarmonicAnalysisActivated(3)) emDataHub3.setPayloadGenerator2(em3ph_harmonic_generete_payload);
+    if(PersistentDataModule.isHarmonicAnalysisActivated(4)) emDataHub4.setPayloadGenerator2(em3ph_harmonic_generete_payload);
+    if(PersistentDataModule.isHarmonicAnalysisActivated(5)) emDataHub5.setPayloadGenerator2(em3ph_harmonic_generete_payload);
     #endif
 
     #ifdef BATCH_TRANSELEVADORES_FAST
@@ -245,8 +286,9 @@ void setDataHubsPayloadGenerators(){
     #endif
 
 
-    #ifdef BATCH_ELEVADOR
+    #ifdef BATCH_MONTACARGAS
     emDataHub1.setPayloadGenerator(em3ph_valueLine_generete_payload);
+    if(PersistentDataModule.isHarmonicAnalysisActivated(1)) emDataHub1.setPayloadGenerator2(em3ph_harmonic_generete_payload);
     #endif
 
     return;

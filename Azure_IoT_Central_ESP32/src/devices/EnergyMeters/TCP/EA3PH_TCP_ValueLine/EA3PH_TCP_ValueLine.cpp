@@ -7,7 +7,7 @@
 
 
 #define REG_ADDRESS_BATCH_1         19000
-#define NUM_REGISTERS_BATCH_1       122
+#define NUM_REGISTERS_BATCH_1       94
 #define NUM_DATA_BATCH_1            NUM_REGISTERS_BATCH_1/2
 
 #define REG_ADDRESS_BATCH_2         3793
@@ -18,7 +18,6 @@
 #define NUM_REGISTERS_BATCH_3       6
 #define NUM_DATA_BATCH_3            NUM_REGISTERS_BATCH_3/2
 
-// #define REG_ADDRESS_BATCH_4         10085
 #define REG_ADDRESS_BATCH_4         3859
 #define NUM_REGISTERS_BATCH_4       2
 #define NUM_DATA_BATCH_4            NUM_REGISTERS_BATCH_4/2
@@ -27,188 +26,71 @@
 #define NUM_REGISTERS_BATCH_5       2
 #define NUM_DATA_BATCH_5            NUM_REGISTERS_BATCH_5/2
 
+#define REG_ADDRESS_BATCH_6         3805
+#define NUM_REGISTERS_BATCH_6       16
+#define NUM_DATA_BATCH_6            NUM_REGISTERS_BATCH_6/2
 
 
 //Batches for Harmonics
 //L1L2 Voltage harmonics
-#define REG_ADDRESS_BATCH_6         17
-#define NUM_REGISTERS_BATCH_6       26
-#define NUM_DATA_BATCH_6            NUM_REGISTERS_BATCH_6/2
-
-//L2L3 Voltage harmonics
-#define REG_ADDRESS_BATCH_7         143
+#define REG_ADDRESS_BATCH_7         17
 #define NUM_REGISTERS_BATCH_7       26
 #define NUM_DATA_BATCH_7            NUM_REGISTERS_BATCH_7/2
 
-//L3L1 Voltage harmonics
-#define REG_ADDRESS_BATCH_8         269
+//L2L3 Voltage harmonics
+#define REG_ADDRESS_BATCH_8         143
 #define NUM_REGISTERS_BATCH_8       26
 #define NUM_DATA_BATCH_8            NUM_REGISTERS_BATCH_8/2
 
-//L1 Voltage harmonics
-#define REG_ADDRESS_BATCH_9         395
+//L3L1 Voltage harmonics
+#define REG_ADDRESS_BATCH_9         269
 #define NUM_REGISTERS_BATCH_9       26
 #define NUM_DATA_BATCH_9            NUM_REGISTERS_BATCH_9/2
 
-
-//L2 Voltage harmonics
-#define REG_ADDRESS_BATCH_10         521
+//L1 Voltage harmonics
+#define REG_ADDRESS_BATCH_10         395
 #define NUM_REGISTERS_BATCH_10       26
 #define NUM_DATA_BATCH_10            NUM_REGISTERS_BATCH_10/2
 
 
-//L3 Voltage harmonics
-#define REG_ADDRESS_BATCH_11         647
+//L2 Voltage harmonics
+#define REG_ADDRESS_BATCH_11         521
 #define NUM_REGISTERS_BATCH_11       26
 #define NUM_DATA_BATCH_11            NUM_REGISTERS_BATCH_11/2
 
-//L4 Voltage harmonics
-#define REG_ADDRESS_BATCH_12         773
+
+//L3 Voltage harmonics
+#define REG_ADDRESS_BATCH_12         647
 #define NUM_REGISTERS_BATCH_12       26
 #define NUM_DATA_BATCH_12            NUM_REGISTERS_BATCH_12/2
 
-//L1 Current harmonics
-#define REG_ADDRESS_BATCH_13         899
+//L4 Voltage harmonics
+#define REG_ADDRESS_BATCH_13         773
 #define NUM_REGISTERS_BATCH_13       26
 #define NUM_DATA_BATCH_13            NUM_REGISTERS_BATCH_13/2
 
-//L2 Current harmonics
-#define REG_ADDRESS_BATCH_14         1025
+//L1 Current harmonics
+#define REG_ADDRESS_BATCH_14         899
 #define NUM_REGISTERS_BATCH_14       26
 #define NUM_DATA_BATCH_14            NUM_REGISTERS_BATCH_14/2
 
-//L3 Current harmonics
-#define REG_ADDRESS_BATCH_15         1151
+//L2 Current harmonics
+#define REG_ADDRESS_BATCH_15         1025
 #define NUM_REGISTERS_BATCH_15       26
 #define NUM_DATA_BATCH_15            NUM_REGISTERS_BATCH_15/2
 
-//L4 Current harmonics
-#define REG_ADDRESS_BATCH_16         1277
+//L3 Current harmonics
+#define REG_ADDRESS_BATCH_16         1151
 #define NUM_REGISTERS_BATCH_16       26
 #define NUM_DATA_BATCH_16            NUM_REGISTERS_BATCH_16/2
 
+//L4 Current harmonics
+#define REG_ADDRESS_BATCH_17         1277
+#define NUM_REGISTERS_BATCH_17       26
+#define NUM_DATA_BATCH_17            NUM_REGISTERS_BATCH_17/2
 
 
 
-
-
-
-
-
-void EA3PH_TCP_ValueLine::assignData6(){
-    HVolts3L1L2 = getNextData();
-    HVolts5L1L2 = getNextData();
-    HVolts7L1L2 = getNextData();
-    HVolts9L1L2 = getNextData();
-    HVolts11L1L2 = getNextData();
-    HVolts13L1L2 = getNextData();
-    HVolts15L1L2 = getNextData();
-
-}
-
-void EA3PH_TCP_ValueLine::assignData7(){
-    HVolts3L2L3 = getNextData();
-    HVolts5L2L3 = getNextData();
-    HVolts7L2L3 = getNextData();
-    HVolts9L2L3 = getNextData();
-    HVolts11L2L3 = getNextData();
-    HVolts13L2L3 = getNextData();
-    HVolts15L2L3 = getNextData();
-}
-
-void EA3PH_TCP_ValueLine::assignData8(){
-    HVolts3L3L1 = getNextData();
-    HVolts5L3L1 = getNextData();
-    HVolts7L3L1 = getNextData();
-    HVolts9L3L1 = getNextData();
-    HVolts11L3L1 = getNextData();
-    HVolts13L3L1 = getNextData();
-    HVolts15L3L1 = getNextData();
-}
-
-void EA3PH_TCP_ValueLine::assignData9(){
-    HVolts3L1 = getNextData();
-    HVolts5L1 = getNextData();
-    HVolts7L1 = getNextData();
-    HVolts9L1 = getNextData();
-    HVolts11L1 = getNextData();
-    HVolts13L1 = getNextData();
-    HVolts15L1 = getNextData();
-}
-
-void EA3PH_TCP_ValueLine::assignData10(){
-    HVolts3L2 = getNextData();
-    HVolts5L2 = getNextData();
-    HVolts7L2 = getNextData();
-    HVolts9L2 = getNextData();
-    HVolts11L2 = getNextData();
-    HVolts13L2 = getNextData();
-    HVolts15L2 = getNextData(); 
-}
-
-void EA3PH_TCP_ValueLine::assignData11(){
-
-    HVolts3L3 = getNextData();
-    HVolts5L3 = getNextData();
-    HVolts7L3 = getNextData();
-    HVolts9L3 = getNextData();
-    HVolts11L3 = getNextData();
-    HVolts13L3 = getNextData();
-    HVolts15L3 = getNextData();
-}
-
-void EA3PH_TCP_ValueLine::assignData12(){
-
-    HVolts3L4 = getNextData();
-    HVolts5L4 = getNextData();
-    HVolts7L4 = getNextData();
-    HVolts9L4 = getNextData();
-    HVolts11L4 = getNextData();
-    HVolts13L4 = getNextData();
-    HVolts15L4 = getNextData();
-}
-
-void EA3PH_TCP_ValueLine::assignData13(){
-    HCurrent3L1 = getNextData();
-    HCurrent5L1 = getNextData();
-    HCurrent7L1 = getNextData();
-    HCurrent9L1 = getNextData();
-    HCurrent11L1 = getNextData();
-    HCurrent13L1 = getNextData();
-    HCurrent15L1 = getNextData();
-}
-
-void EA3PH_TCP_ValueLine::assignData14(){
-    HCurrent3L2 = getNextData();
-    HCurrent5L2 = getNextData();
-    HCurrent7L2 = getNextData();
-    HCurrent9L2 = getNextData();
-    HCurrent11L2 = getNextData();
-    HCurrent13L2 = getNextData();
-    HCurrent15L2 = getNextData();
-
-}
-
-void EA3PH_TCP_ValueLine::assignData15(){
-    HCurrent3L3 = getNextData();
-    HCurrent5L3 = getNextData();
-    HCurrent7L3 = getNextData();
-    HCurrent9L3 = getNextData();
-    HCurrent11L3 = getNextData();
-    HCurrent13L3 = getNextData();
-    HCurrent15L3 = getNextData();
-
-}
-
-void EA3PH_TCP_ValueLine::assignData16(){
-    HCurrent3L4 = getNextData();
-    HCurrent5L4 = getNextData();
-    HCurrent7L4 = getNextData();
-    HCurrent9L4 = getNextData();
-    HCurrent11L4 = getNextData();
-    HCurrent13L4 = getNextData();
-    HCurrent15L4 = getNextData();
-}
 
 
 
@@ -360,6 +242,22 @@ int EA3PH_TCP_ValueLine::update(){
     }
     assignData15();
 
+    response = _client.requestFrom(modbusId, INPUT_REGISTERS, REG_ADDRESS_BATCH_16, NUM_REGISTERS_BATCH_16);  
+    if(response != NUM_REGISTERS_BATCH_16)
+    {
+        comError = COM_BATCH_16_ERROR;
+        return 0;
+    }
+    assignData16();
+
+    response = _client.requestFrom(modbusId, INPUT_REGISTERS, REG_ADDRESS_BATCH_17, NUM_REGISTERS_BATCH_17);  
+    if(response != NUM_REGISTERS_BATCH_17)
+    {
+        comError = COM_BATCH_17_ERROR;
+        return 0;
+    }
+    assignData17();
+
 
     computeData();
 
@@ -377,6 +275,11 @@ int EA3PH_TCP_ValueLine::update(){
 //   return;
 // }
 
+void EA3PH_TCP_ValueLine::setSkipVariables(){
+
+        return;
+}
+
 
 float* EA3PH_TCP_ValueLine::getData(){
   return data;
@@ -393,8 +296,6 @@ void EA3PH_TCP_ValueLine::assignData(){
     currentL2 = getNextData();
     currentL3 = getNextData();
     currentTotal = getNextData();
-    Serial.print("Current Total Modbus: ");
-    Serial.println(currentTotal);
     realPowerL1N = getNextData();
     realPowerL2N = getNextData();
     realPowerL3N = getNextData();
@@ -432,33 +333,26 @@ void EA3PH_TCP_ValueLine::assignData(){
     reactiveEnergyL2 = getNextData()/1000.0f;
     reactiveEnergyL3 = getNextData()/1000.0f;
     reactiveEnergyTotal = getNextData()/1000.0f;
-    getNextData();      //reactiveEnergyIndL1 deleted variable
-    getNextData();      //reactiveEnergyIndL2 deleted variable
-    getNextData();      //reactiveEnergyIndL3 deleted variable
-    getNextData();      //reactiveEnergyIndTotal deleted variable
-    getNextData();      //reactiveEnergyCapL1 deleted variable
-    getNextData();      //reactiveEnergyCapL2 deleted variable
-    getNextData();      //reactiveEnergyCapL3 deleted variable
-    getNextData();      //reactiveEnergyCapTotal deleted variable
-    THDVoltsL1N = getNextData();
-    THDVoltsL2N = getNextData();
-    THDVoltsL3N = getNextData();
-    THDCurrentL1 = getNextData();
-    THDCurrentL2 = getNextData();
-    THDCurrentL3 = getNextData();
+    // getNextData();      //reactiveEnergyIndL1 deleted variable
+    // getNextData();      //reactiveEnergyIndL2 deleted variable
+    // getNextData();      //reactiveEnergyIndL3 deleted variable
+    // getNextData();      //reactiveEnergyIndTotal deleted variable
+    // getNextData();      //reactiveEnergyCapL1 deleted variable
+    // getNextData();      //reactiveEnergyCapL2 deleted variable
+    // getNextData();      //reactiveEnergyCapL3 deleted variable
+    // getNextData();      //reactiveEnergyCapTotal deleted variable
+    // THDVoltsL1N = getNextData();
+    // THDVoltsL2N = getNextData();
+    // THDVoltsL3N = getNextData();
+    // THDCurrentL1 = getNextData();
+    // THDCurrentL2 = getNextData();
+    // THDCurrentL3 = getNextData();
 }
 
 void EA3PH_TCP_ValueLine::assignData2(){
     THDVoltsL1L2 = getNextData();
     THDVoltsL2L3 = getNextData();
     THDVoltsL1L3 = getNextData();
-    Serial.println("[assignData2 EA]");
-    Serial.print("THDVoltsL1L2: ");
-    Serial.println(THDVoltsL1L2);
-    Serial.print("THDVoltsL2L3: ");
-    Serial.println(THDVoltsL2L3);
-    Serial.print("THDVoltsL1L3: ");
-    Serial.println(THDVoltsL1L3);
 }
 
 void EA3PH_TCP_ValueLine::assignData3(){
@@ -474,6 +368,134 @@ void EA3PH_TCP_ValueLine::assignData4(){
 void EA3PH_TCP_ValueLine::assignData5(){
     cosPhiTotal = getNextData();
 }
+
+
+
+void EA3PH_TCP_ValueLine::assignData6(){
+    THDVoltsL1N = getNextData();
+    THDVoltsL2N = getNextData();
+    THDVoltsL3N = getNextData();
+    THDVoltsL4N = getNextData();
+    THDCurrentL1 = getNextData();
+    THDCurrentL2 = getNextData();
+    THDCurrentL3 = getNextData();
+    THDCurrentL4 = getNextData();
+}
+
+
+void EA3PH_TCP_ValueLine::assignData7(){
+    HVolts3L1L2 = getNextData();
+    HVolts5L1L2 = getNextData();
+    HVolts7L1L2 = getNextData();
+    HVolts9L1L2 = getNextData();
+    HVolts11L1L2 = getNextData();
+    HVolts13L1L2 = getNextData();
+    HVolts15L1L2 = getNextData();
+
+}
+
+void EA3PH_TCP_ValueLine::assignData8(){
+    HVolts3L2L3 = getNextData();
+    HVolts5L2L3 = getNextData();
+    HVolts7L2L3 = getNextData();
+    HVolts9L2L3 = getNextData();
+    HVolts11L2L3 = getNextData();
+    HVolts13L2L3 = getNextData();
+    HVolts15L2L3 = getNextData();
+}
+
+void EA3PH_TCP_ValueLine::assignData9(){
+    HVolts3L3L1 = getNextData();
+    HVolts5L3L1 = getNextData();
+    HVolts7L3L1 = getNextData();
+    HVolts9L3L1 = getNextData();
+    HVolts11L3L1 = getNextData();
+    HVolts13L3L1 = getNextData();
+    HVolts15L3L1 = getNextData();
+}
+
+void EA3PH_TCP_ValueLine::assignData10(){
+    HVolts3L1 = getNextData();
+    HVolts5L1 = getNextData();
+    HVolts7L1 = getNextData();
+    HVolts9L1 = getNextData();
+    HVolts11L1 = getNextData();
+    HVolts13L1 = getNextData();
+    HVolts15L1 = getNextData();
+}
+
+void EA3PH_TCP_ValueLine::assignData11(){
+    HVolts3L2 = getNextData();
+    HVolts5L2 = getNextData();
+    HVolts7L2 = getNextData();
+    HVolts9L2 = getNextData();
+    HVolts11L2 = getNextData();
+    HVolts13L2 = getNextData();
+    HVolts15L2 = getNextData(); 
+}
+
+void EA3PH_TCP_ValueLine::assignData12(){
+    HVolts3L3 = getNextData();
+    HVolts5L3 = getNextData();
+    HVolts7L3 = getNextData();
+    HVolts9L3 = getNextData();
+    HVolts11L3 = getNextData();
+    HVolts13L3 = getNextData();
+    HVolts15L3 = getNextData();
+}
+
+void EA3PH_TCP_ValueLine::assignData13(){
+    HVolts3L4 = getNextData();
+    HVolts5L4 = getNextData();
+    HVolts7L4 = getNextData();
+    HVolts9L4 = getNextData();
+    HVolts11L4 = getNextData();
+    HVolts13L4 = getNextData();
+    HVolts15L4 = getNextData();
+}
+
+void EA3PH_TCP_ValueLine::assignData14(){
+    HCurrent3L1 = getNextData();
+    HCurrent5L1 = getNextData();
+    HCurrent7L1 = getNextData();
+    HCurrent9L1 = getNextData();
+    HCurrent11L1 = getNextData();
+    HCurrent13L1 = getNextData();
+    HCurrent15L1 = getNextData();
+}
+
+void EA3PH_TCP_ValueLine::assignData15(){
+    HCurrent3L2 = getNextData();
+    HCurrent5L2 = getNextData();
+    HCurrent7L2 = getNextData();
+    HCurrent9L2 = getNextData();
+    HCurrent11L2 = getNextData();
+    HCurrent13L2 = getNextData();
+    HCurrent15L2 = getNextData();
+
+}
+
+void EA3PH_TCP_ValueLine::assignData16(){
+    HCurrent3L3 = getNextData();
+    HCurrent5L3 = getNextData();
+    HCurrent7L3 = getNextData();
+    HCurrent9L3 = getNextData();
+    HCurrent11L3 = getNextData();
+    HCurrent13L3 = getNextData();
+    HCurrent15L3 = getNextData();
+
+}
+
+void EA3PH_TCP_ValueLine::assignData17(){
+    HCurrent3L4 = getNextData();
+    HCurrent5L4 = getNextData();
+    HCurrent7L4 = getNextData();
+    HCurrent9L4 = getNextData();
+    HCurrent11L4 = getNextData();
+    HCurrent13L4 = getNextData();
+    HCurrent15L4 = getNextData();
+}
+
 
 void EA3PH_TCP_ValueLine::computeData(){
     powerFactorTotal = realPowerTotal/apparentPowerTotal;

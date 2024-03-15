@@ -55,7 +55,9 @@ typedef enum{
   COM_BATCH_12_ERROR,
   COM_BATCH_13_ERROR,
   COM_BATCH_14_ERROR,
-  COM_BATCH_15_ERROR
+  COM_BATCH_15_ERROR,
+  COM_BATCH_16_ERROR,
+  COM_BATCH_17_ERROR,
 } COM_error_t;
 
 
@@ -120,8 +122,8 @@ typedef struct em3phData_struct_t{
         float apparentEnergyTotal;
         float voltageL1L2, voltageL2L3, voltageL1L3, avgVoltageLL;
         float currentNeutral;
-        float THDVoltsL1N, THDVoltsL2N, THDVoltsL3N;
-        float THDCurrentL1, THDCurrentL2, THDCurrentL3;
+        float THDVoltsL1N, THDVoltsL2N, THDVoltsL3N, THDVoltsL4N;
+        float THDCurrentL1, THDCurrentL2, THDCurrentL3, THDCurrentL4;
         float avgTHDVoltsLN, avgTHDCurrentL;
         float THDVoltsL1L2, THDVoltsL2L3, THDVoltsL1L3, avgTHDVoltsLL;
         float realEnergyTotal, reactiveEnergyTotal;

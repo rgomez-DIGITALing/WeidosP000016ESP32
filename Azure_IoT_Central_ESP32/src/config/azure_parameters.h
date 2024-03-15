@@ -4,11 +4,11 @@
 
 // #define BATCH_GENERAL_ROBOT
 // #define BATCH_LINEA_EMPAQUETADO_AC_OFICINAS
+// #define BATCH_BARCELONA_SAI
+// #define BATCH_MONTACARGAS
 // #define BATCH_LETS_CONNECT
 // #define BATCH_IT_SOPORTE
-// #define BATCH_BARCELONA_SAI
 // #define BATCH_GAC_LETS_CONNECT
-// #define BATCH_ELEVADOR
 // #define BATCH_TRANSELEVADORES_FAST
 #define BATCH_TEST
 // #define FLOW_METER_TEST
@@ -166,16 +166,16 @@
 #endif
 
 
-#ifdef BATCH_ELEVADOR
-#define IOT_CONFIG_DEVICE_GATEWAY_ID "2owqp9cpc1k"     //Unused
-#define IOT_CONFIG_DEVICE_1_ID "lqvsokgzkb"           //Unused
+#ifdef BATCH_MONTACARGAS
+#define IOT_CONFIG_DEVICE_GATEWAY_ID "1m8ohg9md7a"     //Unused
+#define IOT_CONFIG_DEVICE_1_ID "2dsan1n0rde"           //Unused
 #define IOT_CONFIG_DEVICE_2_ID "unusedDevic"            //Unused
 #define IOT_CONFIG_DEVICE_3_ID "unusedDevic"            //Unused
 #define IOT_CONFIG_DEVICE_4_ID "unusedDevic"           //Unused
 #define IOT_CONFIG_DEVICE_5_ID "unusedDevic"           //Unused
 
-#define IOT_CONFIG_DEVICE_GATEWAY_KEY "r3LfhSfYatuGI6OVV67ZF2ZONQ/WSimgM0grX3uZ7pM="    //Unused
-#define IOT_CONFIG_DEVICE_1_KEY "m50YTY6P2EeQ9jxBadh6V72t/kAmNTzTEedlFQUA7Co="          //Unused
+#define IOT_CONFIG_DEVICE_GATEWAY_KEY "j0rlvl21V/zYqSzdpqzGyaHnxHBNkIokfNI0dlqWGe0="    //Unused
+#define IOT_CONFIG_DEVICE_1_KEY "j0rlvl21V/zYqSzdpqzGyaHnxHBNkIokfNI0dlqWGe0="          //Unused
 #define IOT_CONFIG_DEVICE_2_KEY "unusedunusedunusedunusedunusedunusedunusedun"          //Unused
 #define IOT_CONFIG_DEVICE_3_KEY "unusedunusedunusedunusedunusedunusedunusedun"          //Unused
 #define IOT_CONFIG_DEVICE_4_KEY "unusedunusedunusedunusedunusedunusedunusedun"          //Unused

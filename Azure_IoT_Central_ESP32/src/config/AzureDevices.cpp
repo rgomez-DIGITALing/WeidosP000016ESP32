@@ -194,7 +194,7 @@ void setAzureIoTCollectionDevices(){
     #endif
 
 
-    #ifdef BATCH_ELEVADOR
+    #ifdef BATCH_MONTACARGAS
     AzureIoTCollection.setAzureIoTDevice(Azure1, 1);
     #endif
 

@@ -228,8 +228,8 @@ void EM3PH_RTU_BasicLine::computeValues(){
   realEnergyAdjustedL3 = realEnergyL3;
   realEnergyAdjustedTotal = realEnergyTotal;
 
-  realEnergyConsTotal = FLOAT_NO_PREV_DATA_AVAILABLE_ERROR_VALUE;
-  realEnergyDelivTotal = FLOAT_NO_PREV_DATA_AVAILABLE_ERROR_VALUE;
+  realEnergyConsTotal = SKIP_DATA_VALUE;
+  realEnergyDelivTotal = SKIP_DATA_VALUE;
 
   return;
 }
@@ -261,4 +261,10 @@ void EM3PH_RTU_BasicLine::updatePreviousValues(){
   
 
   prevDataAvailable = true;
+}
+
+
+void EM3PH_RTU_BasicLine::setSkipVariables(){
+
+        return;
 }

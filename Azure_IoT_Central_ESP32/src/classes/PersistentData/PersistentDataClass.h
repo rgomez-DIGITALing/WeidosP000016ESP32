@@ -22,12 +22,20 @@ class PersistentDataClass{
         // bool isWiFiPassSet();
         
         // bool isGatewayIdSet();
+        void saveDeviceConfiguration(uint8_t deviceType, uint8_t slot);
+        void getDeviceConfiguration(uint8_t* devices,  uint8_t numMaxDevices);
 
+        bool isScopeIdSet();
         bool isAzureIdSet(int slot);
         bool isSasKeySet(int slot);
-        bool isScopeIdSet();
+        bool isModbusAddressSet(int slot);
+        bool isCTPrimarySet(int slot);
+        bool isCTSecondarySet(int slot);
+        bool isConversionSet(int slot);
+        bool isDeviceTypeSet(int slot);
+        bool isHarmonicAnalysisActivated(int slot);
         
-        
+        void setHarmonicAnalysis(bool isActive, int slot);
         // char* getWiFiSSID(){ return WiFiSSID; };
         // char* getWiFiPass(){ return WiFiPass; };
         // char* getScopeId(){ return scopeId; };
@@ -36,19 +44,27 @@ class PersistentDataClass{
         // void setWiFiPass(String& pass);
         //void setScopeId(String& scopeId);
 
-        // void saveDeviceConfiguration(uint8_t deviceType, uint8_t slot);
-        // void getDeviceConfiguration(int* devices,  uint8_t numMaxDevices);
         // void saveConversionFactor(int CF, uint8_t slot, bool primary);
         // void getConversionFactor(int& CF, uint8_t slot, bool primary);
         
+        void saveScopeId(String& scopeId);
         void saveAzureId(String& azureId, int slot);
         void saveAzureSasKey(String& sasKey, int slot);
-        void saveScopeId(String& scopeId);
-
+        void saveModbusAddress(int modbusAddress, int slot);
+        void saveCTPrimary(int ctPrimary, int slot);
+        void saveCTSecondary(int ctSecondary, int slot);
+        void saveConversionFactor(float conversionFactor, int slot);
+        void saveDeviceType(uint8_t deviceType, int slot);
         
+
+
         void getAzureId(AzureDeviceId azureId, int slot);
         void getSasKey(AzureSASKey sasKey, int slot);
         void getScopeId(ScopeId scopeId);
+        uint8_t getModbusAddress(int slot);
+        int getCTPrimary(int slot);
+        int getCTSecondary(int slot);
+        float getConversionFactor(int slot);
 
 
     private:

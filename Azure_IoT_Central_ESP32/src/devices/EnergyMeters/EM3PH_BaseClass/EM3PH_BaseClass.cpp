@@ -80,3 +80,11 @@ void EM3PH_BaseClass::updatePreviousValues(){
   prevReactiveEnergyTotal = reactiveEnergyTotal;
   prevDataAvailable = true;
 }
+
+
+
+// void EM3PH_BaseClass::skipHarmonics(){
+//   for(int i=0; i<NUM_TOTAL_HARMONIC_DATA_3PHASE; i++){
+//     harmonicData[i] = SKIP_DATA_VALUE;
+//   }
+// }

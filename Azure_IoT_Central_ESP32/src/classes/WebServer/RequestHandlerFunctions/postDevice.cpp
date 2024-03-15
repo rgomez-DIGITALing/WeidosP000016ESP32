@@ -10,6 +10,19 @@ static const char* PARAMETER_SLOT = "slot";
 static const char* PARAMETER_DEVICE_TYPE = "device";
 static const char* PARAMETER_AZURE_ID = "azureId";
 static const char* PARAMETER_AZURE_SAS_KEY = "azureSasKey";
+static const char* PARAMETER_MODBUS_ADDRESS = "modbusAddress";
+static const char* PARAMETER_CT_PRIMARY = "ctPrimary";
+static const char* PARAMETER_CT_SECONDARY = "ctSecondary";
+static const char* PARAMETER_CONVERSION_FACTOR = "conversionFactor";
+
+
+static const float MIN_CT_PRIMARY = 0.0f;
+static const float MAX_CT_PRIMARY = 50.0f;
+static const float MIN_CT_SECONDARY = 0.0f;
+static const float MAX_CT_SECONDARY = 50.0f;
+
+static const float MIN_CONVERSION_FACTOR = -9999999999999.0f;
+static const float MAX_CONVERSION_FACTOR = 99999999999.0f;
 //static const char* PARAMETER_SLOT = "slot";
 
 enum ERROR_MESSAGE_INDEX{
@@ -25,22 +38,41 @@ enum ERROR_MESSAGE_INDEX{
     AZURE_ID_MAX_LENGTH_REACHED,
     UNDEFINED_AZURE_SAS_KEY,
     INVALID_AZURE_SAS_KEY,
-    AZURE_SAS_KEY_MAX_LENGTH_REACHED
+    AZURE_SAS_KEY_MAX_LENGTH_REACHED,
+
+    UNDEFINED_MODBUS_ADDRESS,
+    INVALID_MODBUS_ADDRESS,
+
+    UNDEFINED_CT_PRIMARY,
+    INVALID_CT_PRIMARY,
+    UNDEFINED_CT_SECONDARY,
+    INVALID_CT_SECONDARY,
+
+    UNDEFINED_CONVERSION_FACTOR,
+    INVALID_CONVERSION_FACTOR
 };
 
 
 char* ERROR_MESSAGE[] = {
     "",
     "Undefined slot",
-    "Invalid selected slot number",
-    "Undefined device type",
-    "Invalid device type",
+    "Invalid selected Slot number",
+    "Undefined Device type",
+    "Invalid Device type",
     "Undefined Azure ID",
     "Invalid Azure ID",
     "Azure ID reached maximum length",
     "Undefined Azure SAS Key",
     "Invalid Azure SAS Key",
-    "Azure SAS Key reached maximum length"
+    "Azure SAS Key reached maximum length",
+    "Undefined Modbus Address",
+    "Invalid Modbus Address",
+    "Undefined CT Primary",
+    "Invalid CT Primary",
+    "Undefined CT Secondary",
+    "Invalid CT Secondary",
+    "Undefined Conversion Factor",
+    "Invalid Conversion Factor"
 };
 
 void sendErrorPage(uint8_t errorNumber){
@@ -66,10 +98,18 @@ void onDevicePost(AsyncWebServerRequest *request){
         sendErrorPage(err);
         return;
     }
-    uint8_t deviceType = getDeviceType(request);
+    // uint8_t deviceType = getDeviceType(request);
 
 
-    Serial.println("Let' schek all parameters noi=?");
+    //Slot
+    int slot = request->getParam(PARAMETER_SLOT)->value().toInt();
+    //Device Type
+    int deviceType = request->getParam(PARAMETER_DEVICE_TYPE, true)->value().toInt();
+    Serial.print("The Device Type is: ");
+    Serial.println(deviceType);
+    // PersistentDataModule.saveDeviceType(deviceType, slot);
+
+
     err = checkDeviceParameters(request, deviceType);
     if(err){
         sendErrorPage(err);
@@ -78,17 +118,41 @@ void onDevicePost(AsyncWebServerRequest *request){
     Serial.println("All input values are OK. Let's save them on EEPROM");
     
 
-    int slot = request->getParam(PARAMETER_SLOT)->value().toInt();
-    String azureId = request->getParam(PARAMETER_AZURE_ID)->value();
+    
+    //Azure Device ID
+    String azureId = request->getParam(PARAMETER_AZURE_ID, true)->value();
     PersistentDataModule.saveAzureId(azureId, slot);
-    String azureSasKey = request->getParam(PARAMETER_AZURE_SAS_KEY)->value();
+    //Azure SAS Key
+    String azureSasKey = request->getParam(PARAMETER_AZURE_SAS_KEY, true)->value();
     PersistentDataModule.saveAzureSasKey(azureSasKey, slot);
 
 
-    AsyncResponseStream *response = request->beginResponseStream("text/html");
-    sendDeviceFormPage(response, 2);
-    request->send(response);
+    //Device Type
+    PersistentDataModule.saveDeviceType(deviceType, slot);
 
+    //Modbus Address
+    String modbusAddressString = request->getParam(PARAMETER_MODBUS_ADDRESS, true)->value();
+    int modbusAddress = modbusAddressString.toInt();
+    PersistentDataModule.saveModbusAddress(modbusAddress, slot);
+    //CT Primary
+    String ctPrimaryString = request->getParam(PARAMETER_CT_PRIMARY, true)->value();
+    int ctPrimary = ctPrimaryString.toInt();
+    PersistentDataModule.saveCTPrimary(ctPrimary, slot);
+    //CT Secondary
+    String ctSecondaryString = request->getParam(PARAMETER_CT_SECONDARY, true)->value();
+    int ctSecondary = ctSecondaryString.toInt();
+    PersistentDataModule.saveCTSecondary(ctSecondary, slot);
+    //Conversion Factor
+    String conversionFactorString = request->getParam(PARAMETER_CONVERSION_FACTOR, true)->value();
+    float conversionFactor = conversionFactorString.toFloat();
+    PersistentDataModule.saveConversionFactor(conversionFactor, slot);
+
+
+
+
+    AsyncResponseStream *response = request->beginResponseStream("text/html");
+    sendDeviceFormPage(response, slot);
+    request->send(response);
 }
 
 
@@ -111,27 +175,64 @@ uint8_t checkDeviceParameters(AsyncWebServerRequest *request, uint8_t deviceType
         return err;
     }
 
+    
 
     switch (deviceType){
         case NONE_DEVICE_TYPE:
         break;
         case EM110_DEVICE_TYPE:
+            err = checkModbusAddress(request);
+            if(!err) err = checkCTPrimary(request);
+            if(!err) err = checkCTSecondary(request);
+            return 0;
         break;
         case EM111_DEVICE_TYPE:
+            err = checkModbusAddress(request);
+            if(!err) err = checkCTPrimary(request);
+            if(!err) err = checkCTSecondary(request);
+            return 0;
         break;
         case EM120_DEVICE_TYPE:
+            err = checkModbusAddress(request);
+            if(!err) err = checkCTPrimary(request);
+            if(!err) err = checkCTSecondary(request);
+            return 0;
         break;
         case EM122_DEVICE_TYPE:
+            err = checkModbusAddress(request);
+            if(!err) err = checkCTPrimary(request);
+            if(!err) err = checkCTSecondary(request);
+            return 0;
         break;
         case EM220_DEVICE_TYPE:
+            err = checkModbusAddress(request);
+            if(!err) err = checkCTPrimary(request);
+            if(!err) err = checkCTSecondary(request);
+            return 0;
         break;
         case EM750_DEVICE_TYPE:
+            err = checkModbusAddress(request);
+            if(!err) err = checkCTPrimary(request);
+            if(!err) err = checkCTSecondary(request);
+            return 0;
         break;
         case EA750_DEVICE_TYPE:
+            err = checkModbusAddress(request);
+            if(!err) err = checkCTPrimary(request);
+            if(!err) err = checkCTSecondary(request);
+            return 0;
         break;
         case FLOW_METER_DEVICE_TYPE:
+            err = checkConversionFactor(request);
+            // if(!err) err = checkPin(request);
+            
+            return 0;
         break;
         case PULSE_METER_DEVICE_TYPE:
+            err = checkConversionFactor(request);
+            // if(!err) err = checkPin(request);
+            
+            return 0;
         break;
     }
     return 0;
@@ -157,13 +258,12 @@ uint8_t checkDeviceType(AsyncWebServerRequest *request){
 };
 
 uint8_t checkAzureId(AsyncWebServerRequest *request){
-    Serial.println("Mon amur geten");
     if(!request->hasParam(PARAMETER_AZURE_ID, true)) return UNDEFINED_AZURE_ID;
-    Serial.println("Je no comprende pas");
+
     String azureId = request->getParam(PARAMETER_AZURE_ID, true)->value();
     if(azureId.length()>AZURE_ID_MAX_LENGTH) return AZURE_ID_MAX_LENGTH_REACHED;
-    Serial.println("[CheckAzureId] Azure ID:");
-    Serial.print(azureId);
+    Serial.print("[CheckAzureId] Azure ID:");
+    Serial.println(azureId);
     
     return NO_ERROR;
 }
@@ -173,8 +273,72 @@ uint8_t checkAzureSasKey(AsyncWebServerRequest *request){
     if(!request->hasParam(PARAMETER_AZURE_SAS_KEY, true)) return UNDEFINED_AZURE_SAS_KEY;
     String azureSasKey = request->getParam(PARAMETER_AZURE_SAS_KEY, true)->value();
     if(azureSasKey.length()>AZURE_SAS_KEY_MAX_LENGTH) return AZURE_SAS_KEY_MAX_LENGTH_REACHED;
-    Serial.println("[CheckAzureId] Azure azureSasKey:");
-    Serial.print(azureSasKey);
+    Serial.print("[CheckAzureId] Azure azureSasKey:");
+    Serial.println(azureSasKey);
     
     return NO_ERROR;
 }
+
+
+uint8_t checkModbusAddress(AsyncWebServerRequest *request){
+    if(!request->hasParam(PARAMETER_MODBUS_ADDRESS, true)) return UNDEFINED_MODBUS_ADDRESS;
+    String modbusAddressString = request->getParam(PARAMETER_MODBUS_ADDRESS, true)->value();
+    int modbusAddress = modbusAddressString.toInt();
+    Serial.print("[CheckModbusAddress] Modbus Address:");
+    Serial.println(modbusAddress);
+    if(modbusAddress<0 || modbusAddress>255) return INVALID_MODBUS_ADDRESS;
+    
+    
+    return NO_ERROR;
+}
+
+
+uint8_t checkCTPrimary(AsyncWebServerRequest *request){
+    if(!request->hasParam(PARAMETER_CT_PRIMARY, true)) return UNDEFINED_CT_PRIMARY;
+    String ctPrimaryString = request->getParam(PARAMETER_CT_PRIMARY, true)->value();
+    float ctPrimary = ctPrimaryString.toFloat();
+    Serial.print("[CheckModbusAddress] CT Primary:");
+    Serial.println(ctPrimary);
+    if(ctPrimary<MIN_CT_PRIMARY || ctPrimary>MAX_CT_PRIMARY) return INVALID_CT_PRIMARY;
+    
+    
+    return NO_ERROR;
+}
+
+uint8_t checkCTSecondary(AsyncWebServerRequest *request){
+    if(!request->hasParam(PARAMETER_CT_SECONDARY, true)) return UNDEFINED_CT_SECONDARY;
+    String ctSecondaryString = request->getParam(PARAMETER_CT_SECONDARY, true)->value();
+    float ctSecondary = ctSecondaryString.toFloat();
+    Serial.print("[CheckModbusAddress] CT Secondary:");
+    Serial.println(ctSecondary);
+    if(ctSecondary<MIN_CT_SECONDARY || ctSecondary>MAX_CT_SECONDARY) return INVALID_CT_SECONDARY;
+    
+    
+    return NO_ERROR;
+}
+
+
+uint8_t checkConversionFactor(AsyncWebServerRequest *request){
+    if(!request->hasParam(PARAMETER_CONVERSION_FACTOR, true)) return UNDEFINED_CONVERSION_FACTOR;
+    String conversionFactorString = request->getParam(PARAMETER_CONVERSION_FACTOR, true)->value();
+    float conversionFactor = conversionFactorString.toFloat();
+    Serial.print("[CheckConversionFactor] conversionFactor: ");
+    Serial.println(conversionFactor);
+    if(conversionFactor<MIN_CONVERSION_FACTOR || conversionFactor>MAX_CONVERSION_FACTOR) return INVALID_CONVERSION_FACTOR;
+    
+    
+    return NO_ERROR;
+}
+
+
+// uint8_t checkPinIndex(AsyncWebServerRequest *request){
+//     if(!request->hasParam(PARAMETER_CONVERSION_FACTOR, true)) return UNDEFINED_CONVERSION_FACTOR;
+//     String conversionFactorString = request->getParam(PARAMETER_CONVERSION_FACTOR, true)->value();
+//     float conversionFactor = ctSecondaryString.toFloat();
+//     Serial.print("[CheckConversionFactor] conversionFactor: ");
+//     Serial.println(conversionFactor);
+//     if(conversionFactor<MIN_CONVERSION_FACTOR || conversionFactor>MAX_CONVERSION_FACTOR) return INVALID_CONVERSION_FACTOR;
+    
+    
+//     return NO_ERROR;
+// }

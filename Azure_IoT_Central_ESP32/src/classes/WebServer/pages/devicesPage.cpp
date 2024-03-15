@@ -1,6 +1,7 @@
 #include "devicesPage.h"
 #include "../../../collections/DeviceCollections/DeviceCollection.h"
 #include "../../../collections/AzureIoTCollection/AzureIoTCollection.h"
+#include "../../../classes/PersistentData/PersistentDataClass.h"
 
 
 
@@ -109,7 +110,7 @@ void sendDevicesPage(AsyncResponseStream *response){
             response->print(R"rawliteral(:</h3><a class="deviceButton" href="/deviceForm?slot=)rawliteral");
             response->print(i);
             response->print("\">");
-            response->print(DeviceCollection.gerDeviceName(i));
+            response->print(DeviceCollection.getDeviceName(i));
             response->print(R"rawliteral(</a></div>)rawliteral");
         }
         response->print(R"rawliteral(</div></main></div>)rawliteral");
@@ -177,19 +178,19 @@ char* deviceFormContent = R"rawliteral(<h1>Device Form</h1>
 
         <div class="userInput" id="modbusAddress">
             <label for="modbusAddress">Modbus Address:</label>
-            <input type="number" name="modbusAddress"  id="modbusAddressInput" value="%i" readonly>
+            <input type="number" name="modbusAddress"  id="modbusAddressInput" value="%i">
         </div>
   
 
-        <div class="userInput" id="cpPrimary" >
-            <label for="cpPrimary">CP Primary:</label>
-            <input type="text" name="cpPrimary" id="cpPrimaryInput" value="%i">
+        <div class="userInput" id="ctPrimary" >
+            <label for="ctPrimary">CT Primary:</label>
+            <input type="text" name="ctPrimary" id="ctPrimaryInput" value="%i">
         </div>
 
 
-        <div class="userInput" id="cpSecondary">
-            <label for="cpSecondary">CP Secondary:</label>
-            <input type="text" name="cpSecondary" id="cpSecondaryInput" value="%i">
+        <div class="userInput" id="ctSecondary">
+            <label for="ctSecondary">CT Secondary:</label>
+            <input type="text" name="ctSecondary" id="ctSecondaryInput" value="%i">
         </div>
 
 
@@ -246,12 +247,13 @@ char* deviceFormScripts = R"rawliteral(<script>
         });
 
 
-  
+
         var selectedDevice = document.getElementById("deviceSelect").value;
-        if(selectedDevice != ""){
+        if(selectedDevice != "0"){
             showInput("azureId");
             showInput("azureSasKey");
         }
+
         if(selectedDevice === "1" || selectedDevice === "2" || selectedDevice === "3" || selectedDevice === "4" || selectedDevice === "5"){
             showInput("modbusAddress");
         }
@@ -259,6 +261,11 @@ char* deviceFormScripts = R"rawliteral(<script>
         if(selectedDevice === "6" || selectedDevice === "7"){
             showInput("ipAddress");
             showInput("modbusAddress");
+        }
+
+        if(selectedDevice === "1" || selectedDevice === "4" || selectedDevice === "5"){
+            showInput("ctPrimary");
+            showInput("ctSecondary");
         }
 
         if(selectedDevice === "8" || selectedDevice === "9"){
@@ -281,30 +288,34 @@ char* deviceFormScripts = R"rawliteral(<script>
 
 
 void sendDeviceFormPage(AsyncResponseStream *response, int slot){
-    
-
     char* azureId = "";
     char* azureSasKey = "";
     IPAddress ipAddress = IPAddress(255, 255, 255, 255);
     char*  ip = "255.255.255.255";
-    int modbusAddress = 0;
+    int modbusAddress = slot;
     int ctPrimary = 0;
     int ctSecondary = 0;
     float conversionFactor = 5.0;
+    uint8_t deviceType = 0;
 
-    
+
+
     AzureIoTDevice* azureDevice = AzureIoTCollection[slot];
     if(azureDevice){
-        Serial.println("Azure is set kinda lol neng");
         azureId = azureDevice->getDeviceId();
         azureSasKey = azureDevice->getSasKey();
     }
 
-    
+    if(PersistentDataModule.isModbusAddressSet(slot)) modbusAddress = PersistentDataModule.getModbusAddress(slot);
+    if(PersistentDataModule.isCTPrimarySet(slot)) ctPrimary = PersistentDataModule.getCTPrimary(slot);
+    if(PersistentDataModule.isCTSecondarySet(slot)) ctSecondary = PersistentDataModule.getCTSecondary(slot);
+    if(PersistentDataModule.isConversionSet(slot)) conversionFactor = PersistentDataModule.getConversionFactor(slot);
+    if(PersistentDataModule.isDeviceTypeSet(slot)) deviceType = DeviceCollection.getDeviceType(slot);
 
-    uint8_t deviceType = DeviceCollection.getDeviceType(slot);
+
+    Serial.print("Device Type: ");
+    Serial.println(deviceType);
     // if(DeviceCollection.isEnergyMeter(slot))
-    Serial.println("··Serving for a  device hehe");
 
     response->print(documentBegin);
     writeTitle(response, "Device Form");
@@ -316,8 +327,8 @@ void sendDeviceFormPage(AsyncResponseStream *response, int slot){
     response->print(footer);
     response->print(bodyEnd);
 
-
-
-    response->printf(deviceFormScripts, DeviceCollection.getDeviceType(slot), 1);
+    int inputPin = 1;
+    // DeviceCollection.getDeviceType(slot);
+    response->printf(deviceFormScripts, deviceType, inputPin);
     response->print(documentEnd);
 }

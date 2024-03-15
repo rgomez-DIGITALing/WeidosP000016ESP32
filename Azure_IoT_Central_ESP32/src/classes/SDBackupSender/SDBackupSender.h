@@ -268,8 +268,12 @@ void SDBackupSenderClass<T>::loop(){
                 size_t payload_buffer_length = 0;
                 Serial.println("[SDBackupSenderClass] Sending data to IoT Central");
                 uint8_t* payload_buffer = AzureIoTCollection[deviceId]->getDataBuffer2();
+                Serial.print("Hello there: ");
+                Serial.println(deviceId);
                 generatePayload(payload_buffer, AZ_IOT_DATA_BUFFER_SIZE, &payload_buffer_length, msg);
+                Serial.println("SDFDSF!");
                 sendError = AzureIoTCollection[deviceId]->sendMessage(az_span_create(payload_buffer, payload_buffer_length));
+                Serial.println("Where is the error then? Lol diII DONDT UNDERSTAND HEHE!");
             }else{
                 Serial.println("I can0't send the telemetry because conditions are not met");
             }

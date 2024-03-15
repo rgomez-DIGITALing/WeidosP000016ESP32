@@ -34,7 +34,7 @@ class EA3PH_TCP_ValueLine : public EM3PH_BaseClass{
     void validateData();
 
     
-  
+    void setSkipVariables();
     float* getData();
     void resetPrevValues(){ prevDataAvailable = false; }
     void updatePreviousValues();
@@ -63,6 +63,7 @@ class EA3PH_TCP_ValueLine : public EM3PH_BaseClass{
     void assignData14();
     void assignData15();
     void assignData16();
+    void assignData17();
 
     void computeData();
     /**

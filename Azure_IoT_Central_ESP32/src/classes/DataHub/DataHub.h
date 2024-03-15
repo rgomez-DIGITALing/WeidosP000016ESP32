@@ -71,9 +71,9 @@ void DataHub<T,N>::push(T data){
     //     //Serial.print("[DataHub<T,N>::push] fielename: ");
     //     Serial.println(fileName);
     //     if(SDDataStorage.put(fileName, data)){
-    //         //Serial.println("Data successful PUSH in DATAHUB.");
+    //         Serial.println("Data successful PUSH in PROVISOINAL DATAHUB.");
     //     }else{
-    //         //Serial.println("Data PUSH failure in DATAHUB.");
+    //         Serial.println("Data PUSH failure in PROVISIONAL DATAHUB.");
 
     //     }
     //     return;
@@ -84,9 +84,9 @@ void DataHub<T,N>::push(T data){
     // SDFolderManager.createPendingFolder(deviceId);
     // char* fileName = SDFolderManager.setPendingFilePath(deviceId, timestamp);
     // if(SDDataStorage.put(fileName, data)){
-    //         //Serial.println("Data successful PUSH in DATAHUB.");
+    //         Serial.println("Data successful PUSH in PENDING DATAHUB.");
     //     }else{
-    //         //Serial.println("Data PUSH failure in DATAHUB.");
+    //         Serial.println("Data PUSH failure in PENDING DATAHUB.");
 
     //     }
 

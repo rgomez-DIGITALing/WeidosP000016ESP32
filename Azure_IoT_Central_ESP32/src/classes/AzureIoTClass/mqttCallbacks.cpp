@@ -5,6 +5,7 @@
 #include <LogModule.h>
 #include "../../collections/TriggerCollection/TriggerCollection.h"
 #include "../../collections/DataHubCollection/DataHubCollection.h"
+#include "../PersistentData/PersistentDataClass.h"
 #include "../../payloadGenerators/3phPayloadGenerators.h"
 
 #define COMMAND_RESPONSE_CODE_ACCEPTED 202
@@ -106,7 +107,8 @@ static az_span COMMAND_NAME_TOGGLE_D0_1 = AZ_SPAN_FROM_STR("DO_1");
 static az_span COMMAND_NAME_TOGGLE_D0_2 = AZ_SPAN_FROM_STR("DO_2");
 static az_span COMMAND_NAME_TOGGLE_D0_3 = AZ_SPAN_FROM_STR("DO_3");
 static az_span COMMAND_NAME_REBOOT = AZ_SPAN_FROM_STR("reboot");
-static az_span COMMAND_NAME_BOOST = AZ_SPAN_FROM_STR("boost");
+static az_span COMMAND_NAME_BOOST = AZ_SPAN_FROM_STR("changeTelemetryInterval");
+static az_span COMMAND_NAME_CHANGE_TELEMETRY_INTERVAL = AZ_SPAN_FROM_STR("changeTelemetryInterval");
 static az_span COMMAND_NAME_HARMONIC_ON = AZ_SPAN_FROM_STR("harmonicOn");
 static az_span COMMAND_NAME_HARMONIC_OFF = AZ_SPAN_FROM_STR("harmonicOff");
 
@@ -165,7 +167,7 @@ int gateway_handle_command_request(AzureIoTDevice* azureIoTDevice, command_reque
       azure_iot, command.request_id, response_code, AZ_SPAN_EMPTY);
     ESP.restart();
   }
-  else if (az_span_is_content_equal(command.command_name, COMMAND_NAME_BOOST))
+  else if (az_span_is_content_equal(command.command_name, COMMAND_NAME_CHANGE_TELEMETRY_INTERVAL))
   {
     Serial.println("BOOST command has been recieved");
     Serial.print("Payload: ");
@@ -233,19 +235,13 @@ int device_handle_command_request(AzureIoTDevice* azureIoTDevice, command_reques
 
   if(az_span_is_content_equal(command.command_name, COMMAND_NAME_HARMONIC_ON)){
     DataHubCollection.setPayloadGenerator2(slot, em3ph_harmonic_generete_payload);
-    DataHubCollection.setPayloadGenerator2(slot, em3ph_harmonic_generete_payload);
-    DataHubCollection.setPayloadGenerator2(slot, em3ph_harmonic_generete_payload);
-    DataHubCollection.setPayloadGenerator2(slot, em3ph_harmonic_generete_payload);
-    DataHubCollection.setPayloadGenerator2(slot, em3ph_harmonic_generete_payload);
-  }
+    PersistentDataModule.setHarmonicAnalysis(true, slot);
+  } 
   else if(az_span_is_content_equal(command.command_name, COMMAND_NAME_HARMONIC_OFF)){
     DataHubCollection.setPayloadGenerator2(slot, nullptr);
-    DataHubCollection.setPayloadGenerator2(slot, nullptr);
-    DataHubCollection.setPayloadGenerator2(slot, nullptr);
-    DataHubCollection.setPayloadGenerator2(slot, nullptr);
-    DataHubCollection.setPayloadGenerator2(slot, nullptr);
+    PersistentDataModule.setHarmonicAnalysis(false, slot);
   }
-  else if (az_span_is_content_equal(command.command_name, COMMAND_NAME_BOOST))
+  else if (az_span_is_content_equal(command.command_name, COMMAND_NAME_CHANGE_TELEMETRY_INTERVAL))
   {
     Serial.println("BOOST command has been recieved");
     Serial.print("Payload: ");
@@ -255,16 +251,12 @@ int device_handle_command_request(AzureIoTDevice* azureIoTDevice, command_reques
 
     uint32_t frequency = 0;
     az_json_reader_init(&out_json_reader, command.payload, NULL);
-    jsonGetUint32(&out_json_reader, "frequency", frequency);
+    jsonGetUint32(&out_json_reader, "telemetryInterval", frequency);
  
-
-    uint32_t test = 0;
-    az_json_reader_init(&out_json_reader, command.payload, NULL);
-    jsonGetUint32(&out_json_reader, "test", test);
 
     uint32_t duration = 0;
     az_json_reader_init(&out_json_reader, command.payload, NULL);
-    jsonGetUint32(&out_json_reader, "duration", duration);
+    jsonGetUint32(&out_json_reader, "durationTelemetryInterval", duration);
     
 
 

@@ -10,14 +10,16 @@
 #define MAX_ALLOWED_DEVICES 6
 
 // enum DeviceType{
-//     NONE_DEVICE_TYPE,
-//     EM110_DEVICE_TYPE,
-//     EM111_DEVICE_TYPE,
-//     EM120_DEVICE_TYPE,
-//     EM122_DEVICE_TYPE,
-//     EM220_DEVICE_TYPE,
-//     FLOW_METER_DEVICE_TYPE,
-//     PULSE_METER_DEVICE_TYPE
+//     NONE,
+//     EM110,
+//     EM111,
+//     EM120,
+//     EM122,
+//     EM220,
+//     EM750,
+//     EA750,
+//     FLOW_METER,
+//     PULSE_METER
 // };
 
 
@@ -36,7 +38,7 @@ class DeviceCollectionClass{
         void initFlowMeters();
 
         int getDeviceType(uint8_t slot);
-        char* gerDeviceName(uint8_t slot);
+        char* getDeviceName(uint8_t slot);
         bool isEnergyMeter(uint8_t slot);
 
         void setDevice(WeidosManager& weidos);
