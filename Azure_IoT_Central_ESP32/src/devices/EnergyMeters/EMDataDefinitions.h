@@ -5,6 +5,7 @@
 #define NUM_TOTAL_DATA_1PHASE 11
 #define NUM_TOTAL_DATA_3PHASE 60
 #define NUM_TOTAL_DATA_3PHASE 59
+#define NUM_TOTAL_DATA_3PHASE 61
 
 #define NUM_TOTAL_CONS_DELIV_DATA_1PHASE 4
 #define NUM_TOTAL_CONS_DELIV_DATA_3PHASE 14
@@ -131,11 +132,14 @@ typedef struct em3phData_struct_t{
         float reactiveEnergyL1, reactiveEnergyL2, reactiveEnergyL3;
         float apparentEnergyL1, apparentEnergyL2, apparentEnergyL3;
         float rotField;
+
+        float currentTotal; //Variable for the Value Line ONLY
+        float phaseCurrentSum;  //Variable for the Basic Line ONLY!
       };
     };
 
-  float currentTotal; //Variable for the Value Line ONLY
-  float phaseCurrentSum;  //Variable for the Basic Line ONLY!
+  // float currentTotal; //Variable for the Value Line ONLY
+  // float phaseCurrentSum;  //Variable for the Basic Line ONLY!
 //Cons/Deliv data
     union{
       float consDelivData[NUM_TOTAL_CONS_DELIV_DATA_3PHASE];

@@ -109,11 +109,9 @@ void DeviceCollectionClass::loopDevicesNoNetwork(){
             if(EM1PHPool[i]->loop() != ENERGY_METER_IDLE) return;
         }
 
-
         if(EM3PHPool[i]){
             if(EM3PHPool[i]->loop() != ENERGY_METER_IDLE) return;
         }
-
 
         if(PulseMeterPool[i]) PulseMeterPool[i]->loop();
         if(AnalogMeterPool[i]) AnalogMeterPool[i]->loop();

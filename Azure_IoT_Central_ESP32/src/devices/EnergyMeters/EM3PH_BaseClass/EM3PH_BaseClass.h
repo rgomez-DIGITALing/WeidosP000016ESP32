@@ -63,11 +63,13 @@ class EM3PH_BaseClass{
         float reactiveEnergyL1, reactiveEnergyL2, reactiveEnergyL3;
         float apparentEnergyL1, apparentEnergyL2, apparentEnergyL3;
         float rotField;
+        float currentTotal; //Variable for the Value Line ONLY!
+        float phaseCurrentSum; //Variable for the Basic Line ONLY!
       };
     };
     
-    float currentTotal; //Variable for the Value Line ONLY!
-    float phaseCurrentSum; //Variable for the Basic Line ONLY!
+    // float currentTotal; //Variable for the Value Line ONLY!
+    // float phaseCurrentSum; //Variable for the Basic Line ONLY!
 
 //Cons/Deliv variables
     union{

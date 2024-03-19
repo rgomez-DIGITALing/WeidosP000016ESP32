@@ -340,6 +340,7 @@ void EM3PH_TCP_ValueLine::setSkipVariables(){
         HVolts15L4 = SKIP_DATA_VALUE;
         
         THDVoltsL4N = SKIP_DATA_VALUE;
+        phaseCurrentSum = SKIP_DATA_VALUE;
 
         return;
 }

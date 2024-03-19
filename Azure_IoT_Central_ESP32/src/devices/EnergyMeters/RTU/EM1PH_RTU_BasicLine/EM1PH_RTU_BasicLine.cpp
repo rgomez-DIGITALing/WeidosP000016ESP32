@@ -59,9 +59,9 @@ int EM1PH_RTU_BasicLine::update(){
   int response = ModbusRTUClient.requestFrom(modbusId, INPUT_REGISTERS, REG_ADDRESS_BATCH_1, NUM_REGISTERS_BATCH_1);    
   if(response != NUM_REGISTERS_BATCH_1)
   {
-      Serial.println("No response");
-      Serial.print("Last error: ");
-      Serial.println(ModbusRTUClient.lastError());
+      // Serial.println("No response");
+      // Serial.print("Last error: ");
+      // Serial.println(ModbusRTUClient.lastError());
       comError = COM_BATCH_1_ERROR;
       return 0;
   }
@@ -71,9 +71,9 @@ int EM1PH_RTU_BasicLine::update(){
   response = ModbusRTUClient.requestFrom(modbusId, INPUT_REGISTERS, REG_ADDRESS_BATCH_2, NUM_REGISTERS_BATCH_2);    
   if(response != NUM_REGISTERS_BATCH_2)
   {
-      Serial.println("No response");
-      Serial.print("Last error: ");
-      Serial.println(ModbusRTUClient.lastError());
+      // Serial.println("No response");
+      // Serial.print("Last error: ");
+      // Serial.println(ModbusRTUClient.lastError());
       comError = COM_BATCH_2_ERROR;
       return 0;
   }

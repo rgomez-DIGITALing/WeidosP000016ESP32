@@ -992,7 +992,6 @@ int ea750_generete_properties(az_iot_hub_client const* hub_client,
 
   //char* identifier = emManager->getIdentifier();
   char* identifier = "";
-  Serial.println("Segur que es lia per aqui kinda lol EA");
   char* model = EA750_MODEL_NAME;
   char* partNumber = EA750_PART_NUMBER;
   EM3PH_BaseClass* energyMeter = emManager->getEnergyMeter();

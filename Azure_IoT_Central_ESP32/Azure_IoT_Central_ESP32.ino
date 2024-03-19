@@ -1,4 +1,3 @@
-
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // SPDX-License-Identifier: MIT
 
@@ -77,7 +76,7 @@ void setup()
   Serial.begin(SERIAL_LOGGER_BAUD_RATE);
   set_logging_function(logging_function);
   set_logging_function_2(logging_function_2);
-  delay(1000);
+  delay(10000);
   Serial.println("Welcome!");
 
   EthernetModule.init();
@@ -142,43 +141,33 @@ void loop()
   //   EthernetModule.loop();
     
   // }
- 
+
   EthernetModule.loop();
-
   networkUp = EthernetModule.isNetworkUp();
-
   systemClock.loop(networkUp);
-
   clockRunning = systemClock.clockRunning();
 
   if(!networkUp){
     AzureIoTCollection.stop();
   }
 
-  if(clockRunning) TriggerCollection.loop(networkUp);
+  if(clockRunning){
+    TriggerCollection.loop(networkUp);
+    DeviceCollection.loopDevicesNoNetwork();
 
+  } 
 
-  if(clockRunning) DeviceCollection.loopDevicesNoNetwork();
 
   if(networkUp){
     weidosESP32Manager.loop();
     DeviceCollection.loopDevices();
-  }
-
-
-
-  if(networkUp){
-     DataHubCollection.loop();
-  }
-
-  if(networkUp){
-    DeviceCollection.sendDevicesProperties();
-  }
-
-  if(networkUp){
     AzureIoTCollection.loop();
+    DataHubCollection.loop();
+    DeviceCollection.sendDevicesProperties();
     // SDBackupSenderCollection.loop();
   }
+
+
 
   if(millis()-prevTime>DELTA_TIME){
     prevTime = millis();

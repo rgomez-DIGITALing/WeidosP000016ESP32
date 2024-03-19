@@ -75,7 +75,7 @@ SD_backup_init_state_t SDBackupSenderClass<T>::begin(){
     //Check if provisional folder has been opened
     if(!folder){
         SD.end();
-        Serial.println("Error opening Folder");
+        Serial.println("[SDBackupSenderClass] Error opening Folder");
         return ERROR_OPEN_FOLDER;
     }
 
@@ -101,7 +101,7 @@ SD_backup_init_state_t SDBackupSenderClass<T>::begin(){
         SDFolderManager.concatenate("/");
         char* fileName = file.name();
         char* provisionalFilePath = SDFolderManager.concatenate(fileName);
-        Serial.print("Moving data from: ");
+        Serial.print("[SDBackupSenderClass] Moving data from: ");
         Serial.println(provisionalFolderPath);
         
         
@@ -119,8 +119,8 @@ SD_backup_init_state_t SDBackupSenderClass<T>::begin(){
         //If could not get data from file, delete this file because it migth be corrupted.
         if(!success){
             getDataErrorCount++;
-            Serial.println(" [ERROR] Error getting data. Let's continue with other files.");
-            Serial.print("Let's remove file: ");
+            Serial.println("[SDBackupSenderClass] [ERROR] Error getting data. Let's continue with other files.");
+            Serial.print("[SDBackupSenderClass] Let's remove file: ");
             Serial.println(provisionalFilePath);
             SDFolderManager.removeFile(provisionalFilePath);
             file = folder.openNextFile();
@@ -151,8 +151,8 @@ SD_backup_init_state_t SDBackupSenderClass<T>::begin(){
         //If could not put data inside pending file, continue with other files.
         if(numTries == NUM_SD_TRIES){
             putDataErrorCount++;
-            Serial.println(" [ERROR] Error getting data. Let's continue with other files.");
-            Serial.print("Let's remove file: ");
+            Serial.println("[SDBackupSenderClass] [ERROR] Error getting data. Let's continue with other files.");
+            Serial.print("[SDBackupSenderClass] Let's remove file: ");
             Serial.println(pendingFilePath);
             file = folder.openNextFile();
             continue;
@@ -164,10 +164,10 @@ SD_backup_init_state_t SDBackupSenderClass<T>::begin(){
         provisionalFolderPath = SDFolderManager.setProvisionalFolderPath(deviceId);
         SDFolderManager.concatenate("/");
         provisionalFilePath = SDFolderManager.concatenate(fileName);
-        Serial.print("Deleting provisional file: ");
+        Serial.print("[SDBackupSenderClass] Deleting provisional file: ");
         Serial.println(provisionalFilePath);
-        if(SDFolderManager.removeFile(provisionalFilePath)) Serial.println("File has been deleted.");
-        else Serial.println("File NOT deleted.");
+        if(SDFolderManager.removeFile(provisionalFilePath)) Serial.println("[SDBackupSenderClass] File has been deleted.");
+        else Serial.println("[SDBackupSenderClass] File NOT deleted.");
 
 
         Serial.println();
@@ -241,7 +241,7 @@ void SDBackupSenderClass<T>::loop(){
             }else{
                 numSkipFiles++;
                 Serial.println("[SDBackupSenderClass] File NOT deleted");
-                Serial.println("Number of skip files: ");
+                Serial.println("[SDBackupSenderClass] Number of skip files: ");
                 Serial.println(numSkipFiles);
                 SD.end();
                 return;
@@ -268,14 +268,17 @@ void SDBackupSenderClass<T>::loop(){
                 size_t payload_buffer_length = 0;
                 Serial.println("[SDBackupSenderClass] Sending data to IoT Central");
                 uint8_t* payload_buffer = AzureIoTCollection[deviceId]->getDataBuffer2();
-                Serial.print("Hello there: ");
+                Serial.print("[SDBackupSenderClass] Hello there: ");
                 Serial.println(deviceId);
-                generatePayload(payload_buffer, AZ_IOT_DATA_BUFFER_SIZE, &payload_buffer_length, msg);
-                Serial.println("SDFDSF!");
-                sendError = AzureIoTCollection[deviceId]->sendMessage(az_span_create(payload_buffer, payload_buffer_length));
-                Serial.println("Where is the error then? Lol diII DONDT UNDERSTAND HEHE!");
+                if(generatePayload){
+                    generatePayload(payload_buffer, AZ_IOT_DATA_BUFFER_SIZE, &payload_buffer_length, msg);
+                    Serial.println("SDFDSF!");
+                    sendError = AzureIoTCollection[deviceId]->sendMessage(az_span_create(payload_buffer, payload_buffer_length));
+                    Serial.println("[SDBackupSenderClass] Where is the error then? Lol diII DONDT UNDERSTAND HEHE!");
+                } 
+                
             }else{
-                Serial.println("I can0't send the telemetry because conditions are not met");
+                Serial.println("[SDBackupSenderClass] I can0't send the telemetry because conditions are not met");
             }
 
         

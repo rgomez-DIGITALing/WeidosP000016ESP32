@@ -276,6 +276,7 @@ int EA3PH_TCP_ValueLine::update(){
 // }
 
 void EA3PH_TCP_ValueLine::setSkipVariables(){
+        phaseCurrentSum = SKIP_DATA_VALUE;
 
         return;
 }

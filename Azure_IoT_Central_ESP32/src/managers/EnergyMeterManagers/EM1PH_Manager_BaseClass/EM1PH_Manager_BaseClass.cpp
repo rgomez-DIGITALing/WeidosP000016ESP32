@@ -32,7 +32,7 @@ EnergyMeterUpdateState_t EM1PHManager_BaseClass::loop(){
         if(!em1ph->begin()){
          state = ENERGY_METER_RETRY_UPDATE;
          em1ph->stop();
-         LogError("Modbus Client for device ID %i could not begin.", deviceId);
+        //  LogError("Modbus Client for device ID %i could not begin.", deviceId);
          break;
         }
 
@@ -47,10 +47,10 @@ EnergyMeterUpdateState_t EM1PHManager_BaseClass::loop(){
           numTries = 0;
           //state = PASS_MESSAGE;
           state = ENERGY_METER_UPDATE_FAILED;
-          LogError("Energy meter update failed.");
+          // LogError("Energy meter update failed.");
         }else{
           state = UPDATE_ENERGY_METER;
-          LogError("Retrying (%i/%i)", numTries, maxTries);
+          // LogError("Retrying (%i/%i)", numTries, maxTries);
         }
         break;
 

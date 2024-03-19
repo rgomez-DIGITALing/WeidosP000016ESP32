@@ -30,8 +30,6 @@ class EM3PH_TCP_ValueLine : public EM3PH_BaseClass{
      */
     int update();
 
-    void validateData();
-
     
     void setSkipVariables();
     float* getData();

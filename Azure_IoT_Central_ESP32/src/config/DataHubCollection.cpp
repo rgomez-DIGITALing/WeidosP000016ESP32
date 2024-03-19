@@ -6,6 +6,7 @@
 
 
 DataHub<WeidosManagerData_t, WEIDOS_METADATA_RING_BUFFER_SIZE> weidosDataHub;
+SDBackupSenderClass<WeidosManagerData_t> weidosBackupSender(0);
 
 
 #if defined BATCH_TEST && defined EM750_TEST
@@ -92,6 +93,7 @@ DataHub<em3phManagerData_t, ENERGY_METER_RING_BUFFER_SIZE> emDataHub1;
 
 void setDataHubCollection(){
     DataHubCollection.setDataHub(weidosDataHub);
+    SDBackupSenderCollection.setBackupSender(weidosBackupSender);
 
     #if defined BATCH_TEST && defined FLOW_METER_TEST
     DataHubCollection.setDataHub(emDataHub1, 1);
@@ -176,6 +178,8 @@ void setDataHubCollection(){
 
 void setDataHubsPayloadGenerators(){
     weidosDataHub.setPayloadGenerator(weidosESP32_generete_payload);
+    weidosBackupSender.setPayloadGenerator(weidosESP32_generete_payload);
+
 
     #if defined BATCH_TEST && defined FLOW_METER_TEST
     emDataHub1.setPayloadGenerator(flowMeter_generete_payload);

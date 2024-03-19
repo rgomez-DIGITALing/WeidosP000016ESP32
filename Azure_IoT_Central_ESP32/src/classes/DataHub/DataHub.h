@@ -71,9 +71,9 @@ void DataHub<T,N>::push(T data){
     //     //Serial.print("[DataHub<T,N>::push] fielename: ");
     //     Serial.println(fileName);
     //     if(SDDataStorage.put(fileName, data)){
-    //         Serial.println("Data successful PUSH in PROVISOINAL DATAHUB.");
+    //         Serial.println("[DataHub] Data successful PUSH in PROVISOINAL DATAHUB.");
     //     }else{
-    //         Serial.println("Data PUSH failure in PROVISIONAL DATAHUB.");
+    //         Serial.println("[DataHub] Data PUSH failure in PROVISIONAL DATAHUB.");
 
     //     }
     //     return;
@@ -83,10 +83,12 @@ void DataHub<T,N>::push(T data){
 
     // SDFolderManager.createPendingFolder(deviceId);
     // char* fileName = SDFolderManager.setPendingFilePath(deviceId, timestamp);
+    // Serial.print("[DataHub] pusing in folder: ");
+    // Serial.println(fileName);
     // if(SDDataStorage.put(fileName, data)){
-    //         Serial.println("Data successful PUSH in PENDING DATAHUB.");
+    //         Serial.println("[DataHub] Data successful PUSH in PENDING DATAHUB.");
     //     }else{
-    //         Serial.println("Data PUSH failure in PENDING DATAHUB.");
+    //         Serial.println("[DataHub] Data PUSH failure in PENDING DATAHUB.");
 
     //     }
 
@@ -103,12 +105,14 @@ void DataHub<T,N>::loop(){
     AzureIoTDevice* azureDevice = nullptr;
     switch(state){
         case GET_DATA_FROM_FIFO:
+
             if(dataBuffer.pop(currentPayload)){
                 state = MOVE_MESSAGE;
                 deviceId = currentPayload.deviceId;
                 numSendTries = 1;
                 //LogInfo2(F("Info for device ID: %i poped"), deviceId);
             }
+
             break;
 
         case MOVE_MESSAGE:
@@ -171,6 +175,7 @@ void DataHub<T,N>::loop(){
             break;
 
         default:
+            Serial.println("[DataHub] 3");
             state = GET_DATA_FROM_FIFO;
             break;
     }
