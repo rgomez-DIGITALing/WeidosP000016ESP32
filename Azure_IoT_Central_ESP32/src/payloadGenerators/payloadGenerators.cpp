@@ -864,16 +864,6 @@ int em750_generete_properties(az_iot_hub_client const* hub_client,
   EM3PH_BaseClass* energyMeter = emManager->getEnergyMeter();
   IPAddress* ipAddress = energyMeter->getIpAddress();
 
-  Serial.print("[Properties] Model: ");
-  Serial.println(model);
-
-  Serial.print("[Properties] Part Number: ");
-  Serial.println(partNumber);
-
-  Serial.print("[Properties] IP: ");
-  Serial.println(ipAddress->toString());
-
-
   char ipAddressArray[16];
   ipAddress->toString().toCharArray(ipAddressArray, 16);
 
@@ -996,16 +986,6 @@ int ea750_generete_properties(az_iot_hub_client const* hub_client,
   char* partNumber = EA750_PART_NUMBER;
   EM3PH_BaseClass* energyMeter = emManager->getEnergyMeter();
   IPAddress* ipAddress = energyMeter->getIpAddress();
-  
-  Serial.print("[Properties] Model: ");
-  Serial.println(model);
-
-  Serial.print("[Properties] Part Number: ");
-  Serial.println(partNumber);
-
-  Serial.print("[Properties] IP: ");
-  Serial.println(ipAddress->toString());
-
  
   char ipAddressArray[16];
   ipAddress->toString().toCharArray(ipAddressArray, 16);

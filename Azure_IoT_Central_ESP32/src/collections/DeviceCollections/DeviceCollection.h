@@ -28,6 +28,8 @@ class DeviceCollectionClass{
     public:
         DeviceCollectionClass();
         void init();
+        void createDevices();
+        void createDevice(uint8_t slot);
         // void setDevice(String& deviceTypeString, uint8_t slot);
         // String getEnergyMeterName(uint8_t slot);
 
@@ -41,7 +43,9 @@ class DeviceCollectionClass{
         char* getDeviceName(uint8_t slot);
         bool isEnergyMeter(uint8_t slot);
 
+        void setDevice(int deviceType, uint8_t slot);
         void setDevice(WeidosManager& weidos);
+        void setDevice(WeidosManager* weidos);
         void setDevice(EM110Manager* em);
         void setDevice(EM111Manager* em);
         void setDevice(EM120Manager* em);
@@ -59,7 +63,8 @@ class DeviceCollectionClass{
 
         uint8_t deviceList[MAX_ALLOWED_DEVICES];
 
-        WeidosManager* weidosManager = nullptr;
+        // WeidosManager* weidosManager = nullptr;
+        WeidosManager* weidosManagerPool[MAX_ALLOWED_DEVICES];
         EM1PHManager_BaseClass* EM1PHPool[MAX_ALLOWED_DEVICES];
         EM3PHManager_BaseClass* EM3PHPool[MAX_ALLOWED_DEVICES];
 

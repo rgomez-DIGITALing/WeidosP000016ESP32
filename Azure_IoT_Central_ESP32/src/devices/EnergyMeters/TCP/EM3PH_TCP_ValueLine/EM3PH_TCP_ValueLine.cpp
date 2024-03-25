@@ -100,7 +100,6 @@ void EM3PH_TCP_ValueLine::assignData5(){
 }
 
 void EM3PH_TCP_ValueLine::assignData6(){
-
     HVolts3L3 = getNextData();
     HVolts5L3 = getNextData();
     HVolts7L3 = getNextData();

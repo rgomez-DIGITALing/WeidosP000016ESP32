@@ -12,8 +12,10 @@ static const int FLAG_SIZE = 1;
 static const int UINT8_T_SIZE = 1;
 static const int FLOAT_SIZE = 4;
 static const int INT_SIZE = 4;
-static const int IP_SIZE = 4;
+// static const int IP_SIZE = 4;
 static const int PIN_SIZE = 4;
+// static const int IP_ADDRESS_SIZE = 4;
+static const int IP_ADDRESS_SIZE = sizeof(IPAddress);
 
 static const int NUM_MAX_DEVICES_EEPROM = 20;
 
@@ -59,7 +61,7 @@ static const int AZURE_DEVICE_ID_SET_FLAGS_INDEX = SCOPE_ID_INDEX + SCOPE_ID_SIZ
 static const int AZURE_DEVICES_ID_SET_FLAGS_SIZE = FLAG_SIZE*NUM_MAX_DEVICES_EEPROM;
 
 static const int AZURE_DEVICE_IDS_INDEX = AZURE_DEVICE_ID_SET_FLAGS_INDEX + AZURE_DEVICES_ID_SET_FLAGS_SIZE;
-static const int AZURE_DEVICES_IDS_SIZE = AZURE_DEVICE_ID_SIZE*NUM_MAX_DEVICES_EEPROM;
+static const int AZURE_DEVICES_IDS_SIZE = AZURE_ID_SIZE*NUM_MAX_DEVICES_EEPROM;
 
 
 
@@ -89,10 +91,10 @@ static const int MODBUS_IDS_SIZE = UINT8_T_SIZE*NUM_MAX_DEVICES_EEPROM;
 
 //Modbus IP (for Modbus TCP/IP devices)
 static const int MODBUS_TCP_IP_FLAGS_INDEX = MODBUS_IDS_INDEX + MODBUS_IDS_SIZE;
-static const int MODBUS_TCP_IP_SET_FLAGS_SIZE = IP_SIZE*NUM_MAX_DEVICES_EEPROM;
+static const int MODBUS_TCP_IP_SET_FLAGS_SIZE = FLAG_SIZE*NUM_MAX_DEVICES_EEPROM;
 
 static const int MODBUS_TCP_IPS_INDEX = MODBUS_TCP_IP_FLAGS_INDEX + MODBUS_TCP_IP_SET_FLAGS_SIZE;
-static const int MODBUS_TCP_IPS_SIZE = UINT8_T_SIZE*NUM_MAX_DEVICES_EEPROM;
+static const int MODBUS_TCP_IPS_SIZE = IP_ADDRESS_SIZE*NUM_MAX_DEVICES_EEPROM;
 
 
 //CT primary

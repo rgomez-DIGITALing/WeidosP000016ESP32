@@ -3,17 +3,20 @@
 #include "../pages/devicesPage.h"
 #include "../../../globalDefinitions/globalConfiguration.h"
 #include "../../PersistentData/PersistentDataClass.h"
+#include "../../../collections/DeviceCollections/DeviceCollection.h"
 
 #include <ESPAsyncWebServer.h>
 
 static const char* PARAMETER_SLOT = "slot";
 static const char* PARAMETER_DEVICE_TYPE = "device";
+static const char* PARAMETER_SCOPE_ID = "scopeId";
 static const char* PARAMETER_AZURE_ID = "azureId";
 static const char* PARAMETER_AZURE_SAS_KEY = "azureSasKey";
 static const char* PARAMETER_MODBUS_ADDRESS = "modbusAddress";
 static const char* PARAMETER_CT_PRIMARY = "ctPrimary";
 static const char* PARAMETER_CT_SECONDARY = "ctSecondary";
 static const char* PARAMETER_CONVERSION_FACTOR = "conversionFactor";
+static const char* PARAMETER_IP_ADDRESS = "ipAddress";
 
 
 static const float MIN_CT_PRIMARY = 0.0f;
@@ -33,6 +36,10 @@ enum ERROR_MESSAGE_INDEX{
     UNDEFINED_DEVICE_TYPE,
     INVALID_DEVICE_TYPE,
     
+    UNDEFINED_SCOPE_ID,
+    INVALID_SCOPE_ID,
+    SCOPE_ID_MAX_LENGTH_REACHED,
+
     UNDEFINED_AZURE_ID,
     INVALID_AZURE_ID,
     AZURE_ID_MAX_LENGTH_REACHED,
@@ -59,6 +66,9 @@ char* ERROR_MESSAGE[] = {
     "Invalid selected Slot number",
     "Undefined Device type",
     "Invalid Device type",
+    "Undefined Scope ID",
+    "Invalid Scope ID",
+    "Scope ID reached maximum length",
     "Undefined Azure ID",
     "Invalid Azure ID",
     "Azure ID reached maximum length",
@@ -77,7 +87,6 @@ char* ERROR_MESSAGE[] = {
 
 void sendErrorPage(uint8_t errorNumber){
     Serial.println(ERROR_MESSAGE[errorNumber]);
-    Serial.println("Algo hi ha");
     return;
 }
 
@@ -118,17 +127,30 @@ void onDevicePost(AsyncWebServerRequest *request){
     Serial.println("All input values are OK. Let's save them on EEPROM");
     
 
-    
+    //Scope ID
+    String scopeId = request->getParam(PARAMETER_SCOPE_ID, true)->value();
+    PersistentDataModule.saveScopeId(scopeId);
+    AzureIoTCollection.restoreScopeId();
     //Azure Device ID
     String azureId = request->getParam(PARAMETER_AZURE_ID, true)->value();
-    PersistentDataModule.saveAzureId(azureId, slot);
+    AzureIoTCollection.setAzureId(azureId, slot);
+    // PersistentDataModule.saveAzureId(azureId, slot);
+    // AzureIoTCollection.restoreAzureId(slot);
     //Azure SAS Key
     String azureSasKey = request->getParam(PARAMETER_AZURE_SAS_KEY, true)->value();
-    PersistentDataModule.saveAzureSasKey(azureSasKey, slot);
+    AzureIoTCollection.setSasKey(azureSasKey, slot);
+        // PersistentDataModule.saveAzureSasKey(azureSasKey, slot);
+        // AzureIoTCollection.restoreSasKey(slot);
 
 
     //Device Type
-    PersistentDataModule.saveDeviceType(deviceType, slot);
+    Serial.print("Lets set in slot: ");
+    Serial.print(slot);
+    Serial.print("   deviceType: ");
+    Serial.println(deviceType);
+    // DeviceCollection.setDevice(slot, deviceType);
+    DeviceCollection.setDevice(deviceType, slot);
+    // PersistentDataModule.saveDeviceType(deviceType, slot);
 
     //Modbus Address
     String modbusAddressString = request->getParam(PARAMETER_MODBUS_ADDRESS, true)->value();
@@ -146,8 +168,11 @@ void onDevicePost(AsyncWebServerRequest *request){
     String conversionFactorString = request->getParam(PARAMETER_CONVERSION_FACTOR, true)->value();
     float conversionFactor = conversionFactorString.toFloat();
     PersistentDataModule.saveConversionFactor(conversionFactor, slot);
+    //IP Address
+    String ipAddressString = request->getParam(PARAMETER_IP_ADDRESS, true)->value();
+    PersistentDataModule.saveIpAddress(ipAddressString, slot);
 
-
+    // PersistentDataModule.saveConversionFactor(conversionFactor, slot);
 
 
     AsyncResponseStream *response = request->beginResponseStream("text/html");
@@ -165,6 +190,15 @@ uint8_t getDeviceType(AsyncWebServerRequest *request){
 
 uint8_t checkDeviceParameters(AsyncWebServerRequest *request, uint8_t deviceType){
     uint8_t err = 0;
+
+
+    
+    err = checkScopeId(request);
+    if(err){
+        return err;
+    }
+
+
     err = checkAzureId(request);
     if(err){
         return err;
@@ -234,6 +268,12 @@ uint8_t checkDeviceParameters(AsyncWebServerRequest *request, uint8_t deviceType
             
             return 0;
         break;
+        case WEIDOS_ESP32:
+            // err = checkConversionFactor(request);
+            // if(!err) err = checkPin(request);
+            
+            return 0;
+        break;
     }
     return 0;
 };
@@ -253,15 +293,27 @@ uint8_t checkSlot(AsyncWebServerRequest *request){
 uint8_t checkDeviceType(AsyncWebServerRequest *request){
     if(!request->hasParam(PARAMETER_DEVICE_TYPE, true)) return UNDEFINED_DEVICE_TYPE;
     int deviceType = getDeviceType(request);
-    if(deviceType<1 || deviceType>MAX_DEVICE_TYPE) return INVALID_DEVICE_TYPE;
+    if(deviceType<0 || deviceType>MAX_DEVICE_TYPE) return INVALID_DEVICE_TYPE;
     return NO_ERROR;
 };
+
+uint8_t checkScopeId(AsyncWebServerRequest *request){
+    if(!request->hasParam(PARAMETER_SCOPE_ID, true)) return UNDEFINED_SCOPE_ID;
+
+    String scopeId = request->getParam(PARAMETER_SCOPE_ID, true)->value();
+    if(scopeId.length()>AZURE_SCOPE_ID_SIZE) return SCOPE_ID_MAX_LENGTH_REACHED;
+    Serial.print("[CheckScopeId] Scope ID:");
+    Serial.println(scopeId);
+    
+    return NO_ERROR;
+}
+
 
 uint8_t checkAzureId(AsyncWebServerRequest *request){
     if(!request->hasParam(PARAMETER_AZURE_ID, true)) return UNDEFINED_AZURE_ID;
 
     String azureId = request->getParam(PARAMETER_AZURE_ID, true)->value();
-    if(azureId.length()>AZURE_ID_MAX_LENGTH) return AZURE_ID_MAX_LENGTH_REACHED;
+    if(azureId.length()>AZURE_ID_SIZE) return AZURE_ID_MAX_LENGTH_REACHED;
     Serial.print("[CheckAzureId] Azure ID:");
     Serial.println(azureId);
     
@@ -272,7 +324,7 @@ uint8_t checkAzureId(AsyncWebServerRequest *request){
 uint8_t checkAzureSasKey(AsyncWebServerRequest *request){
     if(!request->hasParam(PARAMETER_AZURE_SAS_KEY, true)) return UNDEFINED_AZURE_SAS_KEY;
     String azureSasKey = request->getParam(PARAMETER_AZURE_SAS_KEY, true)->value();
-    if(azureSasKey.length()>AZURE_SAS_KEY_MAX_LENGTH) return AZURE_SAS_KEY_MAX_LENGTH_REACHED;
+    if(azureSasKey.length()>AZURE_SAS_KEY_SIZE) return AZURE_SAS_KEY_MAX_LENGTH_REACHED;
     Serial.print("[CheckAzureId] Azure azureSasKey:");
     Serial.println(azureSasKey);
     

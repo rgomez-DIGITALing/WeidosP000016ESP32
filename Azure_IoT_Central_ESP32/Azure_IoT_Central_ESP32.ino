@@ -55,6 +55,8 @@
 #include "src/collections/TriggerCollection/TriggerCollection.h"
 #include "src/classes/SDFolderManager/SDFolderManager.h"
 #include "src/classes/WebServer/WebServer.h"
+#include "src/classes/PersistentData/PersistentDataClass.h"
+#include "src/classes/SystemConfigurator/SystemConfigurator.h"
 
 #include <ArduinoBearSSL.h>
 
@@ -76,37 +78,51 @@ void setup()
   Serial.begin(SERIAL_LOGGER_BAUD_RATE);
   set_logging_function(logging_function);
   set_logging_function_2(logging_function_2);
-  delay(10000);
+  // delay(10000);
   Serial.println("Welcome!");
 
   EthernetModule.init();
   systemClock.begin();
   ArduinoBearSSL.onGetTime(get_time); // Required for server trusted root validation.
 
+  PersistentDataModule.begin();
   DataHubCollection.init();
   DeviceCollection.init();
   AzureIoTCollection.init();
-  // AzureIoTCollection.configure();
-  // while(1){}
-  SDBackupSenderCollection.init();
   TriggerCollection.init();
+  // SDBackupSenderCollection.init();
+  
+  DeviceCollection.createDevices(); //Web Server Only
+  AzureIoTCollection.configure(); //Web Server Only
+  
+  // while(1){}
 
   // WebServer.setAP();
   // WebServer.setServer();
   // while(1){}
 
-  createObjects();
-  configureAzureDevices();
-  setAzureIoTCollectionDevices();
-  setDataHubCollection();
-  setDataHubsPayloadGenerators();
-  setEnergyMeterProperties();
-  configureDeviceCollection();
-  setTriggers();
+  // createObjects();      //No Web Sever
+  // configureAzureDevices();  //No Web Sever
+  // setAzureIoTCollectionDevices(); //No Web Sever
+  
+  // setEnergyMeterProperties(); //No Web Sever
+  // // configureDeviceCollection(); //No Web Sever
+  // setTriggers();  //No Web Sever
+  // setDataHubCollection();   //No Web Sever
+  // setDataHubsPayloadGenerators();   //No Web Sever
 
-  // WebServer.setAP();
-  // WebServer.setServer();
+  // if(digitalRead(DI_7)){
+  //   WebServer.setAP();
+  //   WebServer.setServer();
+  //   while(1){}
+  // }
+
+
+  AzureIoTCollection.createObjects(); //Web Server Only. This function must be called after WebSever objecte for memory reasons.
+  SystemConfigurator.configure();     //Web Server Only
+
   // while(1){}
+  // createAzureDataBuffers();   //This must be called after WebServer because it consumes a lot of memory and Web Server wouldn't work.
   // SDBackupSenderCollection.begin();
   //DeviceCollection.initFlowMeters();
   esp_task_wdt_init(WDT_TIMEOUT, true); //enable panic so ESP32 restarts
@@ -119,11 +135,11 @@ void setup()
 
 
 
-unsigned long prevTcpTime = 0;
-static const unsigned long TCP_UPDATE_FREQUENCY = 60*1000;
+// unsigned long prevTcpTime = 0;
+// static const unsigned long TCP_UPDATE_FREQUENCY = 60*1000;
 
-unsigned long prevNoTcpTime = 0;
-static const unsigned long NO_TCP_UPDATE_FREQUENCY = 60*1000;
+// unsigned long prevNoTcpTime = 0;
+// static const unsigned long NO_TCP_UPDATE_FREQUENCY = 60*1000;
 
 unsigned long prevTime = 0;
 static const unsigned long DELTA_TIME = 60*1000;
@@ -137,36 +153,35 @@ int prevLinkStatus = LinkON;
 void loop()
 {
   esp_task_wdt_reset();
-  // if(millis()-prevEthernetLoop > ETHERNET_FREQUENCY){
-  //   EthernetModule.loop();
-    
-  // }
 
   EthernetModule.loop();
   networkUp = EthernetModule.isNetworkUp();
   systemClock.loop(networkUp);
   clockRunning = systemClock.clockRunning();
-
+  // Serial.println("1");
   if(!networkUp){
     AzureIoTCollection.stop();
   }
-
+  // Serial.println("2");
   if(clockRunning){
     TriggerCollection.loop(networkUp);
     DeviceCollection.loopDevicesNoNetwork();
 
   } 
-
-
+  // Serial.println("3");
   if(networkUp){
-    weidosESP32Manager.loop();
+    // weidosESP32Manager.loop();
+    // Serial.println("3.1");
     DeviceCollection.loopDevices();
+    // Serial.println("3.2");
     AzureIoTCollection.loop();
+    // Serial.println("3.3");
     DataHubCollection.loop();
+    // Serial.println("3.4");
     DeviceCollection.sendDevicesProperties();
     // SDBackupSenderCollection.loop();
   }
-
+  // Serial.println("4");
 
 
   if(millis()-prevTime>DELTA_TIME){

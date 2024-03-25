@@ -78,8 +78,8 @@ void AzureIoTDevice::loop(){
     azure_iot_do_work(&azure_iot);
     mqttClient->loop();
 
-    delay(MQTT_LOOP_POST_DELAY);
 
+    delay(MQTT_LOOP_POST_DELAY);
 
     //Check spurious disconnections.
     if(getStatus() == azure_iot_connecting || getStatus() == azure_iot_connected ){
@@ -336,11 +336,6 @@ void AzureIoTDevice::onMessageReceived(String &topic, String &payload)
   mqtt_message.topic = az_span_create((uint8_t*)message_topic.c_str(), message_topic.length());
   mqtt_message.payload = az_span_create((uint8_t*)payload.c_str(), payload.length());
   mqtt_message.qos = mqtt_qos_at_most_once; // QoS is unused by azure_iot_mqtt_client_message_received. 
-  // Serial.println("[onMessageReceived]:");
-  // Serial.println("Topic: ");
-  // Serial.println(topic);
-  // Serial.println("Payload:");
-  // Serial.println(payload);
 
   if (azure_iot_mqtt_client_message_received(&azure_iot, &mqtt_message) != 0)
   {
@@ -512,7 +507,6 @@ int AzureIoTDevice::azure_iot_stop(azure_iot_t* azure_iot)
 
 azure_iot_status_t AzureIoTDevice::azure_iot_get_status(azure_iot_t* azure_iot)
 {
-  //Serial.println("azure_iot_get_status");
   _az_PRECONDITION_NOT_NULL(azure_iot);
 
   azure_iot_status_t status;
@@ -549,7 +543,7 @@ azure_iot_status_t AzureIoTDevice::azure_iot_get_status(azure_iot_t* azure_iot)
       status = azure_iot_error;
       break;
   }
-  //Serial.println("Returning from azure_iot_get_status");
+
   return status;
 }
 
@@ -592,7 +586,6 @@ void AzureIoTDevice::azure_iot_do_work(azure_iot_t* azure_iot)
         // provisioning again if done already. In such case, the logic needs to preserve the spaces
         // reserved for IoT Hub FQDN and Device ID previously provisioned.
         azure_iot->data_buffer = azure_iot->config->data_buffer;
-
         result = get_mqtt_client_config_for_dps(azure_iot, &mqtt_client_config);
         azure_iot->state = azure_iot_state_connecting_to_dps;
       }
@@ -1507,6 +1500,7 @@ static int get_mqtt_client_config_for_iot_hub(
       password_span,
       &azure_iot->sas_token_expiration_time);
   EXIT_IF_TRUE(password_length == 0, RESULT_ERROR, "Failed creating mqtt password for IoT Hub connection.");
+
 
   client_id_span = split_az_span(data_buffer_span, MQTT_CLIENT_ID_BUFFER_SIZE, &data_buffer_span);
   EXIT_IF_TRUE(az_span_is_content_equal(client_id_span, AZ_SPAN_EMPTY), RESULT_ERROR, "Failed reserving buffer for client_id_span.");

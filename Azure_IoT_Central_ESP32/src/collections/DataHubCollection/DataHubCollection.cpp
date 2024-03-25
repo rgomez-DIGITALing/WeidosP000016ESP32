@@ -42,19 +42,38 @@ void DataHubCollectionClass::loop(){
 
 
 
-void DataHubCollectionClass::setDataHub(DataHub<WeidosManagerData_t, WEIDOS_METADATA_RING_BUFFER_SIZE>& dataHub){ 
+void DataHubCollectionClass::setDataHub(DataHub<WeidosManagerData_t, RING_BUFFER_SIZE>* dataHub){ 
+    weidosDataHub = dataHub;
+}
+
+void DataHubCollectionClass::setDataHub(DataHub<em1phManagerData_t, RING_BUFFER_SIZE>* dataHub, int slot){ 
+    em1phDataHubPool[slot] = dataHub;
+}
+
+void DataHubCollectionClass::setDataHub(DataHub<em3phManagerData_t, RING_BUFFER_SIZE>* dataHub, int slot){ 
+    em3phDataHubPool[slot] = dataHub;
+}
+
+void DataHubCollectionClass::setDataHub(DataHub<flowMeterManagerData_t, RING_BUFFER_SIZE>* dataHub, int slot){ 
+    flowMeterDataHubPool[slot] = dataHub;
+}
+
+
+
+
+void DataHubCollectionClass::setDataHub(DataHub<WeidosManagerData_t, RING_BUFFER_SIZE>& dataHub){ 
     weidosDataHub = &dataHub;
 }
 
-void DataHubCollectionClass::setDataHub(DataHub<em1phManagerData_t, ENERGY_METER_RING_BUFFER_SIZE>& dataHub, int slot){ 
+void DataHubCollectionClass::setDataHub(DataHub<em1phManagerData_t, RING_BUFFER_SIZE>& dataHub, int slot){ 
     em1phDataHubPool[slot] = &dataHub;
 }
 
-void DataHubCollectionClass::setDataHub(DataHub<em3phManagerData_t, ENERGY_METER_RING_BUFFER_SIZE>& dataHub, int slot){ 
+void DataHubCollectionClass::setDataHub(DataHub<em3phManagerData_t, RING_BUFFER_SIZE>& dataHub, int slot){ 
     em3phDataHubPool[slot] = &dataHub;
 }
 
-void DataHubCollectionClass::setDataHub(DataHub<flowMeterManagerData_t, ENERGY_METER_RING_BUFFER_SIZE>& dataHub, int slot){ 
+void DataHubCollectionClass::setDataHub(DataHub<flowMeterManagerData_t, RING_BUFFER_SIZE>& dataHub, int slot){ 
     flowMeterDataHubPool[slot] = &dataHub;
 }
 

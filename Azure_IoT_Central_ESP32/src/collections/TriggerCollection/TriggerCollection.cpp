@@ -1,4 +1,5 @@
 #include "TriggerCollection.h"
+#include "../DeviceCollections/DeviceCollection.h"
 
 
 
@@ -9,6 +10,15 @@ void TriggerCollectionClass::init(){
     }
 
     return;
+}
+
+void TriggerCollectionClass::configure(){
+    for(int i=0; i<MAX_ALLOWED_DEVICES; i++){
+        uint8_t deviceType = DeviceCollection.getDeviceType(i);
+        if(deviceType < 1 ||  deviceType > 9) continue;
+        triggers[i] = new TriggerClass(i);
+
+    }
 }
 
 

@@ -1,8 +1,8 @@
 #include "globalConfiguration.h"
 
 
-uint8_t MAX_DEVICE_TYPE = PULSE_METER_DEVICE_TYPE;
-uint8_t AZURE_ID_MAX_LENGTH = 25;
-uint8_t AZURE_SAS_KEY_MAX_LENGTH = 60;
+// uint8_t MAX_DEVICE_TYPE = PULSE_METER_DEVICE_TYPE;
 
-uint8_t DEFAULT_MODBUS_NUMBER_TRIES = 5;
+EthernetClient ethernetClientModbus(7);
+ModbusTCPClient modbusTCPClient(ethernetClientModbus);
+

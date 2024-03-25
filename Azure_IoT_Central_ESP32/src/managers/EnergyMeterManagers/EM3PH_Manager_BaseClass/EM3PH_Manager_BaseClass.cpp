@@ -67,7 +67,7 @@ EnergyMeterUpdateState_t EM3PHManager_BaseClass::loop(){
         break;
 
       case ENERGY_METER_UPDATED:
-        LogInfo(" Updated EM750  (ID:%i)", deviceId);
+        LogInfo(" Updated EM750/EA750  (ID:%i)", deviceId);
         msg.deviceId = deviceId;
         msg.timestamp = systemClock.getEpochTime();
         msg.dataSourceStatus = 0;

@@ -57,7 +57,7 @@ void EM1PH_RTU_BasicLine::stop(){
 int EM1PH_RTU_BasicLine::update(){
   ModbusRTUClient.setTimeout(MODBUS_TIMEOUT_BATCH_1);
   int response = ModbusRTUClient.requestFrom(modbusId, INPUT_REGISTERS, REG_ADDRESS_BATCH_1, NUM_REGISTERS_BATCH_1);    
-  if(response != NUM_REGISTERS_BATCH_1)
+  if(response != NUM_REGISTERS_BATCH_1) //Response must be equal to the number of requested registers to ensure communication was successful
   {
       // Serial.println("No response");
       // Serial.print("Last error: ");

@@ -10,24 +10,16 @@ EM3PH_BaseClass::EM3PH_BaseClass(uint8_t modbusId, IPAddress ip) : modbusId(modb
 void EM3PH_BaseClass::copyData(float* buffer, int bufferSize){
   int length = (bufferSize<NUM_TOTAL_DATA_3PHASE) ? bufferSize : NUM_TOTAL_DATA_3PHASE;
 
-
   for(int i=0; i<length; i++){
-    // data[i] = 23.23f;
     buffer[i] = data[i];
-    // buffer[i] = 2.72348;
-    Serial.print("i;; ");
-    Serial.print(i);
-    Serial.print("   ///   ");
-    Serial.println(data[i]);
   }
+
   return;
 };
 
 
 
 void EM3PH_BaseClass::getData(em3phData_t& payload){
-  setSkipVariables();
-
   payload.comError = comError;
   copyData(payload.data, NUM_TOTAL_DATA_3PHASE);
   
@@ -64,9 +56,6 @@ void EM3PH_BaseClass::getData(em3phData_t& payload){
       payload.incrementalData[i] = FLOAT_NO_PREV_DATA_AVAILABLE_ERROR_VALUE;
     }
   }
-
-  // payload.currentTotal = currentTotal;
-  // payload.phaseCurrentSum = phaseCurrentSum;
   
   return;
 }

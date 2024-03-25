@@ -69,6 +69,7 @@ typedef struct weidosMetadata_struct_t{
 
 class WeidosESP32Class{
     public:
+        WeidosESP32Class(){}
         uint32_t getFreeHeap(){ return ESP.getFreeHeap(); }
         uint32_t getHeapSize(){ return ESP.getHeapSize(); }
         uint32_t getMaxAllocHeap(){ return ESP.getMaxAllocHeap(); }

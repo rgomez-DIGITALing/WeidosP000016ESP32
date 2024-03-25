@@ -10,10 +10,14 @@
 // #define BATCH_IT_SOPORTE
 // #define BATCH_GAC_LETS_CONNECT
 // #define BATCH_TRANSELEVADORES_FAST
-#define BATCH_TEST
+
+// #define DEMO_COMERCIALES
+
+// #define BATCH_TEST
 // #define FLOW_METER_TEST
-#define EM750_TEST
+// #define EM750_TEST
 // #define RTU_TEST
+// #define HANDOVER_TEST
 
 
 // Azure IoT Central
@@ -22,7 +26,12 @@
 #ifdef BATCH_TEST
 #define DPS_ID_SCOPE "0ne00B219C5"
 #endif
-
+#ifdef DEMO_COMERCIALES
+#define DPS_ID_SCOPE "0ne00C3AD83"
+#endif
+#ifdef HANDOVER_TEST
+#define DPS_ID_SCOPE "0ne00B219C5"
+#endif
 
 #ifdef BATCH_GENERAL_ROBOT
 #define IOT_CONFIG_DEVICE_GATEWAY_ID "1iyt0p0nos5"                                   //GW General-Robot (2)
@@ -110,6 +119,21 @@
 #define IOT_CONFIG_DEVICE_5_KEY "unusedunusedunusedunusedunusedunusedunusedun"          //Unused
 #endif
 
+#ifdef DEMO_COMERCIALES
+#define IOT_CONFIG_DEVICE_GATEWAY_ID "20kgh6us67v"                                   //GW General-Robot (2)
+#define IOT_CONFIG_DEVICE_1_ID "2jjtyms4mja"                                        //General (2)
+#define IOT_CONFIG_DEVICE_2_ID "36u53dufev"                                        //Transelevador 1 (2)
+#define IOT_CONFIG_DEVICE_3_ID "2ooyrqdla6g"                                         //Transelevador 2 (2)
+#define IOT_CONFIG_DEVICE_4_ID "1zrl43tbkim"                                        //Transelevador 3 (2)
+#define IOT_CONFIG_DEVICE_5_ID "1izset6ge61"                                         //Robot (2)
+
+#define IOT_CONFIG_DEVICE_GATEWAY_KEY "AIOEjePAlq4lAW12VzlKWPOp8MAd/jlWDlenyKOwOHU="    //GW General-Robot (2)
+#define IOT_CONFIG_DEVICE_1_KEY "xLm5qRB61XyFWJblU6rPHIAFICH4IcU2j13f8P2SsUA="          //General (2)
+#define IOT_CONFIG_DEVICE_2_KEY "3rXndM+ghy/DxBeSBwbZOCKqTBljO5VnN+PSjtRp5VA="          //Transelevador 1 (2)
+#define IOT_CONFIG_DEVICE_3_KEY "LfVZhO/6l3zqpa4qRelRhlJhZjKP5rUGkjZG/bfWYT8="          //Transelevador 2 (2)
+#define IOT_CONFIG_DEVICE_4_KEY "jxu/ZQrsm4BVps4BAWNR40DlMcmgvKzZyaU1VsvhBsI="          //Transelevador 3 (2)
+#define IOT_CONFIG_DEVICE_5_KEY "zknhUkxaZTBeGvWGfKk/xHJ65hDdhom1btPm9VKGLOw="          //Robot (2)
+#endif
 
 
 
@@ -174,11 +198,27 @@
 #define IOT_CONFIG_DEVICE_4_ID "unusedDevic"           //Unused
 #define IOT_CONFIG_DEVICE_5_ID "unusedDevic"           //Unused
 
-#define IOT_CONFIG_DEVICE_GATEWAY_KEY "j0rlvl21V/zYqSzdpqzGyaHnxHBNkIokfNI0dlqWGe0="    //Unused
+#define IOT_CONFIG_DEVICE_GATEWAY_KEY "87LdeZcim8PeRYRI6A48Qb/2Nnjjs9dOPCcifEHYwu0="    //Unused
 #define IOT_CONFIG_DEVICE_1_KEY "j0rlvl21V/zYqSzdpqzGyaHnxHBNkIokfNI0dlqWGe0="          //Unused
 #define IOT_CONFIG_DEVICE_2_KEY "unusedunusedunusedunusedunusedunusedunusedun"          //Unused
 #define IOT_CONFIG_DEVICE_3_KEY "unusedunusedunusedunusedunusedunusedunusedun"          //Unused
 #define IOT_CONFIG_DEVICE_4_KEY "unusedunusedunusedunusedunusedunusedunusedun"          //Unused
+#define IOT_CONFIG_DEVICE_5_KEY "unusedunusedunusedunusedunusedunusedunusedun"          //Unused
+#endif
+
+#ifdef HANDOVER_TEST
+#define IOT_CONFIG_DEVICE_GATEWAY_ID "1z75u5euy4j"     //GW Handover
+#define IOT_CONFIG_DEVICE_1_ID "1cdavb4mwh3"           //EM750-1-Handover
+#define IOT_CONFIG_DEVICE_2_ID "1fde8bvba3l"            //EM750-2-Handover
+#define IOT_CONFIG_DEVICE_3_ID "2nj4nhhc084"            //EM750-3-Handover
+#define IOT_CONFIG_DEVICE_4_ID "gu416sr5sq"           //EM111-Handover
+#define IOT_CONFIG_DEVICE_5_ID "unusedDevic"           //Unused
+
+#define IOT_CONFIG_DEVICE_GATEWAY_KEY "aIU2UsTF6za9Qdz/4goUyCVXVIxsfGAVeMDYcbb5q0Y="    //GW Handover
+#define IOT_CONFIG_DEVICE_1_KEY "sCtS2zWfjiKiF8A43UsRrBqWK32viT84kl8rv9hTVZE="          //EM750-1-Handover
+#define IOT_CONFIG_DEVICE_2_KEY "YX2Iv5VkpHOJ+MmoGjwxbuGWzkr196EqnSFOjBICAH8="          //EM750-2-Handover
+#define IOT_CONFIG_DEVICE_3_KEY "6xCA6oPjVRJ+Wq8/UeJ37WmFeGW4kbk5mjL7CHBSFAE="          //EM750-3-Handover
+#define IOT_CONFIG_DEVICE_4_KEY "qpmoTXKranVK6IuNhydx38C1ujDyxWa7+gGq/oPXMRc="          //EM111-Handover
 #define IOT_CONFIG_DEVICE_5_KEY "unusedunusedunusedunusedunusedunusedunusedun"          //Unused
 #endif
 

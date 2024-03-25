@@ -71,7 +71,7 @@ void sendDevicesPage(AsyncResponseStream *response){
       width:150px;
       margin: 25px;
       font-size: 25px;
-      background-color: #3498db;
+      background-color: #eb8c00;
       color: #fff;
       border: none;
       border-radius: 5px;
@@ -103,8 +103,8 @@ void sendDevicesPage(AsyncResponseStream *response){
           <div class="slotsContainer">
         )rawliteral");
 
-        char* namesTest[] = {"EM111", "EM220", "+", "EM750", "Pulse Meter"};
-        for(int i=0; i<5; i++){
+        // char* namesTest[] = {"EM111", "EM220", "+", "EM750", "Pulse Meter"};
+        for(int i=0; i<6; i++){
             response->print(R"rawliteral(<div class="slot"><h3 class="topleft" >Slot )rawliteral");
             response->print(i);
             response->print(R"rawliteral(:</h3><a class="deviceButton" href="/deviceForm?slot=)rawliteral");
@@ -128,9 +128,11 @@ char* deviceFormStyle = R"rawliteral(<style>
 char* headEnd = "</head>";
 char* bodyBegin = "<body>";
 char* bodyEnd = "</body>";
-char* footer = R"rawliteral(<footer>
-      <p style="text-align: center;">&copy; 2023 Weidmuller S.A. All rights reserved.</p>
-      </footer>)rawliteral";
+// char* footer = R"rawliteral(<footer>
+//       <p style="text-align: center;">&copy; 2023 Weidmuller S.A. All rights reserved.</p>
+//       </footer>)rawliteral";
+
+char* footer = "";
 
 // <form action="/deviceForm?slot=23" method="post" id="deviceForm">
 
@@ -151,48 +153,44 @@ char* deviceFormContent = R"rawliteral(<h1>Device Form</h1>
                 <option value="7">EA750</option>
                 <option value="8">Pulse Meter</option>
                 <option value="9">Analog Meter</option>
+                <option value="10">Weidos ESP32</option>
             </select>
         </div>
 
-
+        <div class="userInput" id="scopeId">
+            <label for="scopeId">Scope ID:</label>
+            <input type="text" name="scopeId" id="scopeIdInput" value="%s">
+        </div>
 
         <div class="userInput" id="azureId">
             <label for="azureId">Azure ID:</label>
             <input type="text" name="azureId" id="azureIdInput" value="%s">
         </div>
 
-
-
         <div class="userInput" id="azureSasKey">
             <label for="azureSasKey">Azure SAS Key:</label>
             <input type="text" name="azureSasKey" id="azureSasKeyInput" value="%s">
         </div>
-
 
         <div class="userInput" id="ipAddress">
             <label for="ipAddress">IP Address:</label>
             <input type="text" name="ipAddress" id="ipAddressInput" value="%s">
         </div>
 
-
-
         <div class="userInput" id="modbusAddress">
             <label for="modbusAddress">Modbus Address:</label>
             <input type="number" name="modbusAddress"  id="modbusAddressInput" value="%i">
         </div>
   
-
         <div class="userInput" id="ctPrimary" >
             <label for="ctPrimary">CT Primary:</label>
             <input type="text" name="ctPrimary" id="ctPrimaryInput" value="%i">
         </div>
 
-
         <div class="userInput" id="ctSecondary">
             <label for="ctSecondary">CT Secondary:</label>
             <input type="text" name="ctSecondary" id="ctSecondaryInput" value="%i">
         </div>
-
 
         <div class="userInput" id="digitalPin">
             <label for="digitalPin">Digital Pin:</label>
@@ -205,12 +203,10 @@ char* deviceFormContent = R"rawliteral(<h1>Device Form</h1>
             </select>
         </div>
 
-
         <div class="userInput" id="conversionFactor">
             <label for="conversionFactor">Conversion Factor:</label>
             <input type="number" name="conversionFactor" id="conversionFactorInput"  value="%f" required step="0.01">
         </div>
-
 
         <input type="submit" value="Submit">
         <a href="/devices"><button type="button">Cancel</button></a>
@@ -250,6 +246,7 @@ char* deviceFormScripts = R"rawliteral(<script>
 
         var selectedDevice = document.getElementById("deviceSelect").value;
         if(selectedDevice != "0"){
+            showInput("scopeId");
             showInput("azureId");
             showInput("azureSasKey");
         }
@@ -288,6 +285,7 @@ char* deviceFormScripts = R"rawliteral(<script>
 
 
 void sendDeviceFormPage(AsyncResponseStream *response, int slot){
+    char* scopeId = "";
     char* azureId = "";
     char* azureSasKey = "";
     IPAddress ipAddress = IPAddress(255, 255, 255, 255);
@@ -299,23 +297,30 @@ void sendDeviceFormPage(AsyncResponseStream *response, int slot){
     uint8_t deviceType = 0;
 
 
+    if(PersistentDataModule.isScopeIdSet()) scopeId = AzureIoTCollection.getScopeId();
+    if(PersistentDataModule.isAzureIdSet(slot)) azureId = AzureIoTCollection.getAzureId(slot);
+    if(PersistentDataModule.isSasKeySet(slot)) azureSasKey = AzureIoTCollection.getSasKey(slot);
+    
 
-    AzureIoTDevice* azureDevice = AzureIoTCollection[slot];
-    if(azureDevice){
-        azureId = azureDevice->getDeviceId();
-        azureSasKey = azureDevice->getSasKey();
-    }
-
+    String ipString = "";
     if(PersistentDataModule.isModbusAddressSet(slot)) modbusAddress = PersistentDataModule.getModbusAddress(slot);
     if(PersistentDataModule.isCTPrimarySet(slot)) ctPrimary = PersistentDataModule.getCTPrimary(slot);
     if(PersistentDataModule.isCTSecondarySet(slot)) ctSecondary = PersistentDataModule.getCTSecondary(slot);
     if(PersistentDataModule.isConversionSet(slot)) conversionFactor = PersistentDataModule.getConversionFactor(slot);
     if(PersistentDataModule.isDeviceTypeSet(slot)) deviceType = DeviceCollection.getDeviceType(slot);
-
+    if(PersistentDataModule.isIpAddressSet(slot)){
+        Serial.println("IP Address is set!");
+        ipAddress = PersistentDataModule.getIpAddress(slot);
+        ipString = String(ipAddress[0]) + "." + String(ipAddress[1]) + "." + String(ipAddress[2]) + "." + String(ipAddress[3]);
+    }
+    Serial.print("IP String is: ");
+    Serial.println(ipString);
+    
 
     Serial.print("Device Type: ");
     Serial.println(deviceType);
     // if(DeviceCollection.isEnergyMeter(slot))
+
 
     response->print(documentBegin);
     writeTitle(response, "Device Form");
@@ -323,12 +328,13 @@ void sendDeviceFormPage(AsyncResponseStream *response, int slot){
     response->print(deviceFormStyle);
     response->print(headEnd);
     response->print(bodyBegin);
-    response->printf(deviceFormContent, azureId, azureSasKey, ip, modbusAddress, ctPrimary, ctSecondary, conversionFactor);
+    response->printf(deviceFormContent, scopeId, azureId, azureSasKey, ipString.c_str(), modbusAddress, ctPrimary, ctSecondary, conversionFactor);
     response->print(footer);
     response->print(bodyEnd);
 
     int inputPin = 1;
-    // DeviceCollection.getDeviceType(slot);
     response->printf(deviceFormScripts, deviceType, inputPin);
     response->print(documentEnd);
+
+    return;
 }

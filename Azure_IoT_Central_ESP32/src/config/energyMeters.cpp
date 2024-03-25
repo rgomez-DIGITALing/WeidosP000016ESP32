@@ -70,6 +70,23 @@ void setTriggers(){
   #endif
 
 
+  #if defined DEMO_COMERCIALES
+  TriggerClass* weidosESP32Trigger = new TriggerClass(0);
+  TriggerClass* generalTrigger = new TriggerClass(1);
+  TriggerClass* transelevador1Trigger = new TriggerClass(2);
+  TriggerClass* transelevador2Trigger = new TriggerClass(3);
+  TriggerClass* transelevador3Trigger = new TriggerClass(4);
+  TriggerClass* robotTrigger = new TriggerClass(5);
+
+  TriggerCollection.setTrigger(weidosESP32Trigger);
+  TriggerCollection.setTrigger(generalTrigger);
+  TriggerCollection.setTrigger(transelevador1Trigger);
+  TriggerCollection.setTrigger(transelevador2Trigger);
+  TriggerCollection.setTrigger(transelevador3Trigger);
+  TriggerCollection.setTrigger(robotTrigger);
+  #endif
+
+
   #if defined BATCH_TRANSELEVADORES_FAST
   TriggerClass* weidosESP32Trigger = new TriggerClass(0);
   TriggerClass* transelevador1Trigger = new TriggerClass(1);
@@ -164,19 +181,44 @@ void setTriggers(){
   TriggerCollection.setTrigger(weidosESP32Trigger);
   TriggerCollection.setTrigger(montacargas);
   #endif
+
+  #ifdef HANDOVER_TEST
+  TriggerClass* weidosESP32Trigger = new TriggerClass(0);
+  TriggerClass* em750_1_HandoverTrigger = new TriggerClass(1);
+  TriggerClass* em750_2_HandoverTrigger = new TriggerClass(2);
+  TriggerClass* em750_3_HandoverTrigger = new TriggerClass(3);
+  TriggerClass* em111_HandoverTrigger = new TriggerClass(4);
+
+  TriggerCollection.setTrigger(weidosESP32Trigger);
+  TriggerCollection.setTrigger(em750_1_HandoverTrigger);
+  TriggerCollection.setTrigger(em750_2_HandoverTrigger);
+  TriggerCollection.setTrigger(em750_3_HandoverTrigger);
+  TriggerCollection.setTrigger(em111_HandoverTrigger);
+  #endif
+
 }
 
 
 
-#if defined BATCH_GENERAL_ROBOT || defined BATCH_TRANSELEVADORES_FAST || defined BATCH_LINEA_EMPAQUETADO_AC_OFICINAS || defined BATCH_MONTACARGAS || defined EM750_TEST
+#if defined BATCH_GENERAL_ROBOT || defined BATCH_TRANSELEVADORES_FAST || defined BATCH_LINEA_EMPAQUETADO_AC_OFICINAS || defined BATCH_MONTACARGAS
+static EthernetClient ethernetClientModbus(7);
+static ModbusTCPClient modbusTCPClient(ethernetClientModbus);
+#endif
+
+#if defined EM750_TEST || defined HANDOVER_TEST || defined DEMO_COMERCIALES
 static EthernetClient ethernetClientModbus(7);
 static ModbusTCPClient modbusTCPClient(ethernetClientModbus);
 #endif
 
 
 
+
+
+
 void configureDeviceCollection(){
   DeviceCollection.setDevice(weidosESP32Manager);
+
+  
   #if defined BATCH_GENERAL_ROBOT
   IPAddress ipGeneral(10, 88, 47, 202);        //General
   IPAddress ipTranselevador1(10, 88, 47, 242);        //Transelevador 1
@@ -196,6 +238,28 @@ void configureDeviceCollection(){
   DeviceCollection.setDevice(transelevador3);
   DeviceCollection.setDevice(robot);
   #endif
+
+
+  #if defined DEMO_COMERCIALES
+  IPAddress ipGeneral(10, 88, 47, 202);        //General
+  IPAddress ipTranselevador1(10, 88, 47, 242);        //Transelevador 1
+  IPAddress ipTranselevador2(10, 88, 47, 243);        //Transelevador 2
+  IPAddress ipTranselevador3(10, 88, 47, 244);        //Transelevador 3
+  IPAddress ipRobot(10, 88, 47, 220);        //Robot
+
+  EA750Manager* general = new EA750Manager(modbusTCPClient, ipGeneral, 1);
+  EM750Manager* transelevador1 = new EM750Manager(modbusTCPClient, ipTranselevador1, 2);
+  EM750Manager* transelevador2 = new EM750Manager(modbusTCPClient, ipTranselevador2, 3);
+  EM750Manager* transelevador3 = new EM750Manager(modbusTCPClient, ipTranselevador3, 4);
+  EM750Manager* robot = new EM750Manager(modbusTCPClient, ipRobot, 5);
+
+  DeviceCollection.setDevice(general);
+  DeviceCollection.setDevice(transelevador1);
+  DeviceCollection.setDevice(transelevador2);
+  DeviceCollection.setDevice(transelevador3);
+  DeviceCollection.setDevice(robot);
+  #endif
+  
 
 
   #if defined BATCH_TRANSELEVADORES_FAST
@@ -328,6 +392,25 @@ void configureDeviceCollection(){
   // DeviceCollection.setDevice(parisMilan);
   // DeviceCollection.setDevice(rack);
   DeviceCollection.setDevice(sai);
+  #endif
+
+
+   #if defined HANDOVER_TEST
+  IPAddress ipTranselevador1(10, 88, 47, 242);        //Transelevador 1
+  IPAddress ipTranselevador2(10, 88, 47, 243);        //Transelevador 2
+  IPAddress ipTranselevador3(10, 88, 47, 244);        //Transelevador 3
+ 
+
+  EM750Manager* EM750_1_Handover = new EM750Manager(modbusTCPClient, ipTranselevador1, 1);
+  EM750Manager* EM750_2_Handover = new EM750Manager(modbusTCPClient, ipTranselevador2, 2);
+  EM750Manager* EM750_3_Handover = new EM750Manager(modbusTCPClient, ipTranselevador3, 3);
+  EM111Manager* EM111_Handover = new EM111Manager(4);  // EM111-Handover
+
+
+  DeviceCollection.setDevice(EM750_1_Handover);
+  DeviceCollection.setDevice(EM750_2_Handover);
+  DeviceCollection.setDevice(EM750_3_Handover);
+  DeviceCollection.setDevice(EM111_Handover);
   #endif
 }
 

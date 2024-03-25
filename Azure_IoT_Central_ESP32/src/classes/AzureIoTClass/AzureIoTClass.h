@@ -4,6 +4,7 @@
 #include <MQTTClient.h>
 #include <Client.h>
 #include "../../config/azure_parameters.h"
+#include "../../globalDefinitions/globalConfiguration.h"
 
 enum securityType_t{
     UNDEFINED,
@@ -11,9 +12,9 @@ enum securityType_t{
     X509_CERTIFICATE
 };
 
-#define AZ_IOT_DATA_BUFFER_SIZE 3000
-// #define AZ_IOT_DATA_BUFFER_SIZE 50
-#define DATA_BUFFER_SIZE 5000
+// #define AZ_IOT_DATA_BUFFER_SIZE 3000
+// // #define AZ_IOT_DATA_BUFFER_SIZE 50
+// #define DATA_BUFFER_SIZE 5000
 // #define DATA_BUFFER_SIZE 50
 
 static const int MQTT_KEEP_ALIVE = 60;
@@ -22,7 +23,7 @@ static const int MQTT_TIMEOUT = 5000;
 
 class AzureIoTDevice{
     public:
-        AzureIoTDevice(uint8_t slot) : slot(slot), mqttClient(nullptr), client(nullptr){};
+        AzureIoTDevice(uint8_t slot) : slot(slot), mqttClient(nullptr), client(nullptr){Serial.print("Creating an AzureIoTDevice in slot: ");Serial.println(slot);};
         AzureIoTDevice(uint8_t slot, MQTTClient& mqttClient, Client& client) : slot(slot), mqttClient(&mqttClient), client(&client){};
         AzureIoTDevice(uint8_t slot, MQTTClient& mqttClient, Client* client) : slot(slot), mqttClient(&mqttClient), client(client){};
         AzureIoTDevice(uint8_t slot, MQTTClient* mqttClient, Client* client) : slot(slot), mqttClient(mqttClient), client(client){};
@@ -47,6 +48,7 @@ class AzureIoTDevice{
         uint8_t* getDataBuffer(){ return az_iot_data_buffer; }
         uint8_t* getDataBuffer2(){ return data_buffer; }
         void setClients(MQTTClient& mqttClient, Client& client){ this->mqttClient = &mqttClient; this->client = &client;}
+        void setClients(MQTTClient* mqttClient, Client* client){ this->mqttClient = mqttClient; this->client = client;}
         void setGatewayId(char* gatewayId){ this->gatewayId = gatewayId; }
         void setOnCommandReceived(command_request_received_t onCommandRequest){ azure_iot_config.on_command_request_received = onCommandRequest; }
         void statusChange();

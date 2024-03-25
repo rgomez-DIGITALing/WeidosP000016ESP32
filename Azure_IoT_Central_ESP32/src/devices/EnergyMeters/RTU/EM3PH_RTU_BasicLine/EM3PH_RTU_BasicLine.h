@@ -30,7 +30,7 @@ class EM3PH_RTU_BasicLine : public EM3PH_BaseClass{
 
     void updatePreviousValues() override;
 
-    void setSkipVariables();
+    void setSkipVariables() override;
   
 
   private:

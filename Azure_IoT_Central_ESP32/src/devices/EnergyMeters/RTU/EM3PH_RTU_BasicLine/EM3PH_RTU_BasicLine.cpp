@@ -21,10 +21,7 @@
 
 
 
-EM3PH_RTU_BasicLine::EM3PH_RTU_BasicLine(uint8_t modbusId) : EM3PH_BaseClass(modbusId){
-  // for(int i=0; i<NUM_TOTAL_DATA_3PHASE; i++) data[i] = 0.0f;
-  setSkipVariables();
-}
+EM3PH_RTU_BasicLine::EM3PH_RTU_BasicLine(uint8_t modbusId) : EM3PH_BaseClass(modbusId){}
 
 int EM3PH_RTU_BasicLine::begin(){
   RS485.setPins(RS485_TX, RS485_DE, RS485_RE);        //Set Weidos RS485 pins.
@@ -43,8 +40,6 @@ void EM3PH_RTU_BasicLine::stop(){
 }
 
 int EM3PH_RTU_BasicLine::update(){
-  
-
   int response = ModbusRTUClient.requestFrom(modbusId, INPUT_REGISTERS, REG_ADDRESS_BATCH_1, NUM_REGISTERS_BATCH_1);    
   if(response != NUM_REGISTERS_BATCH_1)
   {
@@ -229,7 +224,6 @@ float EM3PH_RTU_BasicLine::getNextData(){
 
 
 void EM3PH_RTU_BasicLine::updatePreviousValues(){
-  Serial.println("Override method!");
   prevRealEnergyAdjustedL1 = realEnergyL1;
   prevRealEnergyAdjustedL2 = realEnergyL2;
   prevRealEnergyAdjustedL3 = realEnergyL3;
@@ -250,12 +244,9 @@ void EM3PH_RTU_BasicLine::updatePreviousValues(){
 
 
 void EM3PH_RTU_BasicLine::setSkipVariables(){
-    Serial.println("[EM3PH_RTU_BasicLine] setSkipVariables();");
     realEnergyConsTotal = SKIP_DATA_VALUE;
     realEnergyDelivTotal = SKIP_DATA_VALUE;
     currentTotal = SKIP_DATA_VALUE;
     
-    Serial.print("currentTotal: ");
-    Serial.println(currentTotal);
     return;
 }

@@ -6,13 +6,16 @@
 #include "../../collections/DataHubCollection/DataHubCollection.h"
 
 
+ WeidosManager::WeidosManager(int deviceId) :  deviceId(deviceId){
+  weidos = new WeidosESP32Class;
+ }
 
 WeidosState WeidosManager::loop(){
     switch(state){
       case WEIDOS_IDLE:
         break;
       case WEIDOS_GET_DATA:
-        weidosMetadata_t metadata = weidos.getMetadata();
+        weidosMetadata_t metadata = weidos->getMetadata();
         WeidosManagerData_t msg;
         msg.deviceId = deviceId;
         msg.payload = metadata;

@@ -1,11 +1,14 @@
 #include "DeviceCollection.h"
 #include "../../classes/PersistentData/PersistentDataClass.h"
+#include "../../globalDefinitions/globalConfiguration.h"
 
-
+// static EthernetClient ethernetClientModbus(7);
+// static ModbusTCPClient modbusTCPClient(ethernetClientModbus);
 
 DeviceCollectionClass::DeviceCollectionClass(){
-    weidosManager = nullptr;
+    // weidosManager = nullptr;
     for(int i=0; i<MAX_ALLOWED_DEVICES; i++){
+        weidosManagerPool[i] = nullptr;
         EM1PHPool[i] = nullptr;
         EM3PHPool[i] = nullptr;
         PulseMeterPool[i] = nullptr;
@@ -18,11 +21,101 @@ DeviceCollectionClass::DeviceCollectionClass(){
 
 void DeviceCollectionClass::init(){
     PersistentDataModule.getDeviceConfiguration(deviceList, MAX_ALLOWED_DEVICES);
+    // deviceList[0] = 
     // createDeviceObjects();
     return;
 }
 
 
+
+void DeviceCollectionClass::createDevices(){
+    for(int i = 0; i<MAX_ALLOWED_DEVICES; i++){
+        createDevice(i);
+    }
+};
+
+
+
+void DeviceCollectionClass::createDevice(uint8_t slot){
+    uint8_t deviceType = deviceList[slot];
+    int ctPrimary = PersistentDataModule.getCTPrimary(slot);
+    int ctSecondary = PersistentDataModule.getCTSecondary(slot);
+
+
+    if(deviceType == EM110_DEVICE_TYPE){
+        Serial.println("[createDevice] EM110Manager");
+        int ctPrimary = 0;
+        int ctSecondary = 0;
+        if(PersistentDataModule.isCTPrimarySet(slot)) PersistentDataModule.getCTPrimary(slot);
+        if(PersistentDataModule.isCTSecondarySet(slot)) PersistentDataModule.getCTSecondary(slot);
+        Serial.print("CT Primary: ");
+        Serial.println(ctPrimary);
+
+        Serial.print("CT Secondary: ");
+        Serial.println(ctSecondary);
+        EM1PHPool[slot] = new EM110Manager(slot, ctPrimary, ctSecondary);
+    }
+
+    if(deviceType == EM111_DEVICE_TYPE){
+        Serial.println("[createDevice] EM111Manager");
+        EM1PHPool[slot] = new EM111Manager(slot);
+
+    }
+
+    if(deviceType == EM120_DEVICE_TYPE){//
+        Serial.println("[createDevice] EM120Manager");
+        Serial.print("CT Primary: ");
+        Serial.println(ctPrimary);
+
+        Serial.print("CT Secondary: ");
+        Serial.println(ctSecondary);
+        EM3PHPool[slot] = new EM120Manager(slot, ctPrimary, ctSecondary);
+
+    }
+
+    if(deviceType == EM122_DEVICE_TYPE){
+        Serial.println("[createDevice] EM122Manager");
+        EM3PHPool[slot] = new EM122Manager(slot);
+
+    }
+
+    if(deviceType == EM220_DEVICE_TYPE){
+        Serial.println("[createDevice] EM220Manager");
+        EM3PHPool[slot] = new EM220Manager(slot);
+
+    }
+
+    if(deviceType == EM750_DEVICE_TYPE){
+        Serial.println("[createDevice] EM750Manager");
+        IPAddress ip;
+        if(!PersistentDataModule.isIpAddressSet(slot)) return;
+        ip = PersistentDataModule.getIpAddress(slot);
+        EM3PHPool[slot] = new EM750Manager(modbusTCPClient, ip, slot);
+    }
+
+    if(deviceType == EA750_DEVICE_TYPE){
+        Serial.println("[createDevice] EA750Manager");
+        IPAddress ip;
+        if(!PersistentDataModule.isIpAddressSet(slot)) return;
+        ip = PersistentDataModule.getIpAddress(slot);
+        EM3PHPool[slot] = new EA750Manager(modbusTCPClient, ip, slot);
+
+    }
+
+    if(deviceType == FLOW_METER_DEVICE_TYPE){
+
+    }
+    
+    if(deviceType == PULSE_METER_DEVICE_TYPE){
+
+    }
+
+    if(deviceType == WEIDOS_ESP32){
+        Serial.println("[createDevice] Weidos ESP32");
+        weidosManagerPool[slot] = new WeidosManager(slot);
+    }
+
+};
 
 // void DeviceCollectionClass::setDevice(String& deviceType, uint8_t slot){
 //     //DeviceType deviceType;
@@ -74,6 +167,7 @@ char* DeviceCollectionClass::getDeviceName(uint8_t slot){
     if(deviceType == 7) return "EA750";
     if(deviceType == 8) return "Pulse Meter";
     if(deviceType == 9) return "Analog Meter";
+    if(deviceType == 10) return "Weidos ESP32";
     return "None";
 }
 
@@ -100,10 +194,10 @@ void DeviceCollectionClass::loopDevices(){
 
 
 void DeviceCollectionClass::loopDevicesNoNetwork(){
-    if(weidosManager) weidosManager->loop();
+    // if(weidosManager) weidosManager->loop();
 
     for(int i=0; i<MAX_ALLOWED_DEVICES; i++){
-        
+        if(weidosManagerPool[i]) weidosManagerPool[i]->loop();
 
         if(EM1PHPool[i]){
             if(EM1PHPool[i]->loop() != ENERGY_METER_IDLE) return;
@@ -122,19 +216,25 @@ void DeviceCollectionClass::loopDevicesNoNetwork(){
 
 
 bool DeviceCollectionClass::triggerUpdate(uint8_t slot){
-    if(slot == 0) {
-        if(weidosManager) weidosManager->triggerUpdate();
+    // if(slot == 0) {
+    //     if(weidosManager) weidosManager->triggerUpdate();
+    //     return true;
+    // }
+
+    if(weidosManagerPool[slot]){
+        // Serial.println("Let's trigger Weidos ESP32");
+        weidosManagerPool[slot]->triggerUpdate();
         return true;
     }
 
     if(EM1PHPool[slot]){
-        Serial.println("Let's trigger EM1PH");
+        // Serial.println("Let's trigger EM1PH");
         EM1PHPool[slot]->triggerUpdate();
         return true;
     }
 
     if(EM3PHPool[slot]){
-        Serial.println("Let's trigger EM3PH");
+        // Serial.println("Let's trigger EM3PH");
         EM3PHPool[slot]->triggerUpdate();
         return true;
     }
@@ -179,8 +279,21 @@ void DeviceCollectionClass::initFlowMeters(){
 }
 
 
+void DeviceCollectionClass::setDevice(int deviceType, uint8_t slot){
+    deviceList[slot] = deviceType;
+    PersistentDataModule.saveDeviceType(deviceType, slot);
+}
+
 void DeviceCollectionClass::setDevice(WeidosManager& weidos){ 
-    weidosManager = &weidos;
+    // weidosManager = &weidos;
+    int slot = weidos.getDeviceId();
+    weidosManagerPool[slot] = &weidos;
+}
+
+void DeviceCollectionClass::setDevice(WeidosManager* weidos){ 
+    // weidosManager = weidos;
+    int slot = weidos->getDeviceId();
+    weidosManagerPool[slot] = weidos;
 }
 
 

@@ -139,8 +139,16 @@ void DataHub<T,N>::loop(){
                 break;
             }
 
-            if(!generatePayload2) Serial.println("PayloadGenerator 2 is not set hehehhee");
-            else{
+            // if(!generatePayload2) Serial.println("PayloadGenerator 2 is not set hehehhee");
+            // else{
+            //     generatePayload2(payload_buffer, AZ_IOT_DATA_BUFFER_SIZE, &payload_buffer_length, currentPayload);
+            //     error = azureDevice->sendMessage(az_span_create(payload_buffer, payload_buffer_length));
+            //     if(error){
+            //         state = TELEMETRY_SEND_FAILURE;
+            //         break;
+            //     }
+            // }
+            if(generatePayload2){
                 generatePayload2(payload_buffer, AZ_IOT_DATA_BUFFER_SIZE, &payload_buffer_length, currentPayload);
                 error = azureDevice->sendMessage(az_span_create(payload_buffer, payload_buffer_length));
                 if(error){
@@ -148,7 +156,6 @@ void DataHub<T,N>::loop(){
                     break;
                 }
             }
-            
             
             state = TELEMETRY_SENT;
             break;
@@ -175,7 +182,6 @@ void DataHub<T,N>::loop(){
             break;
 
         default:
-            Serial.println("[DataHub] 3");
             state = GET_DATA_FROM_FIFO;
             break;
     }

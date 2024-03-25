@@ -267,13 +267,6 @@ int EA3PH_TCP_ValueLine::update(){
 }
 
 
-// void EA3PH_TCP_ValueLine::validateData(){
-//   for(int i=0; i<NUM_TOTAL_DATA_3PHASE; i++){
-//     if(isnan(data[i])) data[i] = -1;
-//   }
-  
-//   return;
-// }
 
 void EA3PH_TCP_ValueLine::setSkipVariables(){
         phaseCurrentSum = SKIP_DATA_VALUE;

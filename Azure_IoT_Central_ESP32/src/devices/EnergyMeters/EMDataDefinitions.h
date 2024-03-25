@@ -6,6 +6,7 @@
 #define NUM_TOTAL_DATA_3PHASE 60
 #define NUM_TOTAL_DATA_3PHASE 59
 #define NUM_TOTAL_DATA_3PHASE 61
+#define NUM_TOTAL_DATA_3PHASE 63
 
 #define NUM_TOTAL_CONS_DELIV_DATA_1PHASE 4
 #define NUM_TOTAL_CONS_DELIV_DATA_3PHASE 14
@@ -119,13 +120,13 @@ typedef struct em3phData_struct_t{
         float cosPhiL1, cosPhiL2, cosPhiL3;
         float avgVoltageLN, avgCurrentL;
         float realPowerTotal, apparentPowerTotal, reactivePowerTotal, powerFactorTotal;
-        float avgCosPhi, frequency;
-        float apparentEnergyTotal;
+        float cosPhiTotal, frequency;
+        float apparentEnergyTotal;//30
         float voltageL1L2, voltageL2L3, voltageL1L3, avgVoltageLL;
         float currentNeutral;
         float THDVoltsL1N, THDVoltsL2N, THDVoltsL3N, THDVoltsL4N;
         float THDCurrentL1, THDCurrentL2, THDCurrentL3, THDCurrentL4;
-        float avgTHDVoltsLN, avgTHDCurrentL;
+        float avgTHDVoltsLN, avgTHDCurrentL;//45
         float THDVoltsL1L2, THDVoltsL2L3, THDVoltsL1L3, avgTHDVoltsLL;
         float realEnergyTotal, reactiveEnergyTotal;
         float realEnergyL1, realEnergyL2, realEnergyL3;

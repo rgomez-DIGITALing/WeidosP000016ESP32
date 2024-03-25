@@ -130,14 +130,12 @@ int em3ph_valueLine_generete_payload(uint8_t* payload_buffer, size_t payload_buf
   payload_buffer[az_span_size(payload_buffer_span)] = null_terminator;
   *payload_buffer_length = az_span_size(payload_buffer_span);
   
-  Serial.println("Doncs ja estaria!");
-  return RESULT_OK;
-    
+  
+  return RESULT_OK;    
 }
 
 
 int em3ph_basicLine_generete_payload(uint8_t* payload_buffer, size_t payload_buffer_size, size_t* payload_buffer_length, em3phManagerData_t& emData){
-
     az_json_writer jw;
     az_result rc;
     az_span payload_buffer_span = az_span_create(payload_buffer, payload_buffer_size);
@@ -294,6 +292,7 @@ int writeNormalData(az_json_writer& jw, em3phManagerData_t& emData){
 
     for(int i=0; i<NUM_TOTAL_DATA_3PHASE; i++){
         int dataError = isEMDataValid(data[i]);
+        // Serial.println(data[i]);
         if(dataError == SKIP_DATA) continue;
 
         rc = az_json_writer_append_property_name(&jw, az_span_create_from_str(EM3PH_DATA_TELEMETRY_NAMES[i]));
@@ -655,10 +654,6 @@ int writeBasicLineNullValues(az_json_writer& jw, em3phManagerData_t& emData){
 
 
   for(int i=0; i<NUM_TOTAL_DATA_3PHASE; i++){
-    Serial.print("i: ");
-    Serial.print(i);
-    Serial.print("   -   ");
-    Serial.println(data[i]);
     int dataError = isEMDataValid(data[i]);
     if(dataError == SKIP_DATA){
       Serial.print("SKIP DATA: ");

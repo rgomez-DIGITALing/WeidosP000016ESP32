@@ -6,3 +6,4 @@
 void createObjects();
 void configureAzureDevices();
 void setAzureIoTCollectionDevices();
+

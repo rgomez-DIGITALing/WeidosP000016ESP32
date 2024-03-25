@@ -24,7 +24,6 @@ class EM1PH_RTU_BasicLine : public EM1PH_BaseClass{
      */
     int update();
 
-    void validateData();
     
   private:
 

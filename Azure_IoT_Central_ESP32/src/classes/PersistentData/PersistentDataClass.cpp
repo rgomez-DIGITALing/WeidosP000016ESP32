@@ -27,8 +27,6 @@ void PersistentDataClass::saveDeviceConfiguration(uint8_t deviceType, uint8_t sl
 void PersistentDataClass::getDeviceConfiguration(uint8_t* devices, uint8_t numMaxDevices){
     for(int i =0; i<numMaxDevices; i++){
         devices[i] = E2PROM.read(DEVICE_CONFIGURATION_DATA_INDEX + i);
-        Serial.print("Initializing device list from EEPROM: ");
-        Serial.println(devices[i]);
     }
     return;
 }
@@ -84,7 +82,10 @@ bool PersistentDataClass::isConversionSet(int slot){
     return !(bool)conversionFactorNotSet;
 }
 
-
+bool PersistentDataClass::isIpAddressSet(int slot){
+    bool tcpIpNotSet = E2PROM.read(MODBUS_TCP_IP_FLAGS_INDEX + slot);
+    return !(bool)tcpIpNotSet;
+}
 
 bool PersistentDataClass::isDeviceTypeSet(int slot){
     bool deviceTypeNotSet = E2PROM.read(DEVICE_TYPE_SET_FLAGS_INDEX + slot);
@@ -156,10 +157,10 @@ void PersistentDataClass::saveScopeId(String& scopeId){
 }
 
 void PersistentDataClass::saveAzureId(String& azureId, int slot){
-    int index = AZURE_DEVICE_IDS_INDEX + slot*AZURE_DEVICE_ID_SIZE;
-    char _azureId[AZURE_DEVICE_ID_SIZE];
-    azureId.toCharArray(_azureId, AZURE_DEVICE_ID_SIZE);
-    for(int i=0; i<AZURE_DEVICE_ID_SIZE; i++){
+    int index = AZURE_DEVICE_IDS_INDEX + slot*AZURE_ID_SIZE;
+    char _azureId[AZURE_ID_SIZE];
+    azureId.toCharArray(_azureId, AZURE_ID_SIZE);
+    for(int i=0; i<AZURE_ID_SIZE; i++){
         E2PROM.write(index+i ,_azureId[i]);
     }
     E2PROM.write(AZURE_DEVICE_ID_SET_FLAGS_INDEX + slot, 0);
@@ -219,29 +220,45 @@ void PersistentDataClass::saveDeviceType(uint8_t deviceType, int slot){
     return;
 }
 
+void PersistentDataClass::saveIpAddress(String& ipAddressString, int slot){
+    int index = MODBUS_TCP_IPS_INDEX + slot*IP_ADDRESS_SIZE;
+    IPAddress ip;
+    ip.fromString(ipAddressString);
+    E2PROM.put(index, ip);
+
+    index = MODBUS_TCP_IP_FLAGS_INDEX + slot*FLAG_SIZE;
+    E2PROM.write(index, 0);
+    return;
+}
 
 
 
 
 
 void PersistentDataClass::getScopeId(ScopeId scopeId){
+    // if(!isScopeIdSet()){
+    //     scopeId[0] = 'a';
+    //     scopeId[1] = '\0';
+    //     Serial.println("It is not set veus? Hhahahahah");
+    //     return;
+    // }
 
     for(int i = 0; i<AZURE_SCOPE_ID_SIZE; i++){
         char c = E2PROM.read(SCOPE_ID_INDEX + i);
         scopeId[i] = c;
-        Serial.print(c);
+        // Serial.print(c);
     }
 
     return;
 }
 
 void PersistentDataClass::getAzureId(AzureDeviceId azureId, int slot){
-    int index = AZURE_DEVICE_IDS_INDEX + slot*AZURE_DEVICE_ID_SIZE;
+    int index = AZURE_DEVICE_IDS_INDEX + slot*AZURE_ID_SIZE;
     //E2PROM.get(index, deviceId);
-    for(int i = 0; i<AZURE_DEVICE_ID_SIZE; i++){
+    for(int i = 0; i<AZURE_ID_SIZE; i++){
         char c = E2PROM.read(index + i);
         azureId[i] = c;
-        Serial.print(c);
+        // Serial.print(c);
     }
 
     return;
@@ -253,7 +270,7 @@ void PersistentDataClass::getSasKey(AzureSASKey sasKey, int slot){
     for(int i = 0; i<AZURE_SAS_KEY_SIZE; i++){
         char c = E2PROM.read(index + i);
         sasKey[i] = c;
-        Serial.print(c);
+        // Serial.print(c);
     }
 
     return;
@@ -291,5 +308,12 @@ float PersistentDataClass::getConversionFactor(int slot){
 }
 
 
+IPAddress PersistentDataClass::getIpAddress(int slot){
+    int index = MODBUS_TCP_IPS_INDEX + slot*IP_ADDRESS_SIZE;
+    IPAddress ip;
+    E2PROM.get(index, ip);
+
+    return ip;
+}
 
 PersistentDataClass PersistentDataModule;

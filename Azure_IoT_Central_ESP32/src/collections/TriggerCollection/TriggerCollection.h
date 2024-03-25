@@ -7,6 +7,7 @@
 class TriggerCollectionClass{
     public:
         void init();
+        void configure();
         void loop(bool connectionUp);
         void setTrigger(TriggerClass& trigger);
         void setTrigger(TriggerClass* trigger);
