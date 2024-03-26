@@ -19,7 +19,6 @@
 #include <Arduino.h>
 
 
-AsyncWebServer server(80);
 //SSID and password for the Access Point generated WiFi for user configuration inputs.
 static const IPAddress AP_IP(192, 168, 6, 1);
 static const IPAddress AP_MASK(255, 255, 255, 0);
@@ -187,198 +186,15 @@ bool isValid = true;
 void WebServerClass::setServer()
 {
   //* Set each endpoint and its callback function---
-
-    server.on("/wifi", HTTP_GET, [](AsyncWebServerRequest *request)
+    AsyncWebServer* server = new AsyncWebServer(80);
+    
+    server->on("/wifi", HTTP_GET, [](AsyncWebServerRequest *request)
     {
       request->send_P(200, "text/html", wifiForm, wifiProcessor);
     });
 
 
-
-    // server.on("/wifi", HTTP_POST, [](AsyncWebServerRequest *request)
-    // {
-    //   int params = request->params();
-    //   Serial.print("Number of parameters: ");
-    //   Serial.println(params);
-
-    //   if(params == 2){
-    //     String ssid = request->getParam(0)->value();
-    //     Serial.print("SSID: ");
-    //     Serial.println(ssid);
-
-    //     if(isValid){
-    //       PersistentDataModule.setWiFiSSID(ssid);
-    //     }
-
-    //     String password = request->getParam(1)->value();
-    //     Serial.print("Password: ");
-    //     Serial.println(password);
-
-    //     if(isValid){
-    //       PersistentDataModule.setWiFiPass(password);
-    //     }
-    //   }
-
-    //   request->send_P(200, "text/html", "WiFi Posted!");
-    // });
-
-
-
-    // server.on("/azure", HTTP_GET, [](AsyncWebServerRequest *request)
-    // {
-    //   request->send_P(200, "text/html", azureForm, azureProcessor);
-    // });
-
-
-
-    // server.on("/azure", HTTP_POST, [](AsyncWebServerRequest *request)
-    // {
-    //   int params = request->params();
-    //   Serial.print("Number of parameters: ");
-    //   Serial.println(params);
-
-    //   int i = 0;
-
-    //   if(params == 18){
-    //     //Serial.println("18");
-        
-    //     String userInput = request->getParam(i++)->value();
-    //     AzureDeviceCollection.setDeviceId(userInput, 0);
-    //     userInput = request->getParam(i++)->value();
-    //     AzureDeviceCollection.setDeviceSasKey(userInput, 0);
-
-    //     userInput = request->getParam(i++)->value();
-    //     AzureDeviceCollection.setDeviceId(userInput, 1);
-    //     userInput = request->getParam(i++)->value();
-    //     AzureDeviceCollection.setDeviceSasKey(userInput, 1);
-
-    //     userInput = request->getParam(i++)->value();
-    //     AzureDeviceCollection.setDeviceId(userInput, 2);
-    //     userInput = request->getParam(i++)->value();
-    //     AzureDeviceCollection.setDeviceSasKey(userInput, 2);
-
-    //     userInput = request->getParam(i++)->value();
-    //     AzureDeviceCollection.setDeviceId(userInput, 3);
-    //     userInput = request->getParam(i++)->value();
-    //     AzureDeviceCollection.setDeviceSasKey(userInput, 3);
- 
-    //     userInput = request->getParam(i++)->value();
-    //     AzureDeviceCollection.setDeviceId(userInput, 4);
-    //     userInput = request->getParam(i++)->value();
-    //     AzureDeviceCollection.setDeviceSasKey(userInput, 4);
-
-    //     userInput = request->getParam(i++)->value();
-    //     AzureDeviceCollection.setDeviceId(userInput, 5);
-    //     userInput = request->getParam(i++)->value();
-    //     AzureDeviceCollection.setDeviceSasKey(userInput, 5);
-
-
-
-    //     userInput = request->getParam(i++)->value();    //Device name
-        
-    //     userInput = request->getParam(i++)->value();
-    //     AzureDeviceCollection.setScopeId(userInput);
-    //   }
-      
-
-    //   request->send_P(200, "text/html", "Azure parameters Posted!");
-    // });
-
-
-
-    // server.on("/energy-meters", HTTP_GET, [](AsyncWebServerRequest *request)
-    // {
-    //   request->send_P(200, "text/html", energyMetersForm, peripheralsProcessor);
-    // });
-
-
-
-    // server.on("/energy-meters", HTTP_POST, [](AsyncWebServerRequest *request)
-    // {
-    //   int params = request->params();
-    //   Serial.print("Number of parameters: ");
-    //   Serial.println(params);
-
-    //   if(params == 15){
-    //     String EM0 = request->getParam(0)->value();
-    //     DeviceCollection.setDevice(EM0, 0);
-    //     String CT0Primary = request->getParam(1)->value();
-    //     String CT0Secondary = request->getParam(2)->value();
-    //     PersistentDataModule.saveConversionFactor(CT0Primary.toInt(), 0, true);
-    //     PersistentDataModule.saveConversionFactor(CT0Secondary.toInt(), 0, false);
-
-    //     String EM1 = request->getParam(3)->value();
-    //     DeviceCollection.setDevice(EM1, 1);
-    //     String CT1Primary = request->getParam(4)->value();
-    //     String CT1Secondary = request->getParam(5)->value();
-    //     PersistentDataModule.saveConversionFactor(CT1Primary.toInt(), 1, true);
-    //     PersistentDataModule.saveConversionFactor(CT1Secondary.toInt(), 1, false);
-
-    //     String EM2 = request->getParam(6)->value();
-    //     DeviceCollection.setDevice(EM2, 2);
-    //     String CT2Primary = request->getParam(7)->value();
-    //     String CT2Secondary = request->getParam(8)->value();
-    //     PersistentDataModule.saveConversionFactor(CT2Primary.toInt(), 2, true);
-    //     PersistentDataModule.saveConversionFactor(CT2Secondary.toInt(), 2, false);
-
-
-    //     String EM3 = request->getParam(9)->value();
-    //     DeviceCollection.setDevice(EM3, 3);
-    //     String CT3Primary = request->getParam(10)->value();
-    //     String CT3Secondary = request->getParam(11)->value();
-    //     PersistentDataModule.saveConversionFactor(CT3Primary.toInt(), 3, true);
-    //     PersistentDataModule.saveConversionFactor(CT3Secondary.toInt(), 3, false);
-
-
-    //     String EM4 = request->getParam(12)->value();
-    //     DeviceCollection.setDevice(EM4, 4);
-    //     String CT4Primary = request->getParam(13)->value();
-    //     String CT4Secondary = request->getParam(14)->value();
-    //     PersistentDataModule.saveConversionFactor(CT4Primary.toInt(), 4, true);
-    //     PersistentDataModule.saveConversionFactor(CT4Secondary.toInt(), 4, false);
-    //   }
-      
-    //   request->send_P(200, "text/html", "Energy Meters posted!");
-    // });
-
-
-    // server.on("/flow-meters", HTTP_GET, [](AsyncWebServerRequest *request)
-    // {
-    //   request->send_P(200, "text/html", "Flow Meters!");
-    // });
-
-
-
-    // server.on("/flow-meters", HTTP_POST, [](AsyncWebServerRequest *request)
-    // {      
-    //   request->send_P(200, "text/html", "Flow Meters posted!");
-    // });
-
-
-    // server.on("/pulse-meters", HTTP_GET, [](AsyncWebServerRequest *request)
-    // {
-    //   request->send_P(200, "text/html", "Pulse Meters!");
-    // });
-
-
-
-    // server.on("/pulse-meters", HTTP_POST, [](AsyncWebServerRequest *request)
-    // {      
-    //   request->send_P(200, "text/html", "Pulse Meters posted!");
-    // });
-
-
-    // server.onNotFound([](AsyncWebServerRequest *request)
-    // {
-    //   request->send(404, "text/html", homePage);
-    // });
-
-
-
-
-
-
-  server.on("/devices", HTTP_GET, [](AsyncWebServerRequest *request)
+  server->on("/devices", HTTP_GET, [](AsyncWebServerRequest *request)
     {
       AsyncResponseStream *response = request->beginResponseStream("text/html");
       sendDevicesPage(response);
@@ -387,7 +203,7 @@ void WebServerClass::setServer()
     });
 
   
-  server.on("/deviceForm", HTTP_GET, [](AsyncWebServerRequest *request)
+  server->on("/deviceForm", HTTP_GET, [](AsyncWebServerRequest *request)
     {
       AsyncResponseStream *response = request->beginResponseStream("text/html");
       
@@ -403,21 +219,17 @@ void WebServerClass::setServer()
 
 
     //server.on("/deviceForm", HTTP_GET, onDevicePost);
-    server.on("/deviceForm", HTTP_POST, onDevicePost);
+    server->on("/deviceForm", HTTP_POST, onDevicePost);
  
 
 
-  server.on("/", HTTP_GET, [](AsyncWebServerRequest *request)
+  server->on("/", HTTP_GET, [](AsyncWebServerRequest *request)
     {
       request->send_P(200, "text/html", homePage);
     });
 
-  server.begin();
+  server->begin();
 }
-
-
-
-
 
 
 WebServerClass WebServer;

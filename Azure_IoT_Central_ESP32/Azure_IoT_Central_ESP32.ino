@@ -111,11 +111,11 @@ void setup()
   // setDataHubCollection();   //No Web Sever
   // setDataHubsPayloadGenerators();   //No Web Sever
 
-  // if(digitalRead(DI_7)){
-  //   WebServer.setAP();
-  //   WebServer.setServer();
-  //   while(1){}
-  // }
+  if(digitalRead(DI_7)){
+    WebServer.setAP();
+    WebServer.setServer();
+    while(1){}
+  }
 
 
   AzureIoTCollection.createObjects(); //Web Server Only. This function must be called after WebSever objecte for memory reasons.
