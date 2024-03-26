@@ -49,15 +49,22 @@ bool PulseMeter::begin(){
 void PulseMeter::loop(){
     if(saveInSD){
         if(!SDFolderManager.createPulseMeterFolder()){
-            //Serial.println("Could not create folder.");
             return;
         } 
         
         char* filePath = SDFolderManager.setPulseMeterFilePath(deviceId);
-        //Serial.print("Lets save PulseMeter data in file: ");
-        //Serial.println(filePath);
         bool stored = SDDataStorage.put(filePath, totalCounter);
-        if(stored) saveInSD = false;
+        if(stored){
+            saveTries = 0;
+            saveInSD = false;
+        }else{
+            saveTries++;
+        }
+
+        if(saveTries == maxSaveTries){
+            saveTries = 0;
+            saveInSD = false;
+        }
     }
 }
 
@@ -69,20 +76,7 @@ void PulseMeter::getData(flowMeterData_t& payload){
     payload.t0 = t0;
     payload.tf = tf;
     payload.error = error;
-
     
-    // Serial.print("totalConsumption: ");
-    // Serial.println(totalConsumption);
-    // Serial.print("periodConsumption: ");
-    // Serial.println(periodConsumption);
-    // Serial.print("averageFlow: ");
-    // Serial.println(averageFlow);
-    // Serial.print("t0: ");
-    // Serial.println(t0);
-    // Serial.print("tf: ");
-    // Serial.println(tf);
-    // Serial.print("error: ");
-    // Serial.println(error);
     return;
 }
 

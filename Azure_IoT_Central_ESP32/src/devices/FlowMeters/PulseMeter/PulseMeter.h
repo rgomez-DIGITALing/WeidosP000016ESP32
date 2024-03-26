@@ -38,6 +38,8 @@ class PulseMeter{
         unsigned long _t0;
         unsigned long _tf;
         volatile bool saveInSD = false;
+        uint8_t saveTries = 0;
+        uint8_t maxSaveTries = 5;
 
         flowMeterInitError_t initError;
         flowMeterError_t error;

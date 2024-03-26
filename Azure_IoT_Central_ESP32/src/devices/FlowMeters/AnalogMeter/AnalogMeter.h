@@ -24,6 +24,8 @@ class AnalogMeter{
         int _invalidMeasures;
         bool begun;
         bool saveInSD = false;
+        uint8_t saveTries = 0;
+        uint8_t maxSaveTries = 5;
 
         float convertionFactor;
         float _averageFlow;

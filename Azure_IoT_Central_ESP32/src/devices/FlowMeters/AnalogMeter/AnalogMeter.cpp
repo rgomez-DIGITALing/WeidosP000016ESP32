@@ -54,11 +54,24 @@ void AnalogMeter::loop(){
 
 
     if(saveInSD){
+        if(!SDFolderManager.createAnalogMeterFolder()){
+            return;
+        } 
+
         char* filePath = SDFolderManager.setAnalogMeterFilePath(deviceId);
-        Serial.print("Lets save AnalogeMeter data in file: ");
-        Serial.println(filePath);
         bool stored = SDDataStorage.put(filePath, totalConsumption);
-        if(stored) saveInSD = false;
+
+        if(stored){
+            saveTries = 0;
+            saveInSD = false;
+        }else{
+            saveTries++;
+        }
+
+        if(saveTries == maxSaveTries){
+            saveTries = 0;
+            saveInSD = false;
+        }
     }
 
     return;
