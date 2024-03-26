@@ -34,8 +34,7 @@ class DeviceCollectionClass{
         // String getEnergyMeterName(uint8_t slot);
 
         bool triggerUpdate(uint8_t slot);
-        void loopDevices();
-        void loopDevicesNoNetwork();
+        void loop();
         void sendDevicesProperties();
         void initFlowMeters();
 

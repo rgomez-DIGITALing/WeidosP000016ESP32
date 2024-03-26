@@ -179,24 +179,8 @@ bool DeviceCollectionClass::isEnergyMeter(uint8_t slot){
 }
 
 
-void DeviceCollectionClass::loopDevices(){
-    // for(int i=0; i<MAX_ALLOWED_DEVICES; i++){
-    //     if(EM750Pool[i]){
-    //         if(EM750Pool[i]->loop() != ENERGY_METER_IDLE) return;
-    //     }
 
-    //     if(EA750Pool[i]){
-    //         if(EA750Pool[i]->loop() != ENERGY_METER_IDLE) return;
-    //     }
-    // }
-
-    return;
-}
-
-
-void DeviceCollectionClass::loopDevicesNoNetwork(){
-    // if(weidosManager) weidosManager->loop();
-
+void DeviceCollectionClass::loop(){
     for(int i=0; i<MAX_ALLOWED_DEVICES; i++){
         if(weidosManagerPool[i]) weidosManagerPool[i]->loop();
 
@@ -217,25 +201,17 @@ void DeviceCollectionClass::loopDevicesNoNetwork(){
 
 
 bool DeviceCollectionClass::triggerUpdate(uint8_t slot){
-    // if(slot == 0) {
-    //     if(weidosManager) weidosManager->triggerUpdate();
-    //     return true;
-    // }
-
     if(weidosManagerPool[slot]){
-        // Serial.println("Let's trigger Weidos ESP32");
         weidosManagerPool[slot]->triggerUpdate();
         return true;
     }
 
     if(EM1PHPool[slot]){
-        // Serial.println("Let's trigger EM1PH");
         EM1PHPool[slot]->triggerUpdate();
         return true;
     }
 
     if(EM3PHPool[slot]){
-        // Serial.println("Let's trigger EM3PH");
         EM3PHPool[slot]->triggerUpdate();
         return true;
     }

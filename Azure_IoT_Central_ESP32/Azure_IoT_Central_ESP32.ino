@@ -164,13 +164,11 @@ void loop()
 
   if(clockRunning){
     TriggerCollection.loop(networkUp);
-    DeviceCollection.loopDevicesNoNetwork();
+    DeviceCollection.loop();
 
   } 
 
   if(networkUp){
-    // weidosESP32Manager.loop();
-    DeviceCollection.loopDevices();
     AzureIoTCollection.loop();
     DataHubCollection.loop();
     DeviceCollection.sendDevicesProperties();
