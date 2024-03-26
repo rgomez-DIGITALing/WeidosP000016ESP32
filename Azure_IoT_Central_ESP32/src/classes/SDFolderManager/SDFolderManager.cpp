@@ -202,7 +202,7 @@ char* SDFolderManagerClass::setAnalogMeterFilePath(int slot){
     AzureIoTDevice* azureDevice = AzureIoTCollection[slot];
     char* azureId = "invalid";
     if(azureDevice) azureId = azureDevice->getDeviceId();
-    strcat(filePath, azureId);
+    strncat (filePath, azureId, 8);
     strcat(filePath, FILE_EXTENTION);
 
     return filePath;
