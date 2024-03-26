@@ -13,10 +13,12 @@ void setTriggers(){
   TriggerClass* weidosESP32Trigger = new TriggerClass(0);
   TriggerClass* pulseMeterTrigger = new TriggerClass(1);
   TriggerClass* pulseMeter2Trigger = new TriggerClass(2);
+  TriggerClass* analogMeterTrigger = new TriggerClass(3);
 
   TriggerCollection.setTrigger(weidosESP32Trigger);
   TriggerCollection.setTrigger(pulseMeterTrigger);
   TriggerCollection.setTrigger(pulseMeter2Trigger);
+  TriggerCollection.setTrigger(analogMeterTrigger);
   #endif
 
 
@@ -353,9 +355,12 @@ void configureDeviceCollection(){
 
 
   #if defined BATCH_TEST && defined FLOW_METER_TEST
+  PulseMeterManager* pulseMeterManager = new PulseMeterManager(1, DI_6, 1.0f);
+  PulseMeterManager* pulseMeterManager2 = new PulseMeterManager(2, DI_5, 1.0f);
+  AnalogMeterManager* analogMeterManager = new AnalogMeterManager(3, ADI_0, 1.0f);
   DeviceCollection.setDevice(pulseMeterManager);
   DeviceCollection.setDevice(pulseMeterManager2);
-  //DeviceCollection.setDevice(analogMeterManager);
+  DeviceCollection.setDevice(analogMeterManager);
   #endif
 
 

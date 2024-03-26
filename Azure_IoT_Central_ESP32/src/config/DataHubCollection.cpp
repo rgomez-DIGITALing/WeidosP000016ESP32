@@ -36,9 +36,10 @@ DataHub<em3phManagerData_t, RING_BUFFER_SIZE> emDataHub5;
 #if defined BATCH_TEST && defined FLOW_METER_TEST
 DataHub<flowMeterManagerData_t, RING_BUFFER_SIZE> emDataHub1;
 DataHub<flowMeterManagerData_t, RING_BUFFER_SIZE> emDataHub2;
+DataHub<flowMeterManagerData_t, RING_BUFFER_SIZE> emDataHub3;
 
-SDBackupSenderClass<flowMeterManagerData_t> sdBackupSender1(1);
-SDBackupSenderClass<flowMeterManagerData_t> sdBackupSender2(2);
+// SDBackupSenderClass<flowMeterManagerData_t> sdBackupSender1(1);
+// SDBackupSenderClass<flowMeterManagerData_t> sdBackupSender2(2);
 #endif
 
 
@@ -113,8 +114,9 @@ void setDataHubCollection(){
     #if defined BATCH_TEST && defined FLOW_METER_TEST
     DataHubCollection.setDataHub(emDataHub1, 1);
     DataHubCollection.setDataHub(emDataHub2, 2);
-    SDBackupSenderCollection.setBackupSender(sdBackupSender1, 1);
-    SDBackupSenderCollection.setBackupSender(sdBackupSender2, 2);
+    DataHubCollection.setDataHub(emDataHub3, 3);
+    // SDBackupSenderCollection.setBackupSender(sdBackupSender1, 1);
+    // SDBackupSenderCollection.setBackupSender(sdBackupSender2, 2);
     #endif
 
     #if defined BATCH_TEST && defined EM750_TEST
@@ -215,6 +217,7 @@ void setDataHubsPayloadGenerators(){
     #if defined BATCH_TEST && defined FLOW_METER_TEST
     emDataHub1.setPayloadGenerator(flowMeter_generete_payload);
     emDataHub2.setPayloadGenerator(flowMeter_generete_payload);
+    emDataHub3.setPayloadGenerator(flowMeter_generete_payload);
     // sdBackupSender1.setPayloadGenerator(flowMeter_generete_payload);
     // sdBackupSender2.setPayloadGenerator(flowMeter_generete_payload);
     #endif

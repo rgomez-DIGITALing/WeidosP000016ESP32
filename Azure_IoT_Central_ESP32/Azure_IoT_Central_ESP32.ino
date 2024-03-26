@@ -122,7 +122,7 @@ void setup()
   // while(1){}
   // createAzureDataBuffers();   //This must be called after WebServer because it consumes a lot of memory and Web Server wouldn't work.
   // SDBackupSenderCollection.begin();
-  //DeviceCollection.initFlowMeters();
+  DeviceCollection.initFlowMeters();
   esp_task_wdt_init(WDT_TIMEOUT, true); //enable panic so ESP32 restarts
   esp_task_wdt_add(NULL); //add current thread to WDT watch
 
