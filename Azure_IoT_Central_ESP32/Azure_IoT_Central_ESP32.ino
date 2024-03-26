@@ -102,7 +102,6 @@ void setup()
   configureAzureDevices();  //No Web Sever
   setAzureIoTCollectionDevices(); //No Web Sever
   
-  setEnergyMeterProperties(); //No Web Sever
   configureDeviceCollection(); //No Web Sever
   setTriggers();  //No Web Sever
   setDataHubCollection();   //No Web Sever
