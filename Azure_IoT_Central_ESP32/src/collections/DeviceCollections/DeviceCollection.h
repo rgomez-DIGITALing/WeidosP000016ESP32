@@ -53,6 +53,8 @@ class DeviceCollectionClass{
         void setDevice(EM750Manager* em);
         void setDevice(EA750Manager* em);
 
+        void setDevice(PulseMeterManager* pulseMeter);
+        void setDevice(AnalogMeterManager* analogMeter);
         void setDevice(PulseMeterManager& pulseMeter);
         void setDevice(AnalogMeterManager& analogMeter);
 

@@ -361,6 +361,17 @@ void DeviceCollectionClass::setDevice(EA750Manager* em){
 //     EA750Pool[slot] = &em;
 // }
 
+void DeviceCollectionClass::setDevice(PulseMeterManager* pulseMeter){
+    int slot = pulseMeter->getDeviceId();
+    PulseMeterPool[slot] = pulseMeter;
+}
+
+
+void DeviceCollectionClass::setDevice(AnalogMeterManager* analogMeter){
+    int slot = analogMeter->getDeviceId();
+    AnalogMeterPool[slot] = analogMeter;
+}
+
 
 void DeviceCollectionClass::setDevice(PulseMeterManager& pulseMeter){
     int slot = pulseMeter.getDeviceId();
