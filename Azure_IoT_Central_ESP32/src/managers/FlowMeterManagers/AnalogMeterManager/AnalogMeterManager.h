@@ -7,6 +7,7 @@ class AnalogMeterManager{
     public:
         AnalogMeterManager(int deviceId, int interruptPin, float convertionFactor = 2.0f);
         ~AnalogMeterManager();
+        void init(){ analogMeter->init(); }
         void begin(){ analogMeter->begin(); }
         int getDeviceId(){ return deviceId; }
         void triggerUpdate();

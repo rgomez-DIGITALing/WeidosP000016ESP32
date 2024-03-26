@@ -249,7 +249,7 @@ void DeviceCollectionClass::initFlowMeters(){
     for(int i=0; i<MAX_ALLOWED_DEVICES; i++){
         
         if(PulseMeterPool[i]) PulseMeterPool[i]->init();
-        //if(AnalogMeterPool[i]) AnalogMeterPool[i]->init();
+        if(AnalogMeterPool[i]) AnalogMeterPool[i]->init();
     }
 
     return;
