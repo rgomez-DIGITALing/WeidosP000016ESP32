@@ -31,5 +31,6 @@ static const int  AZ_IOT_DATA_BUFFER_SIZE = 3000;
 // #define AZ_IOT_DATA_BUFFER_SIZE 50
 static const int  DATA_BUFFER_SIZE = 3000;
 
+//Clients to be used for all Modbus TCP
 extern EthernetClient ethernetClientModbus;
 extern ModbusTCPClient modbusTCPClient;
