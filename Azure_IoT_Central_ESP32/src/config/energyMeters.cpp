@@ -393,10 +393,10 @@ void configureDeviceCollection(){
   EM120Manager* sai = new EM120Manager(5, 50, 1);
 
   
-  // DeviceCollection.setDevice(barcelona);
-  // DeviceCollection.setDevice(automation);
-  // DeviceCollection.setDevice(parisMilan);
-  // DeviceCollection.setDevice(rack);
+  DeviceCollection.setDevice(barcelona);
+  DeviceCollection.setDevice(automation);
+  DeviceCollection.setDevice(parisMilan);
+  DeviceCollection.setDevice(rack);
   DeviceCollection.setDevice(sai);
   #endif
 
