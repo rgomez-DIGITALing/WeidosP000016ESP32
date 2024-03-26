@@ -5,7 +5,7 @@
 
 static const unsigned long MEASURE_FREQUENCY = 100;
 
-static const float ERROR_VOLTAGE = 1.0f;
+static const float ERROR_VOLTAGE = 2.0f;
 static const float ERROR_VOLTAGE_TOLERANCE = -0.2f;
 
 AnalogMeter::AnalogMeter(int deviceId, int pinNumber, float convertionFactor) : deviceId(deviceId),
