@@ -116,37 +116,23 @@ bool SDFolderManagerClass::clear(char* path){
 
 
 bool SDFolderManagerClass::createPulseMeterFolder(){
-    Serial.println("[createPulseMeterFolder] function");
     strcpy(filePath, INTERNAL_FOLDER);
     if(!createFolder(filePath)){
-        // Serial.print("[createPulseMeterFolder] Could not create folder: ");
-        // Serial.println(filePath);
         clear(filePath);
         return false;
     }
 
     if(directoryExists(filePath) != SUCCESS){
-        // Serial.print("[createPulseMeterFolder] Folder does not exist: ");
-        // Serial.println(filePath);
-        // Serial.println("[createPulseMeterFolder] Lets clear folder");
         clear(filePath);
         return false;
-    }else{
-        // Serial.print(filePath);
-        // Serial.println("[createPulseMeterFolder] exists and is a folder.");
     }
    
     strcat(filePath, PULSE_METER_FOLDER);
     if(!createFolder(filePath)){
-        // Serial.print("[createPulseMeterFolder] Could not create folder: ");
-        // Serial.println(filePath);
         clear(filePath);
         return false;
     }
     if(directoryExists(filePath) != SUCCESS){
-        // Serial.print("[createPulseMeterFolder] Folder does not exist: ");
-        // Serial.println(filePath);
-        // Serial.println("[createPulseMeterFolder] Lets clear folder");
         clear(filePath);
         return false;
     }
