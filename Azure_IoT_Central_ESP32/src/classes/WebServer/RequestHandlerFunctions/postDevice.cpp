@@ -152,6 +152,69 @@ void onDevicePost(AsyncWebServerRequest *request){
     DeviceCollection.setDevice(deviceType, slot);
     // PersistentDataModule.saveDeviceType(deviceType, slot);
 
+
+    // switch (deviceType){
+    //     case NONE_DEVICE_TYPE:
+    //     break;
+    //     case EM110_DEVICE_TYPE:
+    //         err = checkModbusAddress(request);
+    //         if(!err) err = checkCTPrimary(request);
+    //         if(!err) err = checkCTSecondary(request);
+        
+    //     break;
+    //     case EM111_DEVICE_TYPE:
+    //         err = checkModbusAddress(request);
+    //         if(!err) err = checkCTPrimary(request);
+    //         if(!err) err = checkCTSecondary(request);
+         
+    //     break;
+    //     case EM120_DEVICE_TYPE:
+    //         err = checkModbusAddress(request);
+    //         if(!err) err = checkCTPrimary(request);
+    //         if(!err) err = checkCTSecondary(request);
+          
+    //     break;
+    //     case EM122_DEVICE_TYPE:
+    //         err = checkModbusAddress(request);
+    //         if(!err) err = checkCTPrimary(request);
+    //         if(!err) err = checkCTSecondary(request);
+        
+    //     break;
+    //     case EM220_DEVICE_TYPE:
+    //         err = checkModbusAddress(request);
+    //         if(!err) err = checkCTPrimary(request);
+    //         if(!err) err = checkCTSecondary(request);
+           
+    //     break;
+    //     case EM750_DEVICE_TYPE:
+    //         err = checkModbusAddress(request);
+    //         if(!err) err = checkCTPrimary(request);
+    //         if(!err) err = checkCTSecondary(request);
+        
+    //     break;
+    //     case EA750_DEVICE_TYPE:
+    //         err = checkModbusAddress(request);
+    //         if(!err) err = checkCTPrimary(request);
+    //         if(!err) err = checkCTSecondary(request);
+        
+    //     break;
+    //     case FLOW_METER_DEVICE_TYPE:
+    //         err = checkConversionFactor(request);
+    //         // if(!err) err = checkPin(request);
+            
+       
+    //     break;
+    //     case PULSE_METER_DEVICE_TYPE:
+    //         err = checkConversionFactor(request);
+    //         // if(!err) err = checkPin(request);
+    //     break;
+    //     case WEIDOS_ESP32:
+    //         // err = checkConversionFactor(request);
+    //         // if(!err) err = checkPin(request);
+    //     break;
+    // }
+
+
     //Modbus Address
     String modbusAddressString = request->getParam(PARAMETER_MODBUS_ADDRESS, true)->value();
     int modbusAddress = modbusAddressString.toInt();

@@ -91,35 +91,34 @@ void setup()
   AzureIoTCollection.init();
   TriggerCollection.init();
   // SDBackupSenderCollection.init();
-  
+
+  #ifdef USING_WEB_SERVER  
   DeviceCollection.createDevices(); //Web Server Only
   AzureIoTCollection.configure(); //Web Server Only
+  #endif 
+
+  #ifndef USING_WEB_SERVER
+  createObjects();      //No Web Sever
+  configureAzureDevices();  //No Web Sever
+  setAzureIoTCollectionDevices(); //No Web Sever
   
-  // while(1){}
+  setEnergyMeterProperties(); //No Web Sever
+  configureDeviceCollection(); //No Web Sever
+  setTriggers();  //No Web Sever
+  setDataHubCollection();   //No Web Sever
+  setDataHubsPayloadGenerators();   //No Web Sever
+  #endif
 
-  // WebServer.setAP();
-  // WebServer.setServer();
-  // while(1){}
-
-  // createObjects();      //No Web Sever
-  // configureAzureDevices();  //No Web Sever
-  // setAzureIoTCollectionDevices(); //No Web Sever
-  
-  // setEnergyMeterProperties(); //No Web Sever
-  // // configureDeviceCollection(); //No Web Sever
-  // setTriggers();  //No Web Sever
-  // setDataHubCollection();   //No Web Sever
-  // setDataHubsPayloadGenerators();   //No Web Sever
-
+  #ifdef USING_WEB_SERVER
   if(digitalRead(DI_7)){
     WebServer.setAP();
     WebServer.setServer();
     while(1){}
   }
 
-
   AzureIoTCollection.createObjects(); //Web Server Only. This function must be called after WebSever objecte for memory reasons.
   SystemConfigurator.configure();     //Web Server Only
+  #endif
 
   // while(1){}
   // createAzureDataBuffers();   //This must be called after WebServer because it consumes a lot of memory and Web Server wouldn't work.
@@ -158,30 +157,26 @@ void loop()
   networkUp = EthernetModule.isNetworkUp();
   systemClock.loop(networkUp);
   clockRunning = systemClock.clockRunning();
-  // Serial.println("1");
+
   if(!networkUp){
     AzureIoTCollection.stop();
   }
-  // Serial.println("2");
+
   if(clockRunning){
     TriggerCollection.loop(networkUp);
     DeviceCollection.loopDevicesNoNetwork();
 
   } 
-  // Serial.println("3");
+
   if(networkUp){
     // weidosESP32Manager.loop();
-    // Serial.println("3.1");
     DeviceCollection.loopDevices();
-    // Serial.println("3.2");
     AzureIoTCollection.loop();
-    // Serial.println("3.3");
     DataHubCollection.loop();
-    // Serial.println("3.4");
     DeviceCollection.sendDevicesProperties();
     // SDBackupSenderCollection.loop();
   }
-  // Serial.println("4");
+
 
 
   if(millis()-prevTime>DELTA_TIME){

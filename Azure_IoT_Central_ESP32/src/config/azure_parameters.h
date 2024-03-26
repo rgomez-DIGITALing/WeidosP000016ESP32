@@ -13,9 +13,9 @@
 
 // #define DEMO_COMERCIALES
 
-// #define BATCH_TEST
+#define BATCH_TEST
 // #define FLOW_METER_TEST
-// #define EM750_TEST
+#define EM750_TEST
 // #define RTU_TEST
 // #define HANDOVER_TEST
 

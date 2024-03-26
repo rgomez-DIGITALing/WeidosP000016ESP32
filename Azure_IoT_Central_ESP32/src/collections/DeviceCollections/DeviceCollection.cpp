@@ -35,7 +35,7 @@ void DeviceCollectionClass::createDevices(){
 };
 
 
-
+#ifdef USING_WEB_SERVER
 void DeviceCollectionClass::createDevice(uint8_t slot){
     uint8_t deviceType = deviceList[slot];
     int ctPrimary = PersistentDataModule.getCTPrimary(slot);
@@ -116,6 +116,7 @@ void DeviceCollectionClass::createDevice(uint8_t slot){
     }
 
 };
+#endif
 
 // void DeviceCollectionClass::setDevice(String& deviceType, uint8_t slot){
 //     //DeviceType deviceType;

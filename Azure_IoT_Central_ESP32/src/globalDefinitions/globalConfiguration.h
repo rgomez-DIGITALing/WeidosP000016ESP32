@@ -17,6 +17,7 @@ enum DeviceType{
     WEIDOS_ESP32
 };
 
+// #define USING_WEB_SERVER //Comment this flag if configuration is not made via Web Server but with /config files
 
 static const uint8_t MAX_DEVICE_TYPE = WEIDOS_ESP32;
 
@@ -31,6 +32,8 @@ static const int  AZ_IOT_DATA_BUFFER_SIZE = 3000;
 // #define AZ_IOT_DATA_BUFFER_SIZE 50
 static const int  DATA_BUFFER_SIZE = 3000;
 
+#ifdef USING_WEB_SERVER
 //Clients to be used for all Modbus TCP
 extern EthernetClient ethernetClientModbus;
 extern ModbusTCPClient modbusTCPClient;
+#endif

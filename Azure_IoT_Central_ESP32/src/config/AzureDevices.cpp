@@ -7,6 +7,9 @@
 #include "../collections/AzureIoTCollection/AzureIoTCollection.h"
 #include "../globalDefinitions/globalConfiguration.h"
 
+
+#ifndef USING_WEB_SERVER
+
 EthernetClient ethernetClient0(1);
 EthernetClient ethernetClient1(2);
 EthernetClient ethernetClient2(3);
@@ -21,9 +24,6 @@ AzureIoTDevice* Azure3 = nullptr;
 AzureIoTDevice* Azure4 = nullptr;
 AzureIoTDevice* Azure5 = nullptr;
 
-
-// #define MQTT_CLIENT_BUFFER_SIZE 3000
-// #define MQTT_CLIENT_BUFFER_SIZE 50
 
 void createObjects(){
     
@@ -84,54 +84,54 @@ char* emptyModelId = "";
 char emModelId[60] = "dtmi:conexiones:EnergyMeter_6bm;1";
 char gwModelId[60] = "dtmi:conexionesSmartFactory:gateway_62;1";
 
-// char gatewayId[50] = IOT_CONFIG_DEVICE_GATEWAY_ID;
+char gatewayId[50] = IOT_CONFIG_DEVICE_GATEWAY_ID;
 char* scopeId = DPS_ID_SCOPE;
 
 void configureAzureDevices(){
-    //Azure 0 is always for the Gateway
-    // Azure0->usingSasToken(IOT_CONFIG_DEVICE_GATEWAY_KEY);
-    // Azure0->setDeviceId(IOT_CONFIG_DEVICE_GATEWAY_ID);
-    // Azure0->setDpsScopeId(scopeId);
-    // Azure0->setModelId(emptyModelId);
-    // Azure0->init();
-    // Azure0->setOnCommandReceived(gateway_on_command_request_received);
+    // Azure 0 is always for the Gateway
+    Azure0->usingSasToken(IOT_CONFIG_DEVICE_GATEWAY_KEY);
+    Azure0->setDeviceId(IOT_CONFIG_DEVICE_GATEWAY_ID);
+    Azure0->setDpsScopeId(scopeId);
+    Azure0->setModelId(emptyModelId);
+    Azure0->init();
+    Azure0->setOnCommandReceived(gateway_on_command_request_received);
   
-    // Azure1->usingSasToken(IOT_CONFIG_DEVICE_1_KEY);
-    // Azure1->setDeviceId(IOT_CONFIG_DEVICE_1_ID);
-    // Azure1->setDpsScopeId(scopeId);
-    // Azure1->setGatewayId(gatewayId);
-    // Azure1->setModelId(emptyModelId);
-    // Azure1->init();
+    Azure1->usingSasToken(IOT_CONFIG_DEVICE_1_KEY);
+    Azure1->setDeviceId(IOT_CONFIG_DEVICE_1_ID);
+    Azure1->setDpsScopeId(scopeId);
+    Azure1->setGatewayId(gatewayId);
+    Azure1->setModelId(emptyModelId);
+    Azure1->init();
 
-    // Azure2->usingSasToken(IOT_CONFIG_DEVICE_2_KEY);
-    // Azure2->setDeviceId(IOT_CONFIG_DEVICE_2_ID);
-    // Azure2->setDpsScopeId(scopeId);
-    // Azure2->setGatewayId(gatewayId);
-    // Azure2->setModelId(emptyModelId);
-    // Azure2->init();
+    Azure2->usingSasToken(IOT_CONFIG_DEVICE_2_KEY);
+    Azure2->setDeviceId(IOT_CONFIG_DEVICE_2_ID);
+    Azure2->setDpsScopeId(scopeId);
+    Azure2->setGatewayId(gatewayId);
+    Azure2->setModelId(emptyModelId);
+    Azure2->init();
 
     
-    // Azure3->usingSasToken(IOT_CONFIG_DEVICE_3_KEY);
-    // Azure3->setDeviceId(IOT_CONFIG_DEVICE_3_ID);
-    // Azure3->setDpsScopeId(scopeId);
-    // Azure3->setGatewayId(gatewayId);
-    // Azure3->setModelId(emptyModelId);
-    // Azure3->init();
+    Azure3->usingSasToken(IOT_CONFIG_DEVICE_3_KEY);
+    Azure3->setDeviceId(IOT_CONFIG_DEVICE_3_ID);
+    Azure3->setDpsScopeId(scopeId);
+    Azure3->setGatewayId(gatewayId);
+    Azure3->setModelId(emptyModelId);
+    Azure3->init();
 
 
-    // Azure4->usingSasToken(IOT_CONFIG_DEVICE_4_KEY);
-    // Azure4->setDeviceId(IOT_CONFIG_DEVICE_4_ID);
-    // Azure4->setDpsScopeId(scopeId);
-    // Azure4->setGatewayId(gatewayId);
-    // Azure4->setModelId(emptyModelId);
-    // Azure4->init();
+    Azure4->usingSasToken(IOT_CONFIG_DEVICE_4_KEY);
+    Azure4->setDeviceId(IOT_CONFIG_DEVICE_4_ID);
+    Azure4->setDpsScopeId(scopeId);
+    Azure4->setGatewayId(gatewayId);
+    Azure4->setModelId(emptyModelId);
+    Azure4->init();
 
-    // Azure5->usingSasToken(IOT_CONFIG_DEVICE_5_KEY);
-    // Azure5->setDeviceId(IOT_CONFIG_DEVICE_5_ID);
-    // Azure5->setDpsScopeId(scopeId);
-    // Azure5->setGatewayId(gatewayId);
-    // Azure5->setModelId(emptyModelId);
-    // Azure5->init();
+    Azure5->usingSasToken(IOT_CONFIG_DEVICE_5_KEY);
+    Azure5->setDeviceId(IOT_CONFIG_DEVICE_5_ID);
+    Azure5->setDpsScopeId(scopeId);
+    Azure5->setGatewayId(gatewayId);
+    Azure5->setModelId(emptyModelId);
+    Azure5->init();
 
 }
 
@@ -214,3 +214,6 @@ void setAzureIoTCollectionDevices(){
     
     return;
 }
+
+
+#endif

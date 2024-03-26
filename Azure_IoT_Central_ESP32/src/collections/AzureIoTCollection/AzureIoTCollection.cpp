@@ -26,8 +26,6 @@ void AzureIoTCollectionClass::configure(){
         //return;
     }
     PersistentDataModule.getScopeId(scopeId);
-    // Serial.print("Scope Id is: ");
-    // Serial.println(scopeId);
 
     for(uint8_t i=0; i<MAX_NUM_AZURE_DEVICES; i++){
         // Serial.println("Is it configured? ");
@@ -35,17 +33,8 @@ void AzureIoTCollectionClass::configure(){
         if(!PersistentDataModule.isSasKeySet(i)) continue;
         PersistentDataModule.getAzureId(azureDeviceIds[i], i);
         PersistentDataModule.getSasKey(azureSasKeys[i], i);
-        // Serial.print("Azure paremeters are set for: ");
-        // Serial.println(i);
-        // Serial.print("Scope ID: ");
-        // Serial.println(scopeId);
-        // Serial.print("Azure ID: ");
-        // Serial.println(azureDeviceIds[i]);
-        // Serial.print("Azure SAS Key: ");
-        // Serial.println(azureSasKeys[i]);
-        // Serial.println();
+
         AzureIoTDevice* azureIoTDevice = new AzureIoTDevice(i);
-       
         azureIoTDevice->setDpsScopeId(scopeId);
         azureIoTDevice->setDeviceId(azureDeviceIds[i]);
         azureIoTDevice->usingSasToken(azureSasKeys[i]);

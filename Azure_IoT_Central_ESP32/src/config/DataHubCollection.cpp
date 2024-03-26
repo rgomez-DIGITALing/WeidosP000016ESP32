@@ -5,16 +5,17 @@
 #include "../classes/PersistentData/PersistentDataClass.h"
 
 
-DataHub<WeidosManagerData_t, WEIDOS_METADATA_RING_BUFFER_SIZE> weidosDataHub;
+#ifndef USING_WEB_SERVER
+DataHub<WeidosManagerData_t, RING_BUFFER_SIZE> weidosDataHub;
 // SDBackupSenderClass<WeidosManagerData_t> weidosBackupSender(0);
 
 
 #if defined BATCH_TEST && defined EM750_TEST
-DataHub<em3phManagerData_t, ENERGY_METER_RING_BUFFER_SIZE> emDataHub1;
-DataHub<em3phManagerData_t, ENERGY_METER_RING_BUFFER_SIZE> emDataHub2;
-DataHub<em3phManagerData_t, ENERGY_METER_RING_BUFFER_SIZE> emDataHub3;
-DataHub<em3phManagerData_t, ENERGY_METER_RING_BUFFER_SIZE> emDataHub4;
-DataHub<em3phManagerData_t, ENERGY_METER_RING_BUFFER_SIZE> emDataHub5;
+DataHub<em3phManagerData_t, RING_BUFFER_SIZE> emDataHub1;
+DataHub<em3phManagerData_t, RING_BUFFER_SIZE> emDataHub2;
+DataHub<em3phManagerData_t, RING_BUFFER_SIZE> emDataHub3;
+DataHub<em3phManagerData_t, RING_BUFFER_SIZE> emDataHub4;
+DataHub<em3phManagerData_t, RING_BUFFER_SIZE> emDataHub5;
 
 // SDBackupSenderClass<em3phManagerData_t> sdBackupSender1(1);
 // SDBackupSenderClass<em3phManagerData_t> sdBackupSender2(2);
@@ -24,17 +25,17 @@ DataHub<em3phManagerData_t, ENERGY_METER_RING_BUFFER_SIZE> emDataHub5;
 #endif
 
 #if defined BATCH_TEST && defined RTU_TEST
-DataHub<em1phManagerData_t, ENERGY_METER_RING_BUFFER_SIZE> emDataHub1;
-DataHub<em1phManagerData_t, ENERGY_METER_RING_BUFFER_SIZE> emDataHub2;
-DataHub<em1phManagerData_t, ENERGY_METER_RING_BUFFER_SIZE> emDataHub3;
-DataHub<em1phManagerData_t, ENERGY_METER_RING_BUFFER_SIZE> emDataHub4;
-DataHub<em3phManagerData_t, ENERGY_METER_RING_BUFFER_SIZE> emDataHub5;
+DataHub<em1phManagerData_t, RING_BUFFER_SIZE> emDataHub1;
+DataHub<em1phManagerData_t, RING_BUFFER_SIZE> emDataHub2;
+DataHub<em1phManagerData_t, RING_BUFFER_SIZE> emDataHub3;
+DataHub<em1phManagerData_t, RING_BUFFER_SIZE> emDataHub4;
+DataHub<em3phManagerData_t, RING_BUFFER_SIZE> emDataHub5;
 #endif
 
 
 #if defined BATCH_TEST && defined FLOW_METER_TEST
-DataHub<flowMeterManagerData_t, ENERGY_METER_RING_BUFFER_SIZE> emDataHub1;
-DataHub<flowMeterManagerData_t, ENERGY_METER_RING_BUFFER_SIZE> emDataHub2;
+DataHub<flowMeterManagerData_t, RING_BUFFER_SIZE> emDataHub1;
+DataHub<flowMeterManagerData_t, RING_BUFFER_SIZE> emDataHub2;
 
 SDBackupSenderClass<flowMeterManagerData_t> sdBackupSender1(1);
 SDBackupSenderClass<flowMeterManagerData_t> sdBackupSender2(2);
@@ -42,67 +43,67 @@ SDBackupSenderClass<flowMeterManagerData_t> sdBackupSender2(2);
 
 
 #if defined BATCH_GENERAL_ROBOT || defined BATCH_LINEA_EMPAQUETADO_AC_OFICINAS
-DataHub<em3phManagerData_t, ENERGY_METER_RING_BUFFER_SIZE> emDataHub1;
-DataHub<em3phManagerData_t, ENERGY_METER_RING_BUFFER_SIZE> emDataHub2;
-DataHub<em3phManagerData_t, ENERGY_METER_RING_BUFFER_SIZE> emDataHub3;
-DataHub<em3phManagerData_t, ENERGY_METER_RING_BUFFER_SIZE> emDataHub4;
-DataHub<em3phManagerData_t, ENERGY_METER_RING_BUFFER_SIZE> emDataHub5;
+DataHub<em3phManagerData_t, RING_BUFFER_SIZE> emDataHub1;
+DataHub<em3phManagerData_t, RING_BUFFER_SIZE> emDataHub2;
+DataHub<em3phManagerData_t, RING_BUFFER_SIZE> emDataHub3;
+DataHub<em3phManagerData_t, RING_BUFFER_SIZE> emDataHub4;
+DataHub<em3phManagerData_t, RING_BUFFER_SIZE> emDataHub5;
 #endif
 
 #if defined DEMO_COMERCIALES
-DataHub<em3phManagerData_t, ENERGY_METER_RING_BUFFER_SIZE> emDataHub1;
-DataHub<em3phManagerData_t, ENERGY_METER_RING_BUFFER_SIZE> emDataHub2;
-DataHub<em3phManagerData_t, ENERGY_METER_RING_BUFFER_SIZE> emDataHub3;
-DataHub<em3phManagerData_t, ENERGY_METER_RING_BUFFER_SIZE> emDataHub4;
-DataHub<em3phManagerData_t, ENERGY_METER_RING_BUFFER_SIZE> emDataHub5;
+DataHub<em3phManagerData_t, RING_BUFFER_SIZE> emDataHub1;
+DataHub<em3phManagerData_t, RING_BUFFER_SIZE> emDataHub2;
+DataHub<em3phManagerData_t, RING_BUFFER_SIZE> emDataHub3;
+DataHub<em3phManagerData_t, RING_BUFFER_SIZE> emDataHub4;
+DataHub<em3phManagerData_t, RING_BUFFER_SIZE> emDataHub5;
 #endif
 
 
 #if defined BATCH_TRANSELEVADORES_FAST
-DataHub<em3phManagerData_t, ENERGY_METER_RING_BUFFER_SIZE> emDataHub1;
-DataHub<em3phManagerData_t, ENERGY_METER_RING_BUFFER_SIZE> emDataHub2;
-DataHub<em3phManagerData_t, ENERGY_METER_RING_BUFFER_SIZE> emDataHub3;
+DataHub<em3phManagerData_t, RING_BUFFER_SIZE> emDataHub1;
+DataHub<em3phManagerData_t, RING_BUFFER_SIZE> emDataHub2;
+DataHub<em3phManagerData_t, RING_BUFFER_SIZE> emDataHub3;
 #endif
 
 
 
 #ifdef BATCH_LETS_CONNECT
-DataHub<em1phManagerData_t, ENERGY_METER_RING_BUFFER_SIZE> emDataHub1;
-DataHub<em3phManagerData_t, ENERGY_METER_RING_BUFFER_SIZE> emDataHub2;
-DataHub<em1phManagerData_t, ENERGY_METER_RING_BUFFER_SIZE> emDataHub3;
+DataHub<em1phManagerData_t, RING_BUFFER_SIZE> emDataHub1;
+DataHub<em3phManagerData_t, RING_BUFFER_SIZE> emDataHub2;
+DataHub<em1phManagerData_t, RING_BUFFER_SIZE> emDataHub3;
 #endif
 
 #ifdef BATCH_IT_SOPORTE
-DataHub<em1phManagerData_t, ENERGY_METER_RING_BUFFER_SIZE> emDataHub1;
-DataHub<em1phManagerData_t, ENERGY_METER_RING_BUFFER_SIZE> emDataHub2;
-DataHub<em1phManagerData_t, ENERGY_METER_RING_BUFFER_SIZE> emDataHub3;
-DataHub<em3phManagerData_t, ENERGY_METER_RING_BUFFER_SIZE> emDataHub4;
+DataHub<em1phManagerData_t, RING_BUFFER_SIZE> emDataHub1;
+DataHub<em1phManagerData_t, RING_BUFFER_SIZE> emDataHub2;
+DataHub<em1phManagerData_t, RING_BUFFER_SIZE> emDataHub3;
+DataHub<em3phManagerData_t, RING_BUFFER_SIZE> emDataHub4;
 #endif
 
 #ifdef BATCH_BARCELONA_SAI
-DataHub<em1phManagerData_t, ENERGY_METER_RING_BUFFER_SIZE> emDataHub1;
-DataHub<em1phManagerData_t, ENERGY_METER_RING_BUFFER_SIZE> emDataHub2;
-DataHub<em1phManagerData_t, ENERGY_METER_RING_BUFFER_SIZE> emDataHub3;
-DataHub<em1phManagerData_t, ENERGY_METER_RING_BUFFER_SIZE> emDataHub4;
-DataHub<em3phManagerData_t, ENERGY_METER_RING_BUFFER_SIZE> emDataHub5;
+DataHub<em1phManagerData_t, RING_BUFFER_SIZE> emDataHub1;
+DataHub<em1phManagerData_t, RING_BUFFER_SIZE> emDataHub2;
+DataHub<em1phManagerData_t, RING_BUFFER_SIZE> emDataHub3;
+DataHub<em1phManagerData_t, RING_BUFFER_SIZE> emDataHub4;
+DataHub<em3phManagerData_t, RING_BUFFER_SIZE> emDataHub5;
 #endif
 
 
 #ifdef BATCH_GAC_LETS_CONNECT
-DataHub<em1phManagerData_t, ENERGY_METER_RING_BUFFER_SIZE> emDataHub1;
-DataHub<em1phManagerData_t, ENERGY_METER_RING_BUFFER_SIZE> emDataHub2;
-DataHub<em3phManagerData_t, ENERGY_METER_RING_BUFFER_SIZE> emDataHub3;
+DataHub<em1phManagerData_t, RING_BUFFER_SIZE> emDataHub1;
+DataHub<em1phManagerData_t, RING_BUFFER_SIZE> emDataHub2;
+DataHub<em3phManagerData_t, RING_BUFFER_SIZE> emDataHub3;
 #endif
 
 #ifdef BATCH_MONTACARGAS
-DataHub<em3phManagerData_t, ENERGY_METER_RING_BUFFER_SIZE> emDataHub1;
+DataHub<em3phManagerData_t, RING_BUFFER_SIZE> emDataHub1;
 #endif
 
 #if defined HANDOVER_TEST
-DataHub<em3phManagerData_t, ENERGY_METER_RING_BUFFER_SIZE> emDataHub1;
-DataHub<em3phManagerData_t, ENERGY_METER_RING_BUFFER_SIZE> emDataHub2;
-DataHub<em3phManagerData_t, ENERGY_METER_RING_BUFFER_SIZE> emDataHub3;
-DataHub<em1phManagerData_t, ENERGY_METER_RING_BUFFER_SIZE> emDataHub4;
+DataHub<em3phManagerData_t, RING_BUFFER_SIZE> emDataHub1;
+DataHub<em3phManagerData_t, RING_BUFFER_SIZE> emDataHub2;
+DataHub<em3phManagerData_t, RING_BUFFER_SIZE> emDataHub3;
+DataHub<em1phManagerData_t, RING_BUFFER_SIZE> emDataHub4;
 #endif
 
 void setDataHubCollection(){
@@ -352,3 +353,5 @@ void setDataHubsPayloadGenerators(){
 
     return;
 }
+
+#endif

@@ -6,6 +6,7 @@
 #include "azure_parameters.h"
 
 
+#ifndef USING_WEB_SERVER
 
 void setTriggers(){
   #if defined BATCH_TEST && defined FLOW_METER_TEST
@@ -676,3 +677,5 @@ void setEnergyMeterProperties(){
   // #endif
 
 }
+
+#endif
