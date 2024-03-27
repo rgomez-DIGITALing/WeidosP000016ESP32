@@ -16,6 +16,8 @@ static const char* PARAMETER_MODBUS_ADDRESS = "modbusAddress";
 static const char* PARAMETER_CT_PRIMARY = "ctPrimary";
 static const char* PARAMETER_CT_SECONDARY = "ctSecondary";
 static const char* PARAMETER_CONVERSION_FACTOR = "conversionFactor";
+static const char* PARAMETER_DIGITAL_PIN = "digitalPin";
+static const char* PARAMETER_ANALOG_PIN = "analogPin";
 static const char* PARAMETER_IP_ADDRESS = "ipAddress";
 
 
@@ -26,6 +28,12 @@ static const float MAX_CT_SECONDARY = 50.0f;
 
 static const float MIN_CONVERSION_FACTOR = -9999999999999.0f;
 static const float MAX_CONVERSION_FACTOR = 99999999999.0f;
+
+static const int MAX_DIGITAL_PIN_INDEX = 1;
+static const int MIN_DIGITAL_PIN_INDEX = 4;
+static const int MAX_ANALOG_PIN_INDEX = 1;
+static const int MIN_ANALOG_PIN_INDEX = 4;
+
 //static const char* PARAMETER_SLOT = "slot";
 
 enum ERROR_MESSAGE_INDEX{
@@ -56,7 +64,12 @@ enum ERROR_MESSAGE_INDEX{
     INVALID_CT_SECONDARY,
 
     UNDEFINED_CONVERSION_FACTOR,
-    INVALID_CONVERSION_FACTOR
+    INVALID_CONVERSION_FACTOR,
+
+    UNDEFINED_DIGITAL_PIN,
+    INVALID_DIGITAL_PIN,
+    UNDEFINED_ANALOG_PIN,
+    INVALID_ANALOG_PIN
 };
 
 
@@ -82,7 +95,11 @@ char* ERROR_MESSAGE[] = {
     "Undefined CT Secondary",
     "Invalid CT Secondary",
     "Undefined Conversion Factor",
-    "Invalid Conversion Factor"
+    "Invalid Conversion Factor",
+    "Undefined Digital Pin",
+    "Invalid Digital Pin",
+    "Undefined Analog Pin",
+    "Invalid Analog Pin"
 };
 
 void sendErrorPage(uint8_t errorNumber){
@@ -152,85 +169,70 @@ void onDevicePost(AsyncWebServerRequest *request){
     DeviceCollection.setDevice(deviceType, slot);
     // PersistentDataModule.saveDeviceType(deviceType, slot);
 
+    if(deviceType>EM110_DEVICE_TYPE && deviceType<EA750_DEVICE_TYPE){
+        //Modbus Address
+        String modbusAddressString = request->getParam(PARAMETER_MODBUS_ADDRESS, true)->value();
+        int modbusAddress = modbusAddressString.toInt();
+        PersistentDataModule.saveModbusAddress(modbusAddress, slot);
+        //CT Primary
+        String ctPrimaryString = request->getParam(PARAMETER_CT_PRIMARY, true)->value();
+        int ctPrimary = ctPrimaryString.toInt();
+        PersistentDataModule.saveCTPrimary(ctPrimary, slot);
+        //CT Secondary
+        String ctSecondaryString = request->getParam(PARAMETER_CT_SECONDARY, true)->value();
+        int ctSecondary = ctSecondaryString.toInt();
+        PersistentDataModule.saveCTSecondary(ctSecondary, slot);
+    }
 
-    // switch (deviceType){
-    //     case NONE_DEVICE_TYPE:
-    //     break;
-    //     case EM110_DEVICE_TYPE:
-    //         err = checkModbusAddress(request);
-    //         if(!err) err = checkCTPrimary(request);
-    //         if(!err) err = checkCTSecondary(request);
-        
-    //     break;
-    //     case EM111_DEVICE_TYPE:
-    //         err = checkModbusAddress(request);
-    //         if(!err) err = checkCTPrimary(request);
-    //         if(!err) err = checkCTSecondary(request);
-         
-    //     break;
-    //     case EM120_DEVICE_TYPE:
-    //         err = checkModbusAddress(request);
-    //         if(!err) err = checkCTPrimary(request);
-    //         if(!err) err = checkCTSecondary(request);
-          
-    //     break;
-    //     case EM122_DEVICE_TYPE:
-    //         err = checkModbusAddress(request);
-    //         if(!err) err = checkCTPrimary(request);
-    //         if(!err) err = checkCTSecondary(request);
-        
-    //     break;
-    //     case EM220_DEVICE_TYPE:
-    //         err = checkModbusAddress(request);
-    //         if(!err) err = checkCTPrimary(request);
-    //         if(!err) err = checkCTSecondary(request);
-           
-    //     break;
-    //     case EM750_DEVICE_TYPE:
-    //         err = checkModbusAddress(request);
-    //         if(!err) err = checkCTPrimary(request);
-    //         if(!err) err = checkCTSecondary(request);
-        
-    //     break;
-    //     case EA750_DEVICE_TYPE:
-    //         err = checkModbusAddress(request);
-    //         if(!err) err = checkCTPrimary(request);
-    //         if(!err) err = checkCTSecondary(request);
-        
-    //     break;
-    //     case FLOW_METER_DEVICE_TYPE:
-    //         err = checkConversionFactor(request);
-    //         // if(!err) err = checkPin(request);
-            
-       
-    //     break;
-    //     case PULSE_METER_DEVICE_TYPE:
-    //         err = checkConversionFactor(request);
-    //         // if(!err) err = checkPin(request);
-    //     break;
-    //     case WEIDOS_ESP32:
-    //         // err = checkConversionFactor(request);
-    //         // if(!err) err = checkPin(request);
-    //     break;
-    // }
+    if(deviceType==NONE_DEVICE_TYPE){
+        PersistentDataModule.removeAzureId(slot);
+        PersistentDataModule.removeSasKey(slot);
+        PersistentDataModule.removeModbusAddress(slot);
+        PersistentDataModule.removeCTPrimary(slot);
+        PersistentDataModule.removeCTSecondary(slot);
+        PersistentDataModule.removeDigitalPin(slot);
+        PersistentDataModule.removeAnalogPin(slot);
+        PersistentDataModule.removeConversion(slot);
+        PersistentDataModule.removeDeviceType(slot);
+        PersistentDataModule.removeIpAddress(slot);
+        PersistentDataModule.removeHarmonicAnalysisActivated(slot);
+    }
 
+    if(deviceType == PULSE_METER_DEVICE_TYPE){
+        String digitalPinString = request->getParam(PARAMETER_DIGITAL_PIN, true)->value();
+        int digitalPin = digitalPinString.toInt();
+        PersistentDataModule.saveDigitalPin(digitalPin, slot);
 
-    //Modbus Address
-    String modbusAddressString = request->getParam(PARAMETER_MODBUS_ADDRESS, true)->value();
-    int modbusAddress = modbusAddressString.toInt();
-    PersistentDataModule.saveModbusAddress(modbusAddress, slot);
-    //CT Primary
-    String ctPrimaryString = request->getParam(PARAMETER_CT_PRIMARY, true)->value();
-    int ctPrimary = ctPrimaryString.toInt();
-    PersistentDataModule.saveCTPrimary(ctPrimary, slot);
-    //CT Secondary
-    String ctSecondaryString = request->getParam(PARAMETER_CT_SECONDARY, true)->value();
-    int ctSecondary = ctSecondaryString.toInt();
-    PersistentDataModule.saveCTSecondary(ctSecondary, slot);
+        String conversionFactorString = request->getParam(PARAMETER_CONVERSION_FACTOR, true)->value();
+        float conversionFactor = conversionFactorString.toFloat();
+        PersistentDataModule.saveConversionFactor(conversionFactor, slot);
+    }
+
+    if(deviceType == ANALOG_METER_DEVICE_TYPE){
+        String analogPinString = request->getParam(PARAMETER_ANALOG_PIN, true)->value();
+        int analogPin = analogPinString.toInt();
+        PersistentDataModule.saveAnalogPin(analogPin, slot);
+
+        String conversionFactorString = request->getParam(PARAMETER_CONVERSION_FACTOR, true)->value();
+        float conversionFactor = conversionFactorString.toFloat();
+        PersistentDataModule.saveConversionFactor(conversionFactor, slot);
+    }
+    // //Modbus Address
+    // String modbusAddressString = request->getParam(PARAMETER_MODBUS_ADDRESS, true)->value();
+    // int modbusAddress = modbusAddressString.toInt();
+    // PersistentDataModule.saveModbusAddress(modbusAddress, slot);
+    // //CT Primary
+    // String ctPrimaryString = request->getParam(PARAMETER_CT_PRIMARY, true)->value();
+    // int ctPrimary = ctPrimaryString.toInt();
+    // PersistentDataModule.saveCTPrimary(ctPrimary, slot);
+    // //CT Secondary
+    // String ctSecondaryString = request->getParam(PARAMETER_CT_SECONDARY, true)->value();
+    // int ctSecondary = ctSecondaryString.toInt();
+    // PersistentDataModule.saveCTSecondary(ctSecondary, slot);
     //Conversion Factor
-    String conversionFactorString = request->getParam(PARAMETER_CONVERSION_FACTOR, true)->value();
-    float conversionFactor = conversionFactorString.toFloat();
-    PersistentDataModule.saveConversionFactor(conversionFactor, slot);
+    // String conversionFactorString = request->getParam(PARAMETER_CONVERSION_FACTOR, true)->value();
+    // float conversionFactor = conversionFactorString.toFloat();
+    // PersistentDataModule.saveConversionFactor(conversionFactor, slot);
     //IP Address
     String ipAddressString = request->getParam(PARAMETER_IP_ADDRESS, true)->value();
     PersistentDataModule.saveIpAddress(ipAddressString, slot);
@@ -319,22 +321,17 @@ uint8_t checkDeviceParameters(AsyncWebServerRequest *request, uint8_t deviceType
             if(!err) err = checkCTSecondary(request);
             return 0;
         break;
-        case FLOW_METER_DEVICE_TYPE:
-            err = checkConversionFactor(request);
-            // if(!err) err = checkPin(request);
-            
-            return 0;
-        break;
         case PULSE_METER_DEVICE_TYPE:
             err = checkConversionFactor(request);
-            // if(!err) err = checkPin(request);
-            
+            if(!err) err = checkDigitalPin(request);
+            return 0;
+        break;
+        case ANALOG_METER_DEVICE_TYPE:
+            err = checkConversionFactor(request);
+            if(!err) err = checkAnalogPin(request);
             return 0;
         break;
         case WEIDOS_ESP32:
-            // err = checkConversionFactor(request);
-            // if(!err) err = checkPin(request);
-            
             return 0;
         break;
     }
@@ -445,15 +442,27 @@ uint8_t checkConversionFactor(AsyncWebServerRequest *request){
     return NO_ERROR;
 }
 
+uint8_t checkDigitalPin(AsyncWebServerRequest *request){
+    if(!request->hasParam(PARAMETER_DIGITAL_PIN, true)) return UNDEFINED_DIGITAL_PIN;
+    String digitalPinString = request->getParam(PARAMETER_DIGITAL_PIN, true)->value();
+    int digitalPin = digitalPinString.toInt();
+    Serial.print("[checkDigitalPin] digitalPin: ");
+    Serial.println(digitalPin);
+    if(digitalPin<MIN_DIGITAL_PIN_INDEX || digitalPin>MAX_DIGITAL_PIN_INDEX) return INVALID_DIGITAL_PIN;
+    
+    
+    return NO_ERROR;
+}
 
-// uint8_t checkPinIndex(AsyncWebServerRequest *request){
-//     if(!request->hasParam(PARAMETER_CONVERSION_FACTOR, true)) return UNDEFINED_CONVERSION_FACTOR;
-//     String conversionFactorString = request->getParam(PARAMETER_CONVERSION_FACTOR, true)->value();
-//     float conversionFactor = ctSecondaryString.toFloat();
-//     Serial.print("[CheckConversionFactor] conversionFactor: ");
-//     Serial.println(conversionFactor);
-//     if(conversionFactor<MIN_CONVERSION_FACTOR || conversionFactor>MAX_CONVERSION_FACTOR) return INVALID_CONVERSION_FACTOR;
+
+uint8_t checkAnalogPin(AsyncWebServerRequest *request){
+    if(!request->hasParam(PARAMETER_ANALOG_PIN, true)) return UNDEFINED_ANALOG_PIN;
+    String analogPinString = request->getParam(PARAMETER_ANALOG_PIN, true)->value();
+    int analogPin = analogPinString.toInt();
+    Serial.print("[checkAnalogPin] analogPin: ");
+    Serial.println(analogPin);
+    if(analogPin<MIN_ANALOG_PIN_INDEX || analogPin>MAX_ANALOG_PIN_INDEX) return INVALID_ANALOG_PIN;
     
     
-//     return NO_ERROR;
-// }
+    return NO_ERROR;
+}

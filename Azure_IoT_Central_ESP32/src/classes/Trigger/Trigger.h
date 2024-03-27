@@ -15,6 +15,7 @@ class TriggerClass{
         void loop();
         bool boost(unsigned long frequency, unsigned long duration = DEFAULT_BOOST_DURATION);
         bool isConnectionDependent(){ return connectionDependent; }
+        void setAsConnectionDependent(){ connectionDependent = true; }
         uint8_t getSlot(){ return slot; }
     private:
         bool connectionDependent = false;

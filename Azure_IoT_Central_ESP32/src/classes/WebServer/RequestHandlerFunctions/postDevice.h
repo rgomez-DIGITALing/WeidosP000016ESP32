@@ -13,6 +13,8 @@ uint8_t checkModbusAddress(AsyncWebServerRequest *request);
 uint8_t checkCTPrimary(AsyncWebServerRequest *request);
 uint8_t checkCTSecondary(AsyncWebServerRequest *request);
 uint8_t checkConversionFactor(AsyncWebServerRequest *request);
+uint8_t checkDigitalPin(AsyncWebServerRequest *request);
+uint8_t checkAnalogPin(AsyncWebServerRequest *request);
 
 
 

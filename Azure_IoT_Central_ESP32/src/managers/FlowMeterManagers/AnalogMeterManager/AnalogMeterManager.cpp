@@ -3,8 +3,8 @@
 #include "../../../collections/DataHubCollection/DataHubCollection.h"
 
 
-AnalogMeterManager::AnalogMeterManager(int deviceId, int interruptPin, float convertionFactor) : deviceId(deviceId){
-    analogMeter = new AnalogMeter(deviceId, interruptPin, convertionFactor);
+AnalogMeterManager::AnalogMeterManager(int deviceId, int analogPin, float convertionFactor) : deviceId(deviceId){
+    analogMeter = new AnalogMeter(deviceId, analogPin, convertionFactor);
 }
 
 

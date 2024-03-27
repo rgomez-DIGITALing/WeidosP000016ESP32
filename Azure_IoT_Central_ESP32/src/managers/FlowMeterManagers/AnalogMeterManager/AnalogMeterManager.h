@@ -5,7 +5,7 @@
 
 class AnalogMeterManager{
     public:
-        AnalogMeterManager(int deviceId, int interruptPin, float convertionFactor = 2.0f);
+        AnalogMeterManager(int deviceId, int analogPin, float convertionFactor = 1.0f);
         ~AnalogMeterManager();
         void init(){ analogMeter->init(); }
         void begin(){ analogMeter->begin(); }

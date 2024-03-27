@@ -55,12 +55,28 @@ void SystemConfiguratorClass::configure(){
             if(PersistentDataModule.isHarmonicAnalysisActivated(i)) dataHub->setPayloadGenerator2(em3ph_harmonic_generete_payload);
             DataHubCollection.setDataHub(dataHub, i);
             TriggerClass* trigger = new TriggerClass(i);
+            trigger->setAsConnectionDependent();
             TriggerCollection.setTrigger(trigger);
         }
         if(deviceType == EA750_DEVICE_TYPE){
             DataHub<em3phManagerData_t, RING_BUFFER_SIZE>* dataHub = new DataHub<em3phManagerData_t, RING_BUFFER_SIZE>;
             dataHub->setPayloadGenerator(em3ph_valueLine_generete_payload);
             if(PersistentDataModule.isHarmonicAnalysisActivated(i)) dataHub->setPayloadGenerator2(em3ph_harmonic_generete_payload);
+            DataHubCollection.setDataHub(dataHub, i);
+            TriggerClass* trigger = new TriggerClass(i);
+            trigger->setAsConnectionDependent();
+            TriggerCollection.setTrigger(trigger);
+        }
+        if(deviceType == PULSE_METER_DEVICE_TYPE){
+            DataHub<flowMeterManagerData_t, RING_BUFFER_SIZE>* dataHub = new DataHub<flowMeterManagerData_t, RING_BUFFER_SIZE>;
+            dataHub->setPayloadGenerator(flowMeter_generete_payload);
+            DataHubCollection.setDataHub(dataHub, i);
+            TriggerClass* trigger = new TriggerClass(i);
+            TriggerCollection.setTrigger(trigger);
+        }
+        if(deviceType == ANALOG_METER_DEVICE_TYPE){
+            DataHub<flowMeterManagerData_t, RING_BUFFER_SIZE>* dataHub = new DataHub<flowMeterManagerData_t, RING_BUFFER_SIZE>;
+            dataHub->setPayloadGenerator(flowMeter_generete_payload);
             DataHubCollection.setDataHub(dataHub, i);
             TriggerClass* trigger = new TriggerClass(i);
             TriggerCollection.setTrigger(trigger);

@@ -195,11 +195,22 @@ char* deviceFormContent = R"rawliteral(<h1>Device Form</h1>
         <div class="userInput" id="digitalPin">
             <label for="digitalPin">Digital Pin:</label>
             <select name="digitalPin" id="digitalPinInput">
-                <option value=""></option>
-                <option value="DI_4">DI_4</option>
-                <option value="DI_5">DI_5</option>
-                <option value="DI_6">DI_6</option>
-                <option value="DI_7">DI_7</option>
+                <option value="0"></option>
+                <option value="1">DI_4</option>
+                <option value="2">DI_5</option>
+                <option value="3">DI_6</option>
+                <option value="4">DI_7</option>
+            </select>
+        </div>
+
+        <div class="userInput" id="analogPin">
+            <label for="analogPin">Analog Pin:</label>
+            <select name="analogPin" id="analogPinInput">
+                <option value="0"></option>
+                <option value="1">ADI_0</option>
+                <option value="2">ADI_1</option>
+                <option value="3">ADI_2</option>
+                <option value="4">ADI_3</option>
             </select>
         </div>
 
@@ -227,6 +238,7 @@ char* deviceFormScripts = R"rawliteral(<script>
             console.log("On load Body!");
             document.getElementById('deviceSelect').selectedIndex = %i;
             document.getElementById('digitalPinInput').selectedIndex = %i;
+            document.getElementById('analogPinInput').selectedIndex = %i;
 
             var event = new Event("change");
             deviceSelect.dispatchEvent(event);
@@ -265,8 +277,13 @@ char* deviceFormScripts = R"rawliteral(<script>
             showInput("ctSecondary");
         }
 
-        if(selectedDevice === "8" || selectedDevice === "9"){
+        if(selectedDevice === "8"){
             showInput("digitalPin");
+            showInput("conversionFactor");
+        }
+
+        if(selectedDevice === "9"){
+            showInput("analogPin");
             showInput("conversionFactor");
         }
     }
@@ -295,6 +312,8 @@ void sendDeviceFormPage(AsyncResponseStream *response, int slot){
     int ctSecondary = 0;
     float conversionFactor = 5.0;
     uint8_t deviceType = 0;
+    int digitalPin = 0;
+    int analogPin = 0;
 
 
     if(PersistentDataModule.isScopeIdSet()) scopeId = AzureIoTCollection.getScopeId();
@@ -306,6 +325,8 @@ void sendDeviceFormPage(AsyncResponseStream *response, int slot){
     if(PersistentDataModule.isModbusAddressSet(slot)) modbusAddress = PersistentDataModule.getModbusAddress(slot);
     if(PersistentDataModule.isCTPrimarySet(slot)) ctPrimary = PersistentDataModule.getCTPrimary(slot);
     if(PersistentDataModule.isCTSecondarySet(slot)) ctSecondary = PersistentDataModule.getCTSecondary(slot);
+    if(PersistentDataModule.isDigitalPinSet(slot)) digitalPin = PersistentDataModule.getDigitalPin(slot);
+    if(PersistentDataModule.isAnalogPinSet(slot)) analogPin = PersistentDataModule.getAnalogPin(slot);
     if(PersistentDataModule.isConversionSet(slot)) conversionFactor = PersistentDataModule.getConversionFactor(slot);
     if(PersistentDataModule.isDeviceTypeSet(slot)) deviceType = DeviceCollection.getDeviceType(slot);
     if(PersistentDataModule.isIpAddressSet(slot)){
@@ -332,8 +353,8 @@ void sendDeviceFormPage(AsyncResponseStream *response, int slot){
     response->print(footer);
     response->print(bodyEnd);
 
-    int inputPin = 1;
-    response->printf(deviceFormScripts, deviceType, inputPin);
+    
+    response->printf(deviceFormScripts, deviceType, digitalPin, analogPin);
     response->print(documentEnd);
 
     return;

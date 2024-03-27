@@ -28,10 +28,25 @@ class PersistentDataClass{
         bool isModbusAddressSet(int slot);
         bool isCTPrimarySet(int slot);
         bool isCTSecondarySet(int slot);
+        bool isDigitalPinSet(int slot);
+        bool isAnalogPinSet(int slot);
         bool isConversionSet(int slot);
         bool isDeviceTypeSet(int slot);
         bool isIpAddressSet(int slot);
         bool isHarmonicAnalysisActivated(int slot);
+
+        void removeScopeId();
+        void removeAzureId(int slot);
+        void removeSasKey(int slot);
+        void removeModbusAddress(int slot);
+        void removeCTPrimary(int slot);
+        void removeCTSecondary(int slot);
+        void removeDigitalPin(int slot);
+        void removeAnalogPin(int slot);
+        void removeConversion(int slot);
+        void removeDeviceType(int slot);
+        void removeIpAddress(int slot);
+        void removeHarmonicAnalysisActivated(int slot);
         
         void setHarmonicAnalysis(bool isActive, int slot);
         
@@ -41,7 +56,11 @@ class PersistentDataClass{
         void saveModbusAddress(int modbusAddress, int slot);
         void saveCTPrimary(int ctPrimary, int slot);
         void saveCTSecondary(int ctSecondary, int slot);
+
+        void saveDigitalPin(int digitalPin, int slot);
+        void saveAnalogPin(int analogPin, int slot);
         void saveConversionFactor(float conversionFactor, int slot);
+        
         void saveDeviceType(uint8_t deviceType, int slot);
         void saveIpAddress(String& ipAddressString, int slot);
         
@@ -53,7 +72,10 @@ class PersistentDataClass{
         uint8_t getModbusAddress(int slot);
         int getCTPrimary(int slot);
         int getCTSecondary(int slot);
+        int getDigitalPin(int slot);
+        int getAnalogPin(int slot);
         float getConversionFactor(int slot);
+        
         IPAddress getIpAddress(int slot);
 
 

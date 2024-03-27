@@ -1,6 +1,7 @@
 #pragma once
 
-
+static const uint32_t digitalPins[] = {0, DI_4, DI_5, DI_6, DI_7};
+static const uint32_t analogPins[] = {0, ADI_0, ADI_1, ADI_2, ADI_3};
 
 typedef enum flowMeterError_enum_t{
     FM_NO_ERROR,

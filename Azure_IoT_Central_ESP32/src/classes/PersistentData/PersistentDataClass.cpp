@@ -77,6 +77,17 @@ bool PersistentDataClass::isCTSecondarySet(int slot){
     return !(bool)ctSecondaryNotSet;
 }
 
+
+bool  PersistentDataClass::isDigitalPinSet(int slot){
+    bool digitalPinNotSet = E2PROM.read(DIGITAL_PIN_SET_FLAGS_INDEX + slot);
+    return !(bool)digitalPinNotSet;
+}
+
+bool  PersistentDataClass::isAnalogPinSet(int slot){
+    bool analogPinNotSet = E2PROM.read(ANALOG_PIN_SET_FLAGS_INDEX + slot);
+    return !(bool)analogPinNotSet;
+}
+
 bool PersistentDataClass::isConversionSet(int slot){
     bool conversionFactorNotSet = E2PROM.read(CONVERSION_FACTOR_SET_FLAGS_INDEX + slot);
     return !(bool)conversionFactorNotSet;
@@ -97,6 +108,62 @@ bool PersistentDataClass::isHarmonicAnalysisActivated(int slot){
     bool harmonicAnalisysNotSet = E2PROM.read(HARMONIC_ACTIVATED_FLAGS_INDEX + slot);
     return !(bool)harmonicAnalisysNotSet;
 }
+
+
+
+
+
+void PersistentDataClass::removeScopeId(){
+    E2PROM.write(SCOPE_ID_SET_FLAG_INDEX, 255);
+}
+
+void PersistentDataClass::removeAzureId(int slot){
+    E2PROM.write(AZURE_DEVICE_ID_SET_FLAGS_INDEX + slot*FLAG_SIZE, 255);
+}
+
+void PersistentDataClass::removeSasKey(int slot){
+    E2PROM.write(AZURE_SAS_KEY_SET_FLAGS_INDEX + slot*FLAG_SIZE, 255);
+}
+
+void PersistentDataClass::removeModbusAddress(int slot){
+    E2PROM.write(MODBUS_ID_SET_FLAGS_INDEX + slot*FLAG_SIZE, 255);
+}
+
+void PersistentDataClass::removeCTPrimary(int slot){
+    E2PROM.write(CT_PRIMARY_SET_FLAGS_INDEX + slot*FLAG_SIZE, 255);
+}
+
+void PersistentDataClass::removeCTSecondary(int slot){
+    E2PROM.write(CT_SECONDARY_SET_FLAGS_INDEX + slot*FLAG_SIZE, 255);
+}
+
+void PersistentDataClass::removeDigitalPin(int slot){
+    E2PROM.write(DIGITAL_PIN_SET_FLAGS_INDEX + slot*FLAG_SIZE, 255);
+}
+
+void PersistentDataClass::removeAnalogPin(int slot){
+    E2PROM.write(ANALOG_PIN_SET_FLAGS_INDEX + slot*FLAG_SIZE, 255);
+}
+
+
+void PersistentDataClass::removeConversion(int slot){
+    E2PROM.write(CONVERSION_FACTOR_SET_FLAGS_INDEX + slot*FLAG_SIZE, 255);
+}
+
+void PersistentDataClass::removeIpAddress(int slot){
+    E2PROM.write(MODBUS_TCP_IP_FLAGS_INDEX + slot*FLAG_SIZE, 255);
+}
+
+void PersistentDataClass::removeDeviceType(int slot){
+    E2PROM.write(DEVICE_TYPE_SET_FLAGS_INDEX + slot*FLAG_SIZE, 255);
+}
+
+
+void PersistentDataClass::removeHarmonicAnalysisActivated(int slot){
+    E2PROM.write(HARMONIC_ACTIVATED_FLAGS_INDEX + slot*FLAG_SIZE, 255);
+}
+
+
 
 
 
@@ -203,6 +270,21 @@ void PersistentDataClass::saveCTSecondary(int ctSecondary, int slot){
     return;
 }
 
+void PersistentDataClass::saveDigitalPin(int digitalPin, int slot){
+    int index = DIGITAL_PIN_INDEX + slot*PIN_SIZE;
+    E2PROM.put(index, digitalPin);
+    index = DIGITAL_PIN_SET_FLAGS_INDEX + slot*FLAG_SIZE;
+    E2PROM.write(index, 0);
+    return;
+}
+void PersistentDataClass::saveAnalogPin(int analogPin, int slot){
+    int index = ANALOG_PIN_INDEX + slot*PIN_SIZE;
+    E2PROM.put(index, analogPin);
+    index = ANALOG_PIN_SET_FLAGS_INDEX + slot*FLAG_SIZE;
+    E2PROM.write(index, 0);
+    return;
+}
+
 
 void PersistentDataClass::saveConversionFactor(float conversionFactor, int slot){
     int index = CONVERSION_FACTOR_INDEX + slot*FLOAT_SIZE;
@@ -296,6 +378,21 @@ int PersistentDataClass::getCTSecondary(int slot){
     int ctSecondary = 0;
     E2PROM.get(index, ctSecondary);
     return ctSecondary;
+}
+
+int PersistentDataClass::getDigitalPin(int slot){
+    int index = DIGITAL_PIN_INDEX + slot*PIN_SIZE;
+    int digitalPin = 0;
+    E2PROM.get(index, digitalPin);
+    return digitalPin;
+}
+
+
+int PersistentDataClass::getAnalogPin(int slot){
+    int index = ANALOG_PIN_INDEX + slot*PIN_SIZE;
+    int analogPin = 0;
+    E2PROM.get(index, analogPin);
+    return analogPin;
 }
 
 

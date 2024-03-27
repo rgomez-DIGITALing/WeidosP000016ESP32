@@ -102,11 +102,27 @@ void DeviceCollectionClass::createDevice(uint8_t slot){
 
     }
 
-    if(deviceType == FLOW_METER_DEVICE_TYPE){
-
+    if(deviceType == PULSE_METER_DEVICE_TYPE){
+        Serial.println("[createDevice] Pulse Meter");
+        if(!PersistentDataModule.isDigitalPinSet(slot)) return;
+        int digitalPinIndex = PersistentDataModule.getDigitalPin(slot);
+        if(!PersistentDataModule.isConversionSet(slot)) return;
+        float conversionFactor = PersistentDataModule.getConversionFactor(slot);
+        Serial.print("Pin index: ");
+        Serial.println(digitalPinIndex);
+        Serial.print("Pin: ");
+        Serial.println(digitalPins[digitalPinIndex]);
+        PulseMeterPool[slot] = new PulseMeterManager(slot, digitalPins[digitalPinIndex], conversionFactor);
+        
     }
     
-    if(deviceType == PULSE_METER_DEVICE_TYPE){
+    if(deviceType == ANALOG_METER_DEVICE_TYPE){
+        Serial.println("[createDevice] Analog Meter");
+        if(!PersistentDataModule.isAnalogPinSet(slot)) return;
+        int analogPinIndex = PersistentDataModule.getAnalogPin(slot);
+        if(!PersistentDataModule.isConversionSet(slot)) return;
+        float conversionFactor = PersistentDataModule.getConversionFactor(slot);
+        AnalogMeterPool[slot] = new AnalogMeterManager(slot, analogPins[analogPinIndex], conversionFactor);
 
     }
 
@@ -247,7 +263,6 @@ void DeviceCollectionClass::sendDevicesProperties(){
 
 void DeviceCollectionClass::initFlowMeters(){
     for(int i=0; i<MAX_ALLOWED_DEVICES; i++){
-        
         if(PulseMeterPool[i]) PulseMeterPool[i]->init();
         if(AnalogMeterPool[i]) AnalogMeterPool[i]->init();
     }
