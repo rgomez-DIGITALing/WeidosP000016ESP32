@@ -17,7 +17,7 @@ enum DeviceType{
     WEIDOS_ESP32
 };
 
-#define USING_WEB_SERVER //Comment this flag if configuration is not made via Web Server but with /config files
+// #define USING_WEB_SERVER //Comment this flag if configuration is not made via Web Server but with /config files
 
 static const uint8_t MAX_DEVICE_TYPE = WEIDOS_ESP32;
 
