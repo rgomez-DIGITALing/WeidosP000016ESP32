@@ -12,12 +12,15 @@ enum DeviceType{
     EM220_DEVICE_TYPE,
     EM750_DEVICE_TYPE,
     EA750_DEVICE_TYPE,
+    EM120TCP_DEVICE_TYPE,
+    EM122TCP_DEVICE_TYPE,
+    EM220TCP_DEVICE_TYPE,
     PULSE_METER_DEVICE_TYPE,
     ANALOG_METER_DEVICE_TYPE,
     WEIDOS_ESP32
 };
 
-// #define USING_WEB_SERVER //Comment this flag if configuration is not made via Web Server but with /config files
+#define USING_WEB_SERVER //Comment this flag if configuration is not made via Web Server but with /config files
 
 static const uint8_t MAX_DEVICE_TYPE = WEIDOS_ESP32;
 

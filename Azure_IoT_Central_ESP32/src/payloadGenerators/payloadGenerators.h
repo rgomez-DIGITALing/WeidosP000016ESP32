@@ -26,7 +26,9 @@ int em122_generete_properties(az_iot_hub_client const* hub_client, uint8_t* payl
 int em220_generete_properties(az_iot_hub_client const* hub_client, uint8_t* payload_buffer, size_t payload_buffer_size, size_t* payload_buffer_length, EM220Manager* energyMeter);
 int em750_generete_properties(az_iot_hub_client const* hub_client, uint8_t* payload_buffer, size_t payload_buffer_size, size_t* payload_buffer_length, EM750Manager* emManager);
 int ea750_generete_properties(az_iot_hub_client const* hub_client, uint8_t* payload_buffer, size_t payload_buffer_size, size_t* payload_buffer_length, EA750Manager* emManager);
-
+int em120Tcp_generete_properties(az_iot_hub_client const* hub_client, uint8_t* payload_buffer, size_t payload_buffer_size, size_t* payload_buffer_length, EM120TCPManager* emManager);
+int em122Tcp_generete_properties(az_iot_hub_client const* hub_client, uint8_t* payload_buffer, size_t payload_buffer_size, size_t* payload_buffer_length, EM122TCPManager* emManager);
+int em220Tcp_generete_properties(az_iot_hub_client const* hub_client, uint8_t* payload_buffer, size_t payload_buffer_size, size_t* payload_buffer_length, EM220TCPManager* emManager);
 
 
 

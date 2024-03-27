@@ -102,6 +102,33 @@ void DeviceCollectionClass::createDevice(uint8_t slot){
 
     }
 
+    if(deviceType == EM120TCP_DEVICE_TYPE){
+        Serial.println("[createDevice] EM120TCPManager");
+        IPAddress ip;
+        if(!PersistentDataModule.isIpAddressSet(slot)) return;
+        ip = PersistentDataModule.getIpAddress(slot);
+        EM3PHPool[slot] = new EM120TCPManager(modbusTCPClient, ip, slot);
+
+    }
+
+    if(deviceType == EM122TCP_DEVICE_TYPE){
+        Serial.println("[createDevice] EM122TCPManager");
+        IPAddress ip;
+        if(!PersistentDataModule.isIpAddressSet(slot)) return;
+        ip = PersistentDataModule.getIpAddress(slot);
+        EM3PHPool[slot] = new EM122TCPManager(modbusTCPClient, ip, slot);
+
+    }
+
+    if(deviceType == EM220TCP_DEVICE_TYPE){
+        Serial.println("[createDevice] EM220TCPManager");
+        IPAddress ip;
+        if(!PersistentDataModule.isIpAddressSet(slot)) return;
+        ip = PersistentDataModule.getIpAddress(slot);
+        EM3PHPool[slot] = new EM220TCPManager(modbusTCPClient, ip, slot);
+
+    }
+
     if(deviceType == PULSE_METER_DEVICE_TYPE){
         Serial.println("[createDevice] Pulse Meter");
         if(!PersistentDataModule.isDigitalPinSet(slot)) return;
@@ -161,7 +188,7 @@ void DeviceCollectionClass::createDevice(uint8_t slot){
 //     return String("None");
 // }
 
-uint8_t testList[] = {0,7,8,4,5,2};
+
 
 int DeviceCollectionClass::getDeviceType(uint8_t slot){ 
     if(slot>MAX_ALLOWED_DEVICES) return 0;
@@ -170,21 +197,25 @@ int DeviceCollectionClass::getDeviceType(uint8_t slot){
     // return testList[slot];
 }
 
+    
 char* DeviceCollectionClass::getDeviceName(uint8_t slot){
     int deviceType = deviceList[slot];
     // int deviceType = testList[slot];
     char* deviceTypeName = nullptr;
 
-    if(deviceType == 1) return "EM110";
-    if(deviceType == 2) return "EM111";
-    if(deviceType == 3) return "EM120";
-    if(deviceType == 4) return "EM122";
-    if(deviceType == 5) return "EM220";
-    if(deviceType == 6) return "EM750";
-    if(deviceType == 7) return "EA750";
-    if(deviceType == 8) return "Pulse Meter";
-    if(deviceType == 9) return "Analog Meter";
-    if(deviceType == 10) return "Weidos ESP32";
+    if(deviceType == EM110_DEVICE_TYPE) return "EM110";
+    if(deviceType == EM111_DEVICE_TYPE) return "EM111";
+    if(deviceType == EM120_DEVICE_TYPE) return "EM120";
+    if(deviceType == EM122_DEVICE_TYPE) return "EM122";
+    if(deviceType == EM220_DEVICE_TYPE) return "EM220";
+    if(deviceType == EM750_DEVICE_TYPE) return "EM750";
+    if(deviceType == EA750_DEVICE_TYPE) return "EA750";
+    if(deviceType == EM120TCP_DEVICE_TYPE) return "EM120-TCP";
+    if(deviceType == EM122TCP_DEVICE_TYPE) return "EM122-TCP";
+    if(deviceType == EM220TCP_DEVICE_TYPE) return "EM220-TCP";
+    if(deviceType == PULSE_METER_DEVICE_TYPE) return "Pulse Meter";
+    if(deviceType == ANALOG_METER_DEVICE_TYPE) return "Analog Meter";
+    if(deviceType == WEIDOS_ESP32) return "Weidos ESP32";
     return "None";
 }
 
@@ -330,8 +361,30 @@ void DeviceCollectionClass::setDevice(EA750Manager* em){
     EM3PHPool[slot] = em;
 }
 
+void DeviceCollectionClass::setDevice(EM120TCPManager* em){
+    int slot = em->getDeviceId();
+    EM3PHPool[slot] = em;
+}
 
+void DeviceCollectionClass::setDevice(EM122TCPManager* em){
+    int slot = em->getDeviceId();
+    EM3PHPool[slot] = em;
+}
 
+void DeviceCollectionClass::setDevice(EM220TCPManager* em){
+    int slot = em->getDeviceId();
+    EM3PHPool[slot] = em;
+}
+
+void DeviceCollectionClass::setDevice(EM1PHManager_BaseClass* em){
+    int slot = em->getDeviceId();
+    EM1PHPool[slot] = em;
+}
+
+void DeviceCollectionClass::setDevice(EM3PHManager_BaseClass* em){
+    int slot = em->getDeviceId();
+    EM3PHPool[slot] = em;
+}
 
 
 

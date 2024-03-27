@@ -151,9 +151,12 @@ char* deviceFormContent = R"rawliteral(<h1>Device Form</h1>
                 <option value="5">EM220</option>
                 <option value="6">EM750</option>
                 <option value="7">EA750</option>
-                <option value="8">Pulse Meter</option>
-                <option value="9">Analog Meter</option>
-                <option value="10">Weidos ESP32</option>
+                <option value="8">EM120-TCP</option>
+                <option value="9">EM122-TCP</option>
+                <option value="10">EM220-TCP</option>
+                <option value="11">Pulse Meter</option>
+                <option value="12">Analog Meter</option>
+                <option value="13">Weidos ESP32</option>
             </select>
         </div>
 
@@ -179,7 +182,7 @@ char* deviceFormContent = R"rawliteral(<h1>Device Form</h1>
 
         <div class="userInput" id="modbusAddress">
             <label for="modbusAddress">Modbus Address:</label>
-            <input type="number" name="modbusAddress"  id="modbusAddressInput" value="%i">
+            <input type="number" name="modbusAddress" id="modbusAddressInput" value="%i">
         </div>
   
         <div class="userInput" id="ctPrimary" >
@@ -235,7 +238,6 @@ char* deviceFormScripts = R"rawliteral(<script>
             // Your code to be executed when the DOM is ready
             var deviceSelect = document.getElementById("deviceSelect");
             deviceSelect.value = selectedItemIs;
-            console.log("On load Body!");
             document.getElementById('deviceSelect').selectedIndex = %i;
             document.getElementById('digitalPinInput').selectedIndex = %i;
             document.getElementById('analogPinInput').selectedIndex = %i;
@@ -267,7 +269,7 @@ char* deviceFormScripts = R"rawliteral(<script>
             showInput("modbusAddress");
         }
 
-        if(selectedDevice === "6" || selectedDevice === "7"){
+        if(selectedDevice === "6" || selectedDevice === "7" || selectedDevice === "8" || selectedDevice === "9" || selectedDevice === "10"){
             showInput("ipAddress");
             showInput("modbusAddress");
         }
@@ -277,12 +279,12 @@ char* deviceFormScripts = R"rawliteral(<script>
             showInput("ctSecondary");
         }
 
-        if(selectedDevice === "8"){
+        if(selectedDevice === "11"){
             showInput("digitalPin");
             showInput("conversionFactor");
         }
 
-        if(selectedDevice === "9"){
+        if(selectedDevice === "12"){
             showInput("analogPin");
             showInput("conversionFactor");
         }

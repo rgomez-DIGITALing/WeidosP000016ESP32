@@ -1078,3 +1078,151 @@ int ea750_generete_properties(az_iot_hub_client const* hub_client,
 
   return RESULT_OK;
 }
+
+
+int em120Tcp_generete_properties(az_iot_hub_client const* hub_client, uint8_t* payload_buffer, size_t payload_buffer_size, size_t* payload_buffer_length, EM120TCPManager* emManager){
+
+  az_json_writer jw;
+  az_result rc;
+  az_span payload_buffer_span = az_span_create(payload_buffer, payload_buffer_size);
+  az_span json_span;
+
+
+  rc = az_json_writer_init(&jw, payload_buffer_span, NULL);
+  EXIT_IF_AZ_FAILED2(rc, RESULT_ERROR, F("Failed initializing json writer for telemetry."));
+
+  rc = az_json_writer_append_begin_object(&jw);
+  EXIT_IF_AZ_FAILED2(rc, RESULT_ERROR, F("Failed setting telemetry json root."));
+
+  rc = az_iot_hub_client_properties_writer_begin_component(
+      hub_client, &jw, az_span_create_from_str(SAMPLE_DEVICE_INFORMATION_NAME));
+  EXIT_IF_AZ_FAILED2(rc, RESULT_ERROR, F("Failed writting component name."));
+
+
+
+
+  rc = az_json_writer_append_property_name(&jw, az_span_create_from_str(EM_BRAND_PROPERTY_NAME));
+  EXIT_IF_AZ_FAILED2(rc, RESULT_ERROR, F("Failed adding EM_BRAND_PROPERTY_NAME to payload."));
+  rc = az_json_writer_append_string(&jw, az_span_create_from_str(WEIDMULLER_BRAND));
+  EXIT_IF_AZ_FAILED2(rc, RESULT_ERROR, F("Failed adding EM_BRAND_PROPERTY_NAME to payload. "));
+
+  
+
+
+  rc = az_iot_hub_client_properties_writer_end_component(hub_client, &jw);
+  EXIT_IF_AZ_FAILED2(rc, RESULT_ERROR, F("Failed closing component object."));
+
+  rc = az_json_writer_append_end_object(&jw);
+  EXIT_IF_AZ_FAILED2(rc, RESULT_ERROR, F("Failed closing telemetry json payload."));
+
+  payload_buffer_span = az_json_writer_get_bytes_used_in_destination(&jw);
+
+  if ((payload_buffer_size - az_span_size(payload_buffer_span)) < 1)
+  {
+    LogError("Insufficient space for telemetry payload null terminator.");
+    return RESULT_ERROR;
+  }
+
+  payload_buffer[az_span_size(payload_buffer_span)] = null_terminator;
+  *payload_buffer_length = az_span_size(payload_buffer_span);
+
+  return RESULT_OK;
+}
+
+int em122Tcp_generete_properties(az_iot_hub_client const* hub_client, uint8_t* payload_buffer, size_t payload_buffer_size, size_t* payload_buffer_length, EM122TCPManager* emManager){
+  
+  az_json_writer jw;
+  az_result rc;
+  az_span payload_buffer_span = az_span_create(payload_buffer, payload_buffer_size);
+  az_span json_span;
+
+
+  rc = az_json_writer_init(&jw, payload_buffer_span, NULL);
+  EXIT_IF_AZ_FAILED2(rc, RESULT_ERROR, F("Failed initializing json writer for telemetry."));
+
+  rc = az_json_writer_append_begin_object(&jw);
+  EXIT_IF_AZ_FAILED2(rc, RESULT_ERROR, F("Failed setting telemetry json root."));
+
+  rc = az_iot_hub_client_properties_writer_begin_component(
+      hub_client, &jw, az_span_create_from_str(SAMPLE_DEVICE_INFORMATION_NAME));
+  EXIT_IF_AZ_FAILED2(rc, RESULT_ERROR, F("Failed writting component name."));
+
+
+
+
+  rc = az_json_writer_append_property_name(&jw, az_span_create_from_str(EM_BRAND_PROPERTY_NAME));
+  EXIT_IF_AZ_FAILED2(rc, RESULT_ERROR, F("Failed adding EM_BRAND_PROPERTY_NAME to payload."));
+  rc = az_json_writer_append_string(&jw, az_span_create_from_str(WEIDMULLER_BRAND));
+  EXIT_IF_AZ_FAILED2(rc, RESULT_ERROR, F("Failed adding EM_BRAND_PROPERTY_NAME to payload. "));
+
+  
+
+
+  rc = az_iot_hub_client_properties_writer_end_component(hub_client, &jw);
+  EXIT_IF_AZ_FAILED2(rc, RESULT_ERROR, F("Failed closing component object."));
+
+  rc = az_json_writer_append_end_object(&jw);
+  EXIT_IF_AZ_FAILED2(rc, RESULT_ERROR, F("Failed closing telemetry json payload."));
+
+  payload_buffer_span = az_json_writer_get_bytes_used_in_destination(&jw);
+
+  if ((payload_buffer_size - az_span_size(payload_buffer_span)) < 1)
+  {
+    LogError("Insufficient space for telemetry payload null terminator.");
+    return RESULT_ERROR;
+  }
+
+  payload_buffer[az_span_size(payload_buffer_span)] = null_terminator;
+  *payload_buffer_length = az_span_size(payload_buffer_span);
+
+  return RESULT_OK;
+}
+
+int em220Tcp_generete_properties(az_iot_hub_client const* hub_client, uint8_t* payload_buffer, size_t payload_buffer_size, size_t* payload_buffer_length, EM220TCPManager* emManager){
+
+  az_json_writer jw;
+  az_result rc;
+  az_span payload_buffer_span = az_span_create(payload_buffer, payload_buffer_size);
+  az_span json_span;
+
+
+  rc = az_json_writer_init(&jw, payload_buffer_span, NULL);
+  EXIT_IF_AZ_FAILED2(rc, RESULT_ERROR, F("Failed initializing json writer for telemetry."));
+
+  rc = az_json_writer_append_begin_object(&jw);
+  EXIT_IF_AZ_FAILED2(rc, RESULT_ERROR, F("Failed setting telemetry json root."));
+
+  rc = az_iot_hub_client_properties_writer_begin_component(
+      hub_client, &jw, az_span_create_from_str(SAMPLE_DEVICE_INFORMATION_NAME));
+  EXIT_IF_AZ_FAILED2(rc, RESULT_ERROR, F("Failed writting component name."));
+
+
+
+
+  rc = az_json_writer_append_property_name(&jw, az_span_create_from_str(EM_BRAND_PROPERTY_NAME));
+  EXIT_IF_AZ_FAILED2(rc, RESULT_ERROR, F("Failed adding EM_BRAND_PROPERTY_NAME to payload."));
+  rc = az_json_writer_append_string(&jw, az_span_create_from_str(WEIDMULLER_BRAND));
+  EXIT_IF_AZ_FAILED2(rc, RESULT_ERROR, F("Failed adding EM_BRAND_PROPERTY_NAME to payload. "));
+
+  
+
+
+  rc = az_iot_hub_client_properties_writer_end_component(hub_client, &jw);
+  EXIT_IF_AZ_FAILED2(rc, RESULT_ERROR, F("Failed closing component object."));
+
+  rc = az_json_writer_append_end_object(&jw);
+  EXIT_IF_AZ_FAILED2(rc, RESULT_ERROR, F("Failed closing telemetry json payload."));
+
+  payload_buffer_span = az_json_writer_get_bytes_used_in_destination(&jw);
+
+  if ((payload_buffer_size - az_span_size(payload_buffer_span)) < 1)
+  {
+    LogError("Insufficient space for telemetry payload null terminator.");
+    return RESULT_ERROR;
+  }
+
+  payload_buffer[az_span_size(payload_buffer_span)] = null_terminator;
+  *payload_buffer_length = az_span_size(payload_buffer_span);
+
+  return RESULT_OK;
+}

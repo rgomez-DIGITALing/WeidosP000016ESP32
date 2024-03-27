@@ -169,7 +169,7 @@ void onDevicePost(AsyncWebServerRequest *request){
     DeviceCollection.setDevice(deviceType, slot);
     // PersistentDataModule.saveDeviceType(deviceType, slot);
 
-    if(deviceType>EM110_DEVICE_TYPE && deviceType<EA750_DEVICE_TYPE){
+    if(deviceType>=EM110_DEVICE_TYPE && deviceType<=EA750_DEVICE_TYPE){
         //Modbus Address
         String modbusAddressString = request->getParam(PARAMETER_MODBUS_ADDRESS, true)->value();
         int modbusAddress = modbusAddressString.toInt();
@@ -217,6 +217,25 @@ void onDevicePost(AsyncWebServerRequest *request){
         float conversionFactor = conversionFactorString.toFloat();
         PersistentDataModule.saveConversionFactor(conversionFactor, slot);
     }
+
+
+    if(deviceType>=EM750_DEVICE_TYPE && deviceType<=EM220TCP_DEVICE_TYPE){
+        //Modbus Address
+        String modbusAddressString = request->getParam(PARAMETER_MODBUS_ADDRESS, true)->value();
+        int modbusAddress = modbusAddressString.toInt();
+        PersistentDataModule.saveModbusAddress(modbusAddress, slot);
+        //CT Primary
+        String ctPrimaryString = request->getParam(PARAMETER_CT_PRIMARY, true)->value();
+        int ctPrimary = ctPrimaryString.toInt();
+        PersistentDataModule.saveCTPrimary(ctPrimary, slot);
+        //CT Secondary
+        String ctSecondaryString = request->getParam(PARAMETER_CT_SECONDARY, true)->value();
+        int ctSecondary = ctSecondaryString.toInt();
+        PersistentDataModule.saveCTSecondary(ctSecondary, slot);
+
+        String ipAddressString = request->getParam(PARAMETER_IP_ADDRESS, true)->value();
+        PersistentDataModule.saveIpAddress(ipAddressString, slot);
+    }
     // //Modbus Address
     // String modbusAddressString = request->getParam(PARAMETER_MODBUS_ADDRESS, true)->value();
     // int modbusAddress = modbusAddressString.toInt();
@@ -234,8 +253,7 @@ void onDevicePost(AsyncWebServerRequest *request){
     // float conversionFactor = conversionFactorString.toFloat();
     // PersistentDataModule.saveConversionFactor(conversionFactor, slot);
     //IP Address
-    String ipAddressString = request->getParam(PARAMETER_IP_ADDRESS, true)->value();
-    PersistentDataModule.saveIpAddress(ipAddressString, slot);
+    
 
     // PersistentDataModule.saveConversionFactor(conversionFactor, slot);
 
@@ -316,6 +334,24 @@ uint8_t checkDeviceParameters(AsyncWebServerRequest *request, uint8_t deviceType
             return 0;
         break;
         case EA750_DEVICE_TYPE:
+            err = checkModbusAddress(request);
+            if(!err) err = checkCTPrimary(request);
+            if(!err) err = checkCTSecondary(request);
+            return 0;
+        break;
+        case EM120TCP_DEVICE_TYPE:
+            err = checkModbusAddress(request);
+            if(!err) err = checkCTPrimary(request);
+            if(!err) err = checkCTSecondary(request);
+            return 0;
+        break;
+        case EM122TCP_DEVICE_TYPE:
+            err = checkModbusAddress(request);
+            if(!err) err = checkCTPrimary(request);
+            if(!err) err = checkCTSecondary(request);
+            return 0;
+        break;
+        case EM220TCP_DEVICE_TYPE:
             err = checkModbusAddress(request);
             if(!err) err = checkCTPrimary(request);
             if(!err) err = checkCTSecondary(request);
