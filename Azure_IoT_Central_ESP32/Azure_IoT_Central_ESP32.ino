@@ -90,7 +90,7 @@ void setup()
   DeviceCollection.init();
   AzureIoTCollection.init();
   TriggerCollection.init();
-  // SDBackupSenderCollection.init();
+  SDBackupSenderCollection.init();
 
   #ifdef USING_WEB_SERVER  
   DeviceCollection.createDevices(); //Web Server Only

@@ -30,6 +30,11 @@ DataHub<em1phManagerData_t, RING_BUFFER_SIZE> emDataHub2;
 DataHub<em1phManagerData_t, RING_BUFFER_SIZE> emDataHub3;
 DataHub<em1phManagerData_t, RING_BUFFER_SIZE> emDataHub4;
 DataHub<em3phManagerData_t, RING_BUFFER_SIZE> emDataHub5;
+// SDBackupSenderClass<em1phManagerData_t> sdBackupSender1(1);
+// SDBackupSenderClass<em1phManagerData_t> sdBackupSender2(2);
+// SDBackupSenderClass<em1phManagerData_t> sdBackupSender3(3);
+// SDBackupSenderClass<em1phManagerData_t> sdBackupSender4(4);
+// SDBackupSenderClass<em3phManagerData_t> sdBackupSender5(5);
 #endif
 
 
@@ -139,6 +144,12 @@ void setDataHubCollection(){
     DataHubCollection.setDataHub(emDataHub3, 3);
     DataHubCollection.setDataHub(emDataHub4, 4);
     DataHubCollection.setDataHub(emDataHub5, 5);
+
+    // SDBackupSenderCollection.setBackupSender(sdBackupSender1, 1);
+    // SDBackupSenderCollection.setBackupSender(sdBackupSender2, 2);
+    // SDBackupSenderCollection.setBackupSender(sdBackupSender3, 3);
+    // SDBackupSenderCollection.setBackupSender(sdBackupSender4, 4);
+    // SDBackupSenderCollection.setBackupSender(sdBackupSender5, 5);
     #endif
 
 
@@ -256,11 +267,6 @@ void setDataHubsPayloadGenerators(){
     // sdBackupSender3.setPayloadGenerator(em3ph_valueLine_generete_payload);
     // sdBackupSender4.setPayloadGenerator(em3ph_valueLine_generete_payload);
     // sdBackupSender5.setPayloadGenerator(em3ph_valueLine_generete_payload);
-    // emDataHub1.setPayloadGenerator2(em3ph_harmonic_generete_payload);
-    // emDataHub2.setPayloadGenerator2(em3ph_harmonic_generete_payload);
-    // emDataHub3.setPayloadGenerator2(em3ph_harmonic_generete_payload);
-    // emDataHub4.setPayloadGenerator2(em3ph_harmonic_generete_payload);
-    // emDataHub5.setPayloadGenerator2(em3ph_harmonic_generete_payload);
     #endif
 
 
@@ -270,6 +276,11 @@ void setDataHubsPayloadGenerators(){
     emDataHub3.setPayloadGenerator(em1ph_generete_payload);
     emDataHub4.setPayloadGenerator(em1ph_generete_payload);
     emDataHub5.setPayloadGenerator(em3ph_basicLine_generete_payload);
+    // sdBackupSender1.setPayloadGenerator(em1ph_generete_payload);
+    // sdBackupSender2.setPayloadGenerator(em1ph_generete_payload);
+    // sdBackupSender3.setPayloadGenerator(em1ph_generete_payload);
+    // sdBackupSender4.setPayloadGenerator(em1ph_generete_payload);
+    // sdBackupSender5.setPayloadGenerator(em3ph_basicLine_generete_payload);
     #endif
 
 
