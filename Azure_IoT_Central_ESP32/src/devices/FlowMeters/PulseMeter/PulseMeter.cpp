@@ -85,11 +85,6 @@ bool PulseMeter::update(){
     _tf = systemClock.getEpochTime();
     totalConsumption = convertionFactor*totalCounter;
     periodConsumption = convertionFactor*periodCounter;
-    // Serial.print("totalCounter: ");
-    // Serial.println(totalCounter);
-    // Serial.print("periodCounter: ");
-    // Serial.println(periodCounter);
-
 
     error = FM_NO_ERROR;
 

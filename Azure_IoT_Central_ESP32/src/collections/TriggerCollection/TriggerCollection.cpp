@@ -12,14 +12,18 @@ void TriggerCollectionClass::init(){
     return;
 }
 
-void TriggerCollectionClass::configure(){
-    for(int i=0; i<MAX_ALLOWED_DEVICES; i++){
-        uint8_t deviceType = DeviceCollection.getDeviceType(i);
-        if(deviceType < 1 ||  deviceType > 9) continue;
-        triggers[i] = new TriggerClass(i);
-
-    }
-}
+// void TriggerCollectionClass::configure(){
+//     for(int i=0; i<MAX_ALLOWED_DEVICES; i++){
+//         uint8_t deviceType = DeviceCollection.getDeviceType(i);
+//         Serial.print("Trigger collection: ");
+//         Serial.println(deviceType);
+//         if(deviceType < 1 ||  deviceType > MAX_DEVICE_TYPE) continue;
+//         triggers[i] = new TriggerClass(i);
+//         Serial.print("Trigger created for ID: ");
+//         Serial.println(i);
+//         if(deviceType == EM750_DEVICE_TYPE || deviceType == EA750_DEVICE_TYPE) triggers[i]->setAsConnectionDependent();
+//     }
+// }
 
 
 void TriggerCollectionClass::loop(bool connectionUp){

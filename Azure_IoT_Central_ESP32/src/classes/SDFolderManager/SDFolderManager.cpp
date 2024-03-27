@@ -52,10 +52,6 @@ int COULD_NOT_OPEN_FOLDER = 3;
 int IS_NOT_A_DIRECTORY = 4;
 
 int SDFolderManagerClass::directoryExists(char* path){
-    // Serial.println();
-    // Serial.println("[directoryExists]");
-    // Serial.print("[directoryExists] Let's see if the following file is a folder: ");
-    // Serial.println(path);
     //Could not begin SD. It migth be because SD is not present.
     if(!SD.begin()) return BEGIN_ERROR;
 
