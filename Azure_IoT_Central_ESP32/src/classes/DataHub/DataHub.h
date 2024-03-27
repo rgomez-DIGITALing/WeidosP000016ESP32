@@ -79,18 +79,17 @@ void DataHub<T,N>::push(T data){
     //     return;
     // }
 
-
-
     // SDFolderManager.createPendingFolder(deviceId);
     // char* fileName = SDFolderManager.setPendingFilePath(deviceId, timestamp);
     // Serial.print("[DataHub] pusing in folder: ");
     // Serial.println(fileName);
     // if(SDDataStorage.put(fileName, data)){
     //         Serial.println("[DataHub] Data successful PUSH in PENDING DATAHUB.");
-    //     }else{
-    //         Serial.println("[DataHub] Data PUSH failure in PENDING DATAHUB.");
+    // }else{
+    //     Serial.println("[DataHub] Data PUSH failure in PENDING DATAHUB.");
 
-    //     }
+    // }
+
 
     return;
 }
@@ -139,15 +138,6 @@ void DataHub<T,N>::loop(){
                 break;
             }
 
-            // if(!generatePayload2) Serial.println("PayloadGenerator 2 is not set hehehhee");
-            // else{
-            //     generatePayload2(payload_buffer, AZ_IOT_DATA_BUFFER_SIZE, &payload_buffer_length, currentPayload);
-            //     error = azureDevice->sendMessage(az_span_create(payload_buffer, payload_buffer_length));
-            //     if(error){
-            //         state = TELEMETRY_SEND_FAILURE;
-            //         break;
-            //     }
-            // }
             if(generatePayload2){
                 generatePayload2(payload_buffer, AZ_IOT_DATA_BUFFER_SIZE, &payload_buffer_length, currentPayload);
                 error = azureDevice->sendMessage(az_span_create(payload_buffer, payload_buffer_length));
