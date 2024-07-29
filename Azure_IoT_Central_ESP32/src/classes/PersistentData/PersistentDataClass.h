@@ -1,11 +1,13 @@
 #pragma once
 #include <Arduino.h>
 #include <E2PROM.h>
-#include "eepromIndex.h"
+#include "../../collections/DeviceCollections/DeviceCollection.h"
+#include "../../collections/AzureIoTCollection/AzureIoTCollection.h"
+#include "eepromMapping.h"
 
-//static const int WIFI_SSID_SIZE = 32;
-//static const int WIFI_PASS_SIZE = 63;
-//static const int SCOPE_ID_SIZE = 20;
+// static const int WIFI_SSID_SIZE = 32;
+// static const int WIFI_PASS_SIZE = 63;
+// static const int SCOPE_ID_SIZE = 20;
 //static const int WEIDOS_MODEL_ID_SIZE = 63;
 //static const int GATEWAY_DEVICE_ID_SIZE = 20;
 //gatewayDeviceId, GATEWAY_DEVICE_ID_SIZE
@@ -17,35 +19,68 @@ class PersistentDataClass{
     public:
         bool begin();
         
-        bool isWiFiSSIDSet();
-        bool isWiFiPassSet();
-        bool isScopeIdSet();
-        
-        char* getWiFiSSID(){ return WiFiSSID; };
-        char* getWiFiPass(){ return WiFiPass; };
-        char* getScopeId(){ return scopeId; };
-        
-        void setWiFiSSID(String& ssid);
-        void setWiFiPass(String& pass);
-        void setScopeId(String& scopeId);
-        
-    private:
-        void restoreWiFiSSID(){ E2PROM.get(WIFI_SSID_INDEX, WiFiSSID); };
-        void restoreWiFiPassword(){ E2PROM.get(WIFI_PASS_INDEX, WiFiPass); }
-        void restoreScopeId(){ E2PROM.get(SCOPE_ID_INDEX, scopeId); }
-        
-        char WiFiSSID[WIFI_SSID_SIZE] = "";
-        char WiFiPass[WIFI_PASS_SIZE] = "";
-        char scopeId[SCOPE_ID_SIZE] = "";
+        void saveDeviceConfiguration(uint8_t deviceType, uint8_t slot);
+        void getDeviceConfiguration(uint8_t* devices,  uint8_t numMaxDevices);
 
-//Azure parameters
-        //char gatewayDeviceId[GATEWAY_DEVICE_ID_SIZE];
-        //char scopeId[SCOPE_ID_SIZE];
+        bool isScopeIdSet();
+        bool isAzureIdSet(int slot);
+        bool isSasKeySet(int slot);
+        bool isModbusAddressSet(int slot);
+        bool isCTPrimarySet(int slot);
+        bool isCTSecondarySet(int slot);
+        bool isDigitalPinSet(int slot);
+        bool isAnalogPinSet(int slot);
+        bool isConversionSet(int slot);
+        bool isDeviceTypeSet(int slot);
+        bool isIpAddressSet(int slot);
+        bool isHarmonicAnalysisActivated(int slot);
+
+        void removeScopeId();
+        void removeAzureId(int slot);
+        void removeSasKey(int slot);
+        void removeModbusAddress(int slot);
+        void removeCTPrimary(int slot);
+        void removeCTSecondary(int slot);
+        void removeDigitalPin(int slot);
+        void removeAnalogPin(int slot);
+        void removeConversion(int slot);
+        void removeDeviceType(int slot);
+        void removeIpAddress(int slot);
+        void removeHarmonicAnalysisActivated(int slot);
         
-        //char groupPrimaryKey[20];
-        //char weidosModelId[20];
-        //char em3BasicLineId[20];
-        //char em1BasicLineId[20];
+        void setHarmonicAnalysis(bool isActive, int slot);
+        
+        void saveScopeId(String& scopeId);
+        void saveAzureId(String& azureId, int slot);
+        void saveAzureSasKey(String& sasKey, int slot);
+        void saveModbusAddress(int modbusAddress, int slot);
+        void saveCTPrimary(int ctPrimary, int slot);
+        void saveCTSecondary(int ctSecondary, int slot);
+
+        void saveDigitalPin(int digitalPin, int slot);
+        void saveAnalogPin(int analogPin, int slot);
+        void saveConversionFactor(float conversionFactor, int slot);
+        
+        void saveDeviceType(uint8_t deviceType, int slot);
+        void saveIpAddress(String& ipAddressString, int slot);
+        
+
+
+        void getScopeId(ScopeId scopeId);
+        void getAzureId(AzureDeviceId azureId, int slot);
+        void getSasKey(AzureSASKey sasKey, int slot);
+        uint8_t getModbusAddress(int slot);
+        int getCTPrimary(int slot);
+        int getCTSecondary(int slot);
+        int getDigitalPin(int slot);
+        int getAnalogPin(int slot);
+        float getConversionFactor(int slot);
+        
+        IPAddress getIpAddress(int slot);
+
+
+    private:
+        // char scopeId[SCOPE_ID_SIZE] = "";
 };
 
 

@@ -39,13 +39,17 @@
 #define DPS_GLOBAL_ENDPOINT_PORT AZ_IOT_DEFAULT_MQTT_CONNECT_PORT
 #define IOT_HUB_ENDPOINT_PORT AZ_IOT_DEFAULT_MQTT_CONNECT_PORT
 
-#define DEFAULT_SAS_TOKEN_LIFETIME_IN_MINUTES 60
-#define SAS_TOKEN_REFRESH_THRESHOLD_IN_SECS 30
+#define DEFAULT_SAS_TOKEN_LIFETIME_IN_MINUTES 120
+#define SAS_TOKEN_REFRESH_THRESHOLD_IN_SECS 300
 
 /*
  * The structures below define a generic interface to abstract the interaction of this module,
  * with any MQTT client used in the user application.
  */
+
+class AzureIoTDevice;
+
+
 
 #define MQTT_QOS_AT_MOST_ONCE 0
 #define MQTT_QOS_AT_LEAST_ONCE 1
@@ -332,7 +336,7 @@ typedef struct command_request_t_struct
  *
  * @return                   Nothing.
  */
-typedef void (*command_request_received_t)(command_request_t command);
+typedef void (*command_request_received_t)(AzureIoTDevice* azureIoTDevice, command_request_t command);
 
 /*
  * @brief    All the possible statuses returned by `azure_iot_get_status`.
