@@ -1,5 +1,6 @@
 #pragma once
 
+#include <Arduino.h>
 
 #define SERIAL_LOGGER_BAUD_RATE 115200
 //#define DISABLE_LOGGING
@@ -22,6 +23,21 @@ extern log_function_t default_logging_function;
 #define LogInfo(message, ...) Log(log_level_info, message, ##__VA_ARGS__)
 #define LogError(message, ...) Log(log_level_error, message, ##__VA_ARGS__)
 void logging_function(log_level_t log_level, char const* const format, ...);
+
+
+
+
+typedef void (*log_function_2_t)(log_level_t log_level, const __FlashStringHelper* const format, ...);
+extern log_function_2_t default_logging_function_2;
+
+#define set_logging_function_2(custom_logging_function_2) \
+  default_logging_function_2 = custom_logging_function_2;
+
+#define Log2(level, message, ...) default_logging_function_2(level, message, ##__VA_ARGS__)
+#define LogInfo2(message, ...) Log2(log_level_info, message, ##__VA_ARGS__)
+#define LogError2(message, ...) Log2(log_level_error, message, ##__VA_ARGS__)
+void logging_function_2(log_level_t log_level, const __FlashStringHelper* const format, ...);
+
 #else
 #define set_logging_function(custom_logging_function)
 #define Log(level, message, ...)
