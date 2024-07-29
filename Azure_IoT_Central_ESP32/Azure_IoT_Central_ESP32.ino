@@ -1,3 +1,7 @@
+#include <SD.h>
+
+#include <SD.h>
+
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // SPDX-License-Identifier: MIT
 
@@ -44,6 +48,7 @@
 #include <LogModule.h>
 #include <EthernetModule.h>
 
+
 #include "src/config/AzureDevices.h"
 #include "src/config/DataHubCollection.h"
 #include "src/config/energyMeters.h"
@@ -77,7 +82,7 @@ void setup()
 {
   Serial.begin(SERIAL_LOGGER_BAUD_RATE);
   set_logging_function(logging_function);
-  set_logging_function_2(logging_function_2);
+  //set_logging_function_2(logging_function_2);
   // delay(10000);
   Serial.println("Welcome!");
 
