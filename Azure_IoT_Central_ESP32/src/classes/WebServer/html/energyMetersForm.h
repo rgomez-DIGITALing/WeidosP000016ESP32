@@ -25,7 +25,7 @@ const char* energyMetersForm PROGMEM = R"rawliteral(
                     <option value="EM220">EM220-RTU-4DI2DO</option>
                 </select>
                 <span id="CT1" hidden>
-                    CT1 Primary: <input type="text" name="CT1Primary" style="width:30px;" maxlength="4" Value="5"> CT1 Secondary: <input type="text" name="CT1Secondary" style="width:30px;" maxlength="4" Value="5">
+                    CT1 Primary: <input type="text" name="CT1Primary" style="width:30px;" maxlength="4" value="%CT1Primary%"> CT1 Secondary: <input type="text" name="CT1Secondary" style="width:30px;" maxlength="4" Value="%CT1Secondary%">
                 </span></center>
 
                 <label for="EM2"><center>RTU address:2 Energy Monitor:</label>
@@ -38,7 +38,7 @@ const char* energyMetersForm PROGMEM = R"rawliteral(
                         <option value="EM220">EM220-RTU-4DI2DO</option>
                     </select>
                     <span id="CT2" hidden>
-                        CT2 Primary: <input type="text" name="CT2Primary" style="width:30px;" maxlength="4" Value="5"> CT2 Secondary: <input type="text" name="CT2Secondary" style="width:30px;" maxlength="4" Value="5">
+                        CT2 Primary: <input type="text" name="CT2Primary" style="width:30px;" maxlength="4" value="%CT2Primary%"> CT2 Secondary: <input type="text" name="CT2Secondary" style="width:30px;" maxlength="4" value="%CT2Secondary%">
                     </span></center>
 
                     <label for="EM3"><center>RTU address:3 Energy Monitor:</label>
@@ -51,7 +51,7 @@ const char* energyMetersForm PROGMEM = R"rawliteral(
                             <option value="EM220">EM220-RTU-4DI2DO</option>
                         </select>
                         <span id="CT3" hidden>
-                            CT3 Primary: <input type="text" name="CT3Primary" style="width:30px;" maxlength="4" Value="5"> CT3 Secondary: <input type="text" name="CT3Secondary" style="width:30px;" maxlength="4" Value="5">
+                            CT3 Primary: <input type="text" name="CT3Primary" style="width:30px;" maxlength="4" value="%CT3Primary%"> CT3 Secondary: <input type="text" name="CT3Secondary" style="width:30px;" maxlength="4" value="%CT3Secondary%">
                         </span></center>
 
                         <label for="EM4"><center>RTU address:4 Energy Monitor:</label>
@@ -64,7 +64,7 @@ const char* energyMetersForm PROGMEM = R"rawliteral(
                                 <option value="EM220">EM220-RTU-4DI2DO</option>
                             </select>
                             <span id="CT4" hidden>
-                                CT4 Primary: <input type="text" name="CT4Primary" style="width:30px;" maxlength="4" Value="5"> CT4 Secondary: <input type="text" name="CT4Secondary" style="width:30px;" maxlength="4" Value="5">
+                                CT4 Primary: <input type="text" name="CT4Primary" style="width:30px;" maxlength="4" value="%CT4Primary%"> CT4 Secondary: <input type="text" name="CT4Secondary" style="width:30px;" maxlength="4" value="%CT4Secondary%">
                             </span></center>
 
                             <label for="EM5"><center>RTU address:5 Energy Monitor:</label>
@@ -77,7 +77,7 @@ const char* energyMetersForm PROGMEM = R"rawliteral(
                                     <option value="EM220">EM220-RTU-4DI2DO</option>
                                 </select>
                                 <span id="CT5" hidden>
-                                    CT5 Primary: <input type="text" name="CT5Primary" style="width:30px;" maxlength="4" Value="5"> CT5 Secondary: <input type="text" name="CT5Secondary" style="width:30px;" maxlength="4" Value="5">
+                                    CT5 Primary: <input type="text" name="CT5Primary" style="width:30px;" maxlength="4" value="%CT5Primary%"> CT5 Secondary: <input type="text" name="CT5Secondary" style="width:30px;" maxlength="4" value="%CT5Secondary%">
                                 </span></center>
                                 <input type="submit" value="Submit" style = "margin-top:15px">
 
@@ -94,18 +94,24 @@ const char* energyMetersForm PROGMEM = R"rawliteral(
                 </script>
 
                 <script>
+                    
+                    
                     var sel = document.getElementById("EM1");
                     sel.value = '%EM1%';
                     ShowCT(sel, 'CT1');
+
                     sel = document.getElementById("EM2");
                     sel.value = '%EM2%';
                     ShowCT(sel, 'CT2');
+
                     sel = document.getElementById("EM3");
                     sel.value = '%EM3%';
                     ShowCT(sel, 'CT3');
+
                     sel = document.getElementById("EM4");
                     sel.value = '%EM4%';
                     ShowCT(sel, 'CT4');
+
                     sel = document.getElementById("EM5");
                     sel.value = '%EM5%';
                     ShowCT(sel, 'CT5');

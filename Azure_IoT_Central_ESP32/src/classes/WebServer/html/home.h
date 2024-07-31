@@ -23,12 +23,8 @@ const char* homePage PROGMEM = R"rawliteral(
 <body>
     <font face = "helvetica">
     <div style="text-align:center; color:white; background-color:#eb8c00; padding:20px">
-        <h1 style="padding:0 0 30px; margin:0;" >Weidmuller Energy Monitoring. Wifi Version.</h1>
-        <a class="button" href="/wifi">WiFi Configuration</a>
-        <a class="button" href="/azure">Azure IoT Central</a>
-        <a class="button" href="/energy-meters">Energy Meters</a>
-        <a class="button" href="/flow-meters">Flow Meters</a>
-        <a class="button" href="/pulse-meters">Pulse Meters</a>
+        <h1 style="padding:0 0 30px; margin:0;" >Weidmuller Energy Monitoring.</h1>
+        <a class="button" href="/devices">Devices</a>
     </div>
 
     <footer>

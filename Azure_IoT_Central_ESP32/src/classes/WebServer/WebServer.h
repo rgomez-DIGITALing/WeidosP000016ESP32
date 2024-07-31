@@ -8,7 +8,6 @@ class WebServerClass{
         void setServer();
 
     private:
-        int a = 55;
 };
 
 
